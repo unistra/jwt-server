@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from os.path import abspath, basename, dirname, join, normpath
-
+from datetime import timedelta
 
 ######################
 # Path configuration #
@@ -192,8 +192,8 @@ TEMPLATES = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_cas.middleware.CASMiddleware',
@@ -345,11 +345,15 @@ CAS_LOGOUT_REQUEST_ALLOWED = ('cas1.di.unistra.fr', 'cas2.di.unistra.fr')
 CAS_LOGOUT_COMPLETELY = True
 CAS_USER_CREATION = True
 CAS_IGNORE_REFERER = True
-CAS_REDIRECT_URL = '/api/'
+CAS_REDIRECT_URL = '/gdt/'
 CAS_RETRY_LOGIN = True
 CAS_USERNAME_FORMAT = lambda username: username.lower().strip()
 
 CAS_ADMIN_AUTH = False
 CAS_ADMIN_PREFIX = '/admin/'
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=20),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'USER_ID_FIELD': 'username'
+}
