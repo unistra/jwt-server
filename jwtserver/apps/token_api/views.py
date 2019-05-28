@@ -36,7 +36,8 @@ class TokenObtainCASView(TokenViewBase):
         except TokenError as e:
             raise InvalidToken(e.args[0])
 
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        return Response(serializer.validated_data, status=status.HTTP_302_FOUND, headers={'Location': redirect_url,
+                    **{'X-Redirect-' + key: value for (key, value) in serializer.validated_data.items()}})
 
 
 token_obtain_pair = TokenObtainCASView.as_view()
