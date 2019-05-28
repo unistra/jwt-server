@@ -345,7 +345,6 @@ CAS_LOGOUT_REQUEST_ALLOWED = ('cas1.di.unistra.fr', 'cas2.di.unistra.fr')
 CAS_LOGOUT_COMPLETELY = True
 CAS_USER_CREATION = True
 CAS_IGNORE_REFERER = True
-CAS_REDIRECT_URL = '/gdt/'
 CAS_RETRY_LOGIN = True
 CAS_USERNAME_FORMAT = lambda username: username.lower().strip()
 
@@ -355,5 +354,5 @@ CAS_ADMIN_PREFIX = '/admin/'
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(seconds=20),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'USER_ID_FIELD': 'username'
+    'USER_ID_FIELD': 'username',
 }

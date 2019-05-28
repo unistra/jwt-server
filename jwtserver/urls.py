@@ -10,7 +10,6 @@ urlpatterns = [
     # Examples:
     url(r'^$', home, name='home'),
     url(r'^api/', include('jwtserver.apps.token_api.urls')),
-    url(r'^cas/', include('django_cas.urls')),
     url(r'^admin/', admin.site.urls),
 ]
 

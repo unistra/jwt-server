@@ -1,7 +1,12 @@
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.views import APIView
+import base64
+
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenViewBase
+
+from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer
 
 
 def get_tokens_for_user(user):
@@ -13,9 +18,26 @@ def get_tokens_for_user(user):
     }
 
 
-class TokenPairView(APIView):
-    authentication_classes = (authentication.SessionAuthentication,)
-    permission_classes = (permissions.IsAuthenticated, )
+class TokenObtainCASView(TokenViewBase):
+    """
+    Takes a set of user credentials and returns an access and refresh JSON web
+    token pair to prove the authentication of those credentials.
+    """
+    serializer_class = TokenObtainCASSerializer
 
-    def get(self, request):
-        return Response(get_tokens_for_user(request.user))
+    def get(self, request, *args, **kwargs):
+        redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
+        service = request.build_absolute_uri('?')
+        ticket = request.GET.get('ticket')
+        serializer = self.get_serializer(data={**request.data, **{'ticket': ticket, 'service': service}})
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+
+token_obtain_pair = TokenObtainCASView.as_view()
+
