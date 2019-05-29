@@ -5,6 +5,7 @@
 
 from fabric.api import (env, roles, execute, task)
 from os.path import join
+from . import sentry
 
 import pydiploy
 
@@ -207,6 +208,7 @@ def pre_install_frontend():
 def deploy(update_pkg=False):
     """Deploy code on server"""
     execute(deploy_backend, update_pkg)
+    execute(declare_release_to_sentry)
     execute(deploy_frontend)
 
 
@@ -215,6 +217,11 @@ def deploy(update_pkg=False):
 def deploy_backend(update_pkg=False):
     """Deploy code on server"""
     execute(pydiploy.django.deploy_backend, update_pkg)
+
+
+@task
+def declare_release_to_sentry():
+    execute(sentry.declare_release)
 
 
 @roles('lb')
