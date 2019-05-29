@@ -5,6 +5,7 @@
 
 from fabric.api import (env, roles, execute, task)
 from os.path import join
+from . import sentry
 
 import pydiploy
 
@@ -17,17 +18,17 @@ env.application_name = 'jwtserver'   # name of webapp
 env.root_package_name = 'jwtserver'  # name of app in webapp
 
 env.remote_home = '/home/django'  # remote home root
-env.remote_python_version = ''  # python version
+env.remote_python_version = '3.6'  # python version
 env.remote_virtualenv_root = join(env.remote_home, '.virtualenvs')  # venv root
 env.remote_virtualenv_dir = join(env.remote_virtualenv_root,
                                  env.application_name)  # venv for webapp dir
 # git repository url
-env.remote_repo_url = 'git@git.net:jwtserver.git'
+env.remote_repo_url = 'git@git.unistra.fr:di/jwt-server.git'  # 'git@git.net:jwtserver.git'
 env.local_tmp_dir = '/tmp'  # tmp dir
 env.remote_static_root = '/var/www/static/'  # root of static files
 env.locale = 'fr_FR.UTF-8'  # locale to use on remote
 env.timezone = 'Europe/Paris'  # timezone for remote
-env.keep_releases = 2  # number of old releases to keep before cleaning
+env.keep_releases = 3  # number of old releases to keep before cleaning
 env.extra_goals = ['preprod']  # add extra goal(s) to defaults (test,dev,prod)
 env.dipstrap_version = 'latest'
 env.verbose_output = False  # True for verbose output
@@ -56,10 +57,12 @@ env.verbose_output = False  # True for verbose output
 # env.no_circus_web = True
 # env.circus_backend = 'gevent' # name of circus backend to use
 
-env.chaussette_backend = 'waitress'  # name of chaussette backend to use. You need to add this backend in the app requirement file.
+# name of chaussette backend to use. You need to add this backend in the app requirement file:
+env.chaussette_backend = 'waitress'
 
+# add directive(s) to nginx config file in location part:
+# env.nginx_location_extra_directives = ['proxy_read_timeout 120']
 
-# env.nginx_location_extra_directives = ['proxy_read_timeout 120'] # add directive(s) to nginx config file in location part
 # env.nginx_start_confirmation = True # if True when nginx is not started
 # needs confirmation to start it.
 
@@ -89,21 +92,21 @@ def dev():
 def test():
     """Define test stage"""
     env.roledefs = {
-        'web': ['jwtserver-test.net'],
-        'lb': ['lb.jwtserver-test.net'],
+        'web': ['jwtserver-test.u-strasbg.fr'],
+        'lb': ['jwtserver-test.u-strasbg.fr'],
     }
-    # env.user = 'root'  # user for ssh
+    env.user = 'root'  # user for ssh
     env.backends = ['127.0.0.1']
-    env.server_name = 'jwtserver-test.net'
+    env.server_name = 'jwtserver-test.u-strasbg.fr'
     env.short_server_name = 'jwtserver-test'
     env.static_folder = '/site_media/'
     env.server_ip = ''
     env.no_shared_sessions = False
     env.server_ssl_on = True
-    env.path_to_cert = '/etc/ssl/certs/jwtserver.net.pem'
-    env.path_to_cert_key = '/etc/ssl/private/jwtserver.net.key'
+    env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'
+    env.path_to_cert_key = '/etc/ssl/private/mega_wildcard.key'
     env.goal = 'test'
-    env.socket_port = ''
+    env.socket_port = '8036'
     env.socket_host = '127.0.0.1'
     env.map_settings = {}
     execute(build_env)
@@ -205,6 +208,7 @@ def pre_install_frontend():
 def deploy(update_pkg=False):
     """Deploy code on server"""
     execute(deploy_backend, update_pkg)
+    execute(declare_release_to_sentry)
     execute(deploy_frontend)
 
 
@@ -213,6 +217,11 @@ def deploy(update_pkg=False):
 def deploy_backend(update_pkg=False):
     """Deploy code on server"""
     execute(pydiploy.django.deploy_backend, update_pkg)
+
+
+@task
+def declare_release_to_sentry():
+    execute(sentry.declare_release)
 
 
 @roles('lb')

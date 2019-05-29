@@ -1,11 +1,11 @@
 from django.conf.urls import url
-from .views import TokenPairView
+
+from jwtserver.apps.token_api.views import TokenObtainCASView
 from rest_framework_simplejwt.views import (
-    # TokenObtainPairView,
     TokenRefreshView,
 )
 
 urlpatterns = [
-    url(r'^token/$', TokenPairView.as_view(), name='token_obtain_pair'),
+    url(r'^token/(?P<redirect_url>[=\w]+)$', TokenObtainCASView.as_view(), name='token_obtain_cas'),
     url(r'^token/refresh/$', TokenRefreshView.as_view(), name='token_refresh'),
 ]
