@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from os import environ
-from os.path import normpath
+from os import path
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from .base import *
 
 #######################
@@ -43,3 +46,10 @@ for logger in LOGGING['loggers']:
 
 DIPSTRAP_VERSION = '{{ dipstrap_version }}'
 DIPSTRAP_STATIC_URL += '%s/' % DIPSTRAP_VERSION
+
+sentry_sdk.init(
+    dsn="https://0e41ea754eff4321a9f36c95039f5910@sentry-test.app.unistra.fr/16",
+    integrations=[DjangoIntegration()],
+    environment="test",
+    release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
+)
