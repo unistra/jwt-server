@@ -26,10 +26,13 @@ class TokenObtainCASView(TokenViewBase):
     serializer_class = TokenObtainCASSerializer
 
     def get(self, request, *args, **kwargs):
-        redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
-        service = request.build_absolute_uri('?')
-        ticket = request.GET.get('ticket')
-        serializer = self.get_serializer(data={**request.data, **{'ticket': ticket, 'service': service}})
+        try:
+            redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
+            service = request.build_absolute_uri('?')
+            ticket = request.GET.get('ticket')
+            serializer = self.get_serializer(data={**request.data, **{'ticket': ticket, 'service': service}})
+        except UnicodeDecodeError as e:
+            return Response("Error decoding '{}'".format(kwargs['redirect_url']), status=status.HTTP_400_BAD_REQUEST)
 
         try:
             serializer.is_valid(raise_exception=True)
