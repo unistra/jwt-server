@@ -43,7 +43,7 @@ def redirect_ticket(request, **kwargs):
     except UnicodeDecodeError as e:
         return Response("Error decoding '{}'".format(kwargs['redirect_url']), status=status.HTTP_400_BAD_REQUEST)
 
-    response = HttpResponse(None, status=status.HTTP_307_TEMPORARY_REDIRECT)
+    response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response['Location'] = redirect_url + '?' + urlencode(custom_headers)
     return response
 
