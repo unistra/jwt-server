@@ -7,6 +7,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserTokenSerializer(serializers.Serializer,):
+    """
+    Token serializer
+    """
     def validate_user(self, attrs, user):
         data = super().validate(attrs)
         refresh = self.get_token(user)
@@ -18,6 +21,9 @@ class UserTokenSerializer(serializers.Serializer,):
 
 
 class TokenObtainCASSerializer(UserTokenSerializer):
+    """
+    Generates token in exchange of a CAS ticket
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['ticket'] = serializers.CharField()
@@ -35,6 +41,9 @@ class TokenObtainCASSerializer(UserTokenSerializer):
 
 
 class TokenObtainDummySerializer(UserTokenSerializer):
+    """
+    Dummy serializer. Only available in debug mode and only for dummy user
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -49,6 +58,9 @@ class TokenObtainDummySerializer(UserTokenSerializer):
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for users
+    """
     class Meta:
         model = User
         fields = ('id', 'username',)

@@ -14,6 +14,11 @@ from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer, Token
 
 
 def get_tokens_for_user(user):
+    """
+    Generates pair of tokens for user
+    :param user: authenticated user
+    :return: dict of tokens
+    """
     refresh = RefreshToken.for_user(user)
 
     return {
@@ -23,6 +28,13 @@ def get_tokens_for_user(user):
 
 
 def redirect_ticket(request, **kwargs):
+    """
+    Redirects CAS data (service and ticket) to base64 encoded URI.
+    Data is sent in GET request
+    :param request: GET request
+    :param kwargs: additional parameters
+    :return:
+    """
     custom_headers = {}
     try:
         redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
@@ -37,6 +49,9 @@ def redirect_ticket(request, **kwargs):
 
 
 class DummyList(ListCreateAPIView):
+    """
+    List of users
+    """
     permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -56,7 +71,6 @@ class TokenObtainCASView(TokenViewBase):
         service = request.POST.get('service')
         ticket = request.POST.get('ticket')
         serializer = self.get_serializer(data={**request.data, **{'ticket': ticket, 'service': service}})
-
         try:
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
