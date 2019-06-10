@@ -6,6 +6,7 @@ from datetime import timedelta
 ######################
 # Path configuration #
 ######################
+from os import path
 
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 SITE_ROOT = dirname(DJANGO_ROOT)
@@ -352,7 +353,10 @@ CAS_ADMIN_AUTH = False
 CAS_ADMIN_PREFIX = '/admin/'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=20),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_FIELD': 'username',
+    'SIGNING_KEY': open(path.join(dirname(abspath(__file__)), "../../", "keys/myKey.pem"), 'rb').read(),
+    'VERIFYING_KEY': open(path.join(dirname(abspath(__file__)), "../../", "keys/myPublic.pem"), 'rb').read(),
+    'ALGORITHM': 'RS256',
 }

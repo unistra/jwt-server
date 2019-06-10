@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django_cas.backends import CASBackend, verify_proxy_ticket
+from django_cas.backends import CASBackend
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -28,3 +28,28 @@ class TokenObtainCASSerializer(serializers.Serializer):
         data['access'] = str(refresh.access_token)
 
         return data
+
+
+class TokenObtainDummySerializer(serializers.Serializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @classmethod
+    def get_token(cls, user):
+        return RefreshToken.for_user(user)
+
+    def validate(self, attrs):
+        user = User(username='dummy')
+        data = super().validate(attrs)
+        refresh = self.get_token(user)
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+
+        return data
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username',)

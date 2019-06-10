@@ -2,14 +2,16 @@ import base64
 from urllib.parse import urlencode
 
 import requests
+from django.contrib.auth.models import User
 from django.http import HttpResponse
-from rest_framework import status
+from rest_framework import status, permissions
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 
-from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer
+from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer, TokenObtainDummySerializer, UserSerializer
 
 
 def get_tokens_for_user(user):
@@ -35,15 +37,22 @@ def redirect_ticket(request, **kwargs):
     return response
 
 
-# def eat_ticket(request, **kwargs):
-#     data = {
-#         'service': request.GET.get('service'),
-#         'ticket': request.GET.get('ticket')}
-#     distant = requests.post("http://127.0.0.1:8000/api/token/", data=data)
-#     if distant.status_code != 200:
-#         return Response("Error consuming ticket : '{}'".format(distant.status_code), status=status.HTTP_400_BAD_REQUEST)
-#
-#     return HttpResponse(distant.text, status=status.HTTP_200_OK, content_type='application/json')
+def eat_ticket(request, **kwargs):
+    data = {
+        'service': request.GET.get('service'),
+        'ticket': request.GET.get('ticket')}
+    distant = requests.post("http://127.0.0.1:8000/api/token/", data=data)
+    if distant.status_code != 200:
+        return Response("Error consuming ticket : '{}'".format(distant.status_code), status=status.HTTP_400_BAD_REQUEST)
+
+    return HttpResponse(distant.text, status=status.HTTP_200_OK, content_type='application/json')
+
+
+class UsersList(ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 
 
 class TokenObtainCASView(TokenViewBase):
@@ -66,4 +75,19 @@ class TokenObtainCASView(TokenViewBase):
         return Response(serializer.validated_data, status=status.HTTP_200_OK, )
 
 
-token_obtain_pair = TokenObtainCASView.as_view()
+class TokenObtainDummyView(TokenViewBase):
+    """
+    Takes a set of user credentials and returns an access and refresh JSON web
+    token pair to prove the authentication of those credentials.
+    """
+    serializer_class = TokenObtainDummySerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data={**request.data, **{'dummy': 'dummy', }})
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK, )
