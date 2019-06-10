@@ -6,7 +6,18 @@ from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-class TokenObtainCASSerializer(serializers.Serializer):
+class UserTokenSerializer(serializers.Serializer,):
+    def validate_user(self, attrs, user):
+        data = super().validate(attrs)
+        refresh = self.get_token(user)
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+
+        return data
+
+
+class TokenObtainCASSerializer(UserTokenSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['ticket'] = serializers.CharField()
@@ -18,20 +29,12 @@ class TokenObtainCASSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         d = CASBackend().authenticate(ticket=attrs['ticket'], service=attrs['service'])
-
         if not d:
             raise AuthenticationFailed()
-        user = User.objects.get(username__iexact=d)
-        data = super().validate(attrs)
-        refresh = self.get_token(user)
-
-        data['refresh'] = str(refresh)
-        data['access'] = str(refresh.access_token)
-
-        return data
+        return self.validate_user(attrs, User.objects.get(username__iexact=d))
 
 
-class TokenObtainDummySerializer(serializers.Serializer):
+class TokenObtainDummySerializer(UserTokenSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -42,14 +45,7 @@ class TokenObtainDummySerializer(serializers.Serializer):
         return RefreshToken.for_user(User(username='dummy'))
 
     def validate(self, attrs):
-        user = User(username='dummy')
-        data = super().validate(attrs)
-        refresh = self.get_token(user)
-
-        data['refresh'] = str(refresh)
-        data['access'] = str(refresh.access_token)
-
-        return data
+        return self.validate_user(attrs, User(username='dummy'))
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

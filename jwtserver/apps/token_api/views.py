@@ -1,7 +1,6 @@
 import base64
 from urllib.parse import urlencode
 
-import requests
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from rest_framework import status, permissions
@@ -37,22 +36,13 @@ def redirect_ticket(request, **kwargs):
     return response
 
 
-def eat_ticket(request, **kwargs):
-    data = {
-        'service': request.GET.get('service'),
-        'ticket': request.GET.get('ticket')}
-    distant = requests.post("http://127.0.0.1:8000/api/token/", data=data)
-    if distant.status_code != 200:
-        return Response("Error consuming ticket : '{}'".format(distant.status_code), status=status.HTTP_400_BAD_REQUEST)
-
-    return HttpResponse(distant.text, status=status.HTTP_200_OK, content_type='application/json')
-
-
-class UsersList(ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated, )
+class DummyList(ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def get_queryset(self):
+        return super().get_queryset().filter(username__iexact=self.request.user.username)
 
 
 class TokenObtainCASView(TokenViewBase):
