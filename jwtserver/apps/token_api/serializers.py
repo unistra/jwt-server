@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django_cas.backends import CASBackend
 from rest_framework import serializers
@@ -36,7 +37,9 @@ class TokenObtainDummySerializer(serializers.Serializer):
 
     @classmethod
     def get_token(cls, user):
-        return RefreshToken.for_user(user)
+        if not settings.DEBUG:
+            return None
+        return RefreshToken.for_user(User(username='dummy'))
 
     def validate(self, attrs):
         user = User(username='dummy')
