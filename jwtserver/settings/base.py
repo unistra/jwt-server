@@ -367,3 +367,11 @@ def check_key(filename, key_type):
 
 check_key('myKey.pem', 'SIGNING_KEY')
 check_key('myPublic.pem', 'VERIFYING_KEY')
+
+#####################
+#       CORS        #
+#####################
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = ('http://localhost:8080',)
+CORS_ALLOW_CREDENTIALS = True
