@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-
-from os.path import abspath, basename, dirname, join, normpath
+import os
+from os.path import abspath, basename, dirname, join, normpath, isfile
 from datetime import timedelta
 
 ######################
 # Path configuration #
 ######################
-from os import path
 
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 SITE_ROOT = dirname(DJANGO_ROOT)
@@ -356,7 +355,15 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_FIELD': 'username',
-    'SIGNING_KEY': open(path.join(dirname(abspath(__file__)), "../../", "keys/myKey.pem"), 'rb').read(),
-    'VERIFYING_KEY': open(path.join(dirname(abspath(__file__)), "../../", "keys/myPublic.pem"), 'rb').read(),
     'ALGORITHM': 'RS256',
 }
+
+
+def check_key(filename, key_type):
+    full_path = join(dirname(abspath(__file__)), "../../keys", filename)
+    if isfile(full_path):
+        SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
+
+
+check_key('myKey.pem', 'SIGNING_KEY')
+check_key('myPublic.pem', 'VERIFYING_KEY')
