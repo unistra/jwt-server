@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
-from os.path import abspath, basename, dirname, join, normpath
+import os
+from os.path import abspath, basename, dirname, join, normpath, isfile
 from datetime import timedelta
 
 ######################
@@ -352,7 +352,18 @@ CAS_ADMIN_AUTH = False
 CAS_ADMIN_PREFIX = '/admin/'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=20),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_FIELD': 'username',
+    'ALGORITHM': 'RS256',
 }
+
+
+def check_key(filename, key_type):
+    full_path = join(dirname(abspath(__file__)), "../../keys", filename)
+    if isfile(full_path):
+        SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
+
+
+check_key('myKey.pem', 'SIGNING_KEY')
+check_key('myPublic.pem', 'VERIFYING_KEY')
