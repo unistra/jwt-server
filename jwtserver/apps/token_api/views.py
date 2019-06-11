@@ -68,8 +68,8 @@ class TokenObtainCASView(TokenViewBase):
     serializer_class = TokenObtainCASSerializer
 
     def post(self, request, *args, **kwargs):
-        service = request.POST.get('service')
-        ticket = request.POST.get('ticket')
+        service = request.data.get('service')
+        ticket = request.data.get('ticket')
         serializer = self.get_serializer(data={**request.data, **{'ticket': ticket, 'service': service}})
         try:
             serializer.is_valid(raise_exception=True)
