@@ -38,7 +38,10 @@ def redirect_ticket(request, **kwargs):
     custom_headers = {}
     try:
         redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
-        custom_headers['service'] = request.build_absolute_uri('?')
+        uri = request.build_absolute_uri('?')
+        if uri[:5] != 'https':
+            uri = uri.replace('http://', 'https://')
+        custom_headers['service'] = uri
         custom_headers['ticket'] = request.GET.get('ticket')
     except UnicodeDecodeError as e:
         return Response("Error decoding '{}'".format(kwargs['redirect_url']), status=status.HTTP_400_BAD_REQUEST)

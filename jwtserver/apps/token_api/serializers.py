@@ -1,14 +1,12 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.views.decorators.csrf import csrf_exempt
 from django_cas.backends import CASBackend
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-@csrf_exempt
-class UserTokenSerializer(serializers.Serializer,):
+class UserTokenSerializer(serializers.Serializer, ):
     """
     Token serializer
     """
@@ -22,7 +20,6 @@ class UserTokenSerializer(serializers.Serializer,):
         return data
 
 
-@csrf_exempt
 class TokenObtainCASSerializer(UserTokenSerializer):
     """
     Generates token in exchange of a CAS ticket
@@ -47,6 +44,7 @@ class TokenObtainDummySerializer(UserTokenSerializer):
     """
     Dummy serializer. Only available in debug mode and only for dummy user
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -64,6 +62,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for users
     """
+
     class Meta:
         model = User
         fields = ('id', 'username',)
