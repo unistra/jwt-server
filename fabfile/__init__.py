@@ -116,21 +116,21 @@ def test():
 def preprod():
     """Define preprod stage"""
     env.roledefs = {
-        'web': ['jwtserver-pprd.net'],
-        'lb': ['lb.jwtserver-pprd.net'],
+        'web': ['django-pprd-w1.u-strasbg.fr', 'django-pprd-w2.u-strasbg.fr'],
+        'lb': ['rp3.u-strasbg.fr'],
     }
     # env.user = 'root'  # user for ssh
     env.backends = env.roledefs['web']
-    env.server_name = 'jwtserver-pprd.net'
+    env.server_name = 'jwt-server-pprd.app.unistra.fr'
     env.short_server_name = 'jwtserver-pprd'
     env.static_folder = '/site_media/'
-    env.server_ip = ''
+    env.server_ip = '130.79.254.28'
     env.no_shared_sessions = False
     env.server_ssl_on = True
-    env.path_to_cert = '/etc/ssl/certs/jwtserver.net.pem'
-    env.path_to_cert_key = '/etc/ssl/private/jwtserver.net.key'
+    env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'
+    env.path_to_cert_key = '/etc/ssl/private/mega_wildcard.key'
     env.goal = 'preprod'
-    env.socket_port = ''
+    env.socket_port = '8019'
     env.map_settings = {
         'default_db_host': "DATABASES['default']['HOST']",
         'default_db_user': "DATABASES['default']['USER']",
@@ -145,21 +145,21 @@ def preprod():
 def prod():
     """Define prod stage"""
     env.roledefs = {
-        'web': ['jwtserver.net'],
-        'lb': ['lb.jwtserver.net']
+        'web': ['django-w3.u-strasbg.fr', 'django-w4.u-strasbg.fr'],
+        'lb': ['rp10-m.di.unistra.fr', 'rp10-s.di.unistra.fr']
     }
     # env.user = 'root'  # user for ssh
     env.backends = env.roledefs['web']
-    env.server_name = 'jwtserver.net'
+    env.server_name = 'jwtserver.app.unistra.fr'
     env.short_server_name = 'jwtserver'
     env.static_folder = '/site_media/'
-    env.server_ip = ''
+    env.server_ip = '130.79.254.87'
     env.no_shared_sessions = False
     env.server_ssl_on = True
-    env.path_to_cert = '/etc/ssl/certs/jwtserver.net.pem'
-    env.path_to_cert_key = '/etc/ssl/private/jwtserver.net.key'
+    env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'
+    env.path_to_cert_key = '/etc/ssl/private/mega_wildcard.key'
     env.goal = 'prod'
-    env.socket_port = ''
+    env.socket_port = '8019'
     env.map_settings = {
         'default_db_host': "DATABASES['default']['HOST']",
         'default_db_user': "DATABASES['default']['USER']",
