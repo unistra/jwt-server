@@ -1,3 +1,4 @@
+keys/
 *.py[cod]
 __pycache__
 .idea

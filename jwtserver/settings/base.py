@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
-from os.path import abspath, basename, dirname, join, normpath
+import os
+from os.path import abspath, basename, dirname, join, normpath, isfile
 from datetime import timedelta
 
 ######################
@@ -11,14 +11,12 @@ DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 SITE_ROOT = dirname(DJANGO_ROOT)
 SITE_NAME = basename(DJANGO_ROOT)
 
-
 #######################
 # Debug configuration #
 #######################
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-
 
 ##########################
 # Manager configurations #
@@ -29,7 +27,6 @@ ADMINS = [
 ]
 
 MANAGERS = ADMINS
-
 
 ##########################
 # Database configuration #
@@ -55,7 +52,6 @@ DATABASES = {
     }
 }
 
-
 ######################
 # Site configuration #
 ######################
@@ -63,7 +59,6 @@ DATABASES = {
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
-
 
 #########################
 # General configuration #
@@ -92,7 +87,6 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-
 #######################
 # locale configuration #
 #######################
@@ -100,7 +94,6 @@ USE_TZ = True
 LOCALE_PATHS = [
     normpath(join(DJANGO_ROOT, 'locale')),
 ]
-
 
 #######################
 # Media configuration #
@@ -114,7 +107,6 @@ MEDIA_ROOT = normpath(join(DJANGO_ROOT, 'media'))
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = '/media/'
-
 
 ##############################
 # Static files configuration #
@@ -142,13 +134,11 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-
 ############
 # Dipstrap #
 ############
 
 DIPSTRAP_STATIC_URL = '//django-static.u-strasbg.fr/dipstrap/'
-
 
 ##############
 # Secret key #
@@ -158,7 +148,6 @@ DIPSTRAP_STATIC_URL = '//django-static.u-strasbg.fr/dipstrap/'
 # Only for dev and test environnement. Should be redefined for production
 # environnement
 SECRET_KEY = 'ma8r116)33!-#pty4!sht8tsa(1bfe%(+!&9xfack+2e9alah!'
-
 
 ##########################
 # Template configuration #
@@ -184,7 +173,6 @@ TEMPLATES = [
     },
 ]
 
-
 ############################
 # Middleware configuration #
 ############################
@@ -201,13 +189,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 #####################
 # Url configuration #
 #####################
 
 ROOT_URLCONF = '%s.urls' % SITE_NAME
-
 
 ######################
 # WSGI configuration #
@@ -215,7 +201,6 @@ ROOT_URLCONF = '%s.urls' % SITE_NAME
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
-
 
 #############################
 # Application configuration #
@@ -246,7 +231,6 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
 
 #########################
 # Session configuration #
@@ -331,7 +315,6 @@ REST_FRAMEWORK = {
     )
 }
 
-
 #####################
 #       CAS         #
 #####################
@@ -348,11 +331,32 @@ CAS_IGNORE_REFERER = True
 CAS_RETRY_LOGIN = True
 CAS_USERNAME_FORMAT = lambda username: username.lower().strip()
 
+CAS_FORCE_SSL_SERVICE_URL = True
+
 CAS_ADMIN_AUTH = False
 CAS_ADMIN_PREFIX = '/admin/'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=20),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_FIELD': 'username',
+    'ALGORITHM': 'RS256',
 }
+
+
+def check_key(filename, key_type):
+    full_path = join(dirname(abspath(__file__)), "../../keys", filename)
+    if isfile(full_path):
+        SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
+
+
+check_key('myKey.pem', 'SIGNING_KEY')
+check_key('myPublic.pem', 'VERIFYING_KEY')
+
+#####################
+#       CORS        #
+#####################
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = ('http://localhost:8080',)
+CORS_ALLOW_CREDENTIALS = True
