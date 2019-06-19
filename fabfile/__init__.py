@@ -121,7 +121,7 @@ def preprod():
     }
     # env.user = 'root'  # user for ssh
     env.backends = env.roledefs['web']
-    env.server_name = 'jwt-server-pprd.app.unistra.fr'
+    env.server_name = 'jwtserver-pprd.app.unistra.fr'
     env.short_server_name = 'jwtserver-pprd'
     env.static_folder = '/site_media/'
     env.server_ip = '130.79.254.28'
