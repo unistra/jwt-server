@@ -37,7 +37,7 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         d = CASBackend().authenticate(ticket=attrs['ticket'], service=attrs['service'])
         if not d:
             raise AuthenticationFailed()
-        return self.validate_user(attrs, User.objects.get(username__iexact=d))
+        return self.validate_user(attrs, d)
 
 
 class TokenObtainDummySerializer(UserTokenSerializer):
