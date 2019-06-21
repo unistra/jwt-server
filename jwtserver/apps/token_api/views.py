@@ -1,16 +1,21 @@
 import base64
+import json
 from urllib.parse import urlencode
 
+import requests
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.urls import reverse
 from rest_framework import status, permissions
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
+from sentry_sdk import add_breadcrumb, capture_message
 
 from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer, TokenObtainDummySerializer, UserSerializer
+from jwtserver.settings.base import CAS_SERVER_URL
 
 
 def get_tokens_for_user(user):
@@ -27,6 +32,52 @@ def get_tokens_for_user(user):
     }
 
 
+def service(request, **kwargs):
+    """
+    Verification method. Redirects to CAS with GET arguments for validation
+    :param request:
+    :param kwargs:
+    :return:
+    """
+    verify_url = request.build_absolute_uri(reverse('token_service_verify'))
+    service_url = request.build_absolute_uri(
+        reverse('redirect_ticket', kwargs={'redirect_url': base64.b64encode(verify_url.encode()).decode("utf-8")}))
+    cas_url = CAS_SERVER_URL + 'login?' + urlencode({'service': to_https(service_url)})
+    response = HttpResponse(None, status=status.HTTP_302_FOUND)
+    response['Location'] = cas_url
+    return response
+
+
+def service_verify(request, **kwargs):
+    """
+    Verification method. Uses ticket to obtain JWS
+    :param request:
+    :param kwargs:
+    :return:
+    """
+    data = {
+        'service': request.GET.get('service'),
+        'ticket': request.GET.get('ticket')}
+    url = to_https(request.build_absolute_uri(reverse('token_obtain_cas')))
+    add_breadcrumb(category='auth',
+                   message="url : {}".format(url),
+                   level='info', )
+    add_breadcrumb(category='auth',
+                   message="data : {}".format(data),
+                   level='info', )
+    distant = requests.post(url, data=data)
+    if distant.status_code != 200:
+        if distant.status_code != 401:
+            add_breadcrumb(category='auth',
+                           message="response code : {}".format(distant.status_code),
+                           level='info', )
+            capture_message('Error consuming ticket')
+        return JsonResponse({'error': "Error consuming ticket : '{}'".format(distant.status_code),
+                             'response': json.loads(distant.text)},
+                            status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse(json.loads(distant.text), status=status.HTTP_200_OK)
+
+
 def redirect_ticket(request, **kwargs):
     """
     Redirects CAS data (service and ticket) to base64 encoded URI.
@@ -38,9 +89,7 @@ def redirect_ticket(request, **kwargs):
     custom_headers = {}
     try:
         redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
-        uri = request.build_absolute_uri('?')
-        if uri[:5] != 'https':
-            uri = uri.replace('http://', 'https://')
+        uri = to_https(request.build_absolute_uri('?'))
         custom_headers['service'] = uri
         custom_headers['ticket'] = request.GET.get('ticket')
     except UnicodeDecodeError as e:
@@ -49,6 +98,12 @@ def redirect_ticket(request, **kwargs):
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response['Location'] = redirect_url + '?' + urlencode(custom_headers)
     return response
+
+
+def to_https(uri):
+    if uri[:5] != 'https':
+        uri = uri.replace('http://', 'https://')
+    return uri
 
 
 class DummyList(ListCreateAPIView):
@@ -97,4 +152,4 @@ class TokenObtainDummyView(TokenViewBase):
         except TokenError as e:
             raise InvalidToken(e.args[0])
 
-        return Response(serializer.validated_data, status=status.HTTP_200_OK, )
+        return JsonResponse(serializer.validated_data, status=status.HTTP_200_OK, )
