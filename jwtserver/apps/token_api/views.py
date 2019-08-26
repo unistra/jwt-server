@@ -128,7 +128,9 @@ class TokenObtainCASView(TokenViewBase):
     def post(self, request, *args, **kwargs):
         service = request.data.get('service')
         ticket = request.data.get('ticket')
-        serializer = self.get_serializer(data={**request.data, **{'ticket': ticket, 'service': service}})
+        serializer = self.get_serializer(data={**request.data,
+                                               **{'ticket': ticket,
+                                                  'service': service}}, context={'request': request})
         try:
             serializer.is_valid(raise_exception=True)
         except TokenError as e:

@@ -29,9 +29,10 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         self.fields['ticket'] = serializers.CharField()
         self.fields['service'] = serializers.CharField()
 
-    @classmethod
-    def get_token(cls, user):
-        return RefreshToken.for_user(user)
+    def get_token(self, user):
+        t = RefreshToken.for_user(user)
+        t['iss'] = self.context['request'].get_host()
+        return t
 
     def validate(self, attrs):
         d = CASBackend().authenticate(ticket=attrs['ticket'], service=attrs['service'])
