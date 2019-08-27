@@ -5,6 +5,9 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from jwtserver.apps.token_api.models import AdditionalUserInfo
+from jwtserver.libs.api.client import get_user
+
 
 class UserTokenSerializer(serializers.Serializer, ):
     """
@@ -29,14 +32,28 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         self.fields['ticket'] = serializers.CharField()
         self.fields['service'] = serializers.CharField()
 
-    @classmethod
-    def get_token(cls, user):
-        return RefreshToken.for_user(user)
+    def get_token(self, user):
+        t = RefreshToken.for_user(user)
+        t['iss'] = self.context['request'].get_host()
+        t['directory_id'] = user.additionaluserinfo.directory_id
+        return t
 
     def validate(self, attrs):
         d = CASBackend().authenticate(ticket=attrs['ticket'], service=attrs['service'])
         if not d:
             raise AuthenticationFailed()
+        # Getting additional info from WS
+        response = get_user(username=d.username)
+        c_user = response.data['results'][0]
+        if 'accounts' in c_user:
+            for account in c_user['accounts']:
+                if account['username'] == d.username:
+                    directory_id = account['directory_id']
+                    print(directory_id)
+                    goc = AdditionalUserInfo.objects.get_or_create(user=d)
+                    if goc[1]:
+                        goc[0].directory_id = directory_id
+                        goc[0].save()
         return self.validate_user(attrs, d)
 
 

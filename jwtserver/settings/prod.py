@@ -46,6 +46,15 @@ SECRET_KEY = '{{ secret_key }}'
 DIPSTRAP_VERSION = '{{ dipstrap_version }}'
 DIPSTRAP_STATIC_URL += '%s/' % DIPSTRAP_VERSION
 
+###############################
+# Weberservices configuration #
+###############################
+
+CAMELOTWS_DESCRIPTION = 'https://camelotv2-ws.u-strasbg.fr/site_media/description.json'
+CAMELOTWS_BASE_URL = 'https://camelotv2-ws.u-strasbg.fr'
+CAMELOTWS_TOKEN = '{{ camelotws_token }}'
+
+
 sentry_sdk.init(
     dsn="https://0e41ea754eff4321a9f36c95039f5910@sentry-test.app.unistra.fr/16",
     integrations=[DjangoIntegration()],
