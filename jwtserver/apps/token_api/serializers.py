@@ -38,6 +38,7 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         t = RefreshToken.for_user(user)
         t['iss'] = self.context['request'].get_host()
         try:
+            self.verifyUserData(user)
             t['directory_id'] = user.additionaluserinfo.directory_id
         except ObjectDoesNotExist:
             # No additional information exists. Already covered by validation
@@ -48,22 +49,32 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         d = CASBackend().authenticate(ticket=attrs['ticket'], service=attrs['service'])
         if not d:
             raise AuthenticationFailed()
-        # Getting additional info from WS
-        response = get_user(username=d.username)
-        if len(response.data['results']) > 0:
-            c_user = response.data['results'][0]
-            if 'accounts' in c_user:
-                for account in c_user['accounts']:
-                    if account['username'] == d.username:
-                        directory_id = account['directory_id']
-                        print(directory_id)
-                        goc = AdditionalUserInfo.objects.get_or_create(user=d)
-                        if goc[1]:
-                            goc[0].directory_id = directory_id
-                            goc[0].save()
-        else:
-            sentry_sdk.capture_message("No Camelot result for username {}".format(d.username))
+        self.verifyUserData(d)
         return self.validate_user(attrs, d)
+
+    def verifyUserData(self, user):
+        """
+        Verifies if a user has additional data. If not, it will try to get it from the information system
+        :param user: user to check
+        :return: None
+        """
+        try:
+            user.additionaluserinfo.directory_id
+        except ObjectDoesNotExist:
+            response = get_user(username=user.username)
+            if len(response.data['results']) > 0:
+                c_user = response.data['results'][0]
+                if 'accounts' in c_user:
+                    for account in c_user['accounts']:
+                        if account['username'] == user.username:
+                            directory_id = account['directory_id']
+                            print(directory_id)
+                            goc = AdditionalUserInfo.objects.get_or_create(user=user)
+                            if goc[1]:
+                                goc[0].directory_id = directory_id
+                                goc[0].save()
+            else:
+                sentry_sdk.capture_message("No Camelot result for username {}".format(user.username))
 
 
 class TokenObtainDummySerializer(UserTokenSerializer):
