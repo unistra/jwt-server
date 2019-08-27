@@ -83,3 +83,10 @@ INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
 CAMELOTWS_DESCRIPTION = 'https://camelotv2-test-siham.u-strasbg.fr/site_media/description.json'
 CAMELOTWS_BASE_URL = 'https://camelotv2-test-siham.u-strasbg.fr'
 CAMELOTWS_TOKEN = environ.get('CAMELOTWS_TOKEN', '{{ camelotws_token }}')
+
+# sentry_sdk.init(
+#     dsn="https://0e41ea754eff4321a9f36c95039f5910@sentry-test.app.unistra.fr/16",
+#     integrations=[DjangoIntegration()],
+#     environment="dev",
+#     release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
+# )
