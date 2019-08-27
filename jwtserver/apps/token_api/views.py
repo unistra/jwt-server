@@ -102,7 +102,7 @@ def redirect_ticket(request, **kwargs):
 
 def to_https(uri):
     if uri[:5] != 'https':
-        uri = uri.replace('http://', 'https://')
+       uri = uri.replace('http://', 'https://')
     return uri
 
 
@@ -130,7 +130,8 @@ class TokenObtainCASView(TokenViewBase):
         ticket = request.data.get('ticket')
         serializer = self.get_serializer(data={**request.data,
                                                **{'ticket': ticket,
-                                                  'service': service}}, context={'request': request})
+                                                  'service': service}},
+                                         context={'request': request})
         try:
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
