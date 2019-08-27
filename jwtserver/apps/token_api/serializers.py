@@ -1,5 +1,7 @@
+import sentry_sdk
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django_cas.backends import CASBackend
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
@@ -35,7 +37,11 @@ class TokenObtainCASSerializer(UserTokenSerializer):
     def get_token(self, user):
         t = RefreshToken.for_user(user)
         t['iss'] = self.context['request'].get_host()
-        t['directory_id'] = user.additionaluserinfo.directory_id
+        try:
+            t['directory_id'] = user.additionaluserinfo.directory_id
+        except ObjectDoesNotExist:
+            # No additional information exists. Already covered by validation
+            pass
         return t
 
     def validate(self, attrs):
@@ -44,16 +50,19 @@ class TokenObtainCASSerializer(UserTokenSerializer):
             raise AuthenticationFailed()
         # Getting additional info from WS
         response = get_user(username=d.username)
-        c_user = response.data['results'][0]
-        if 'accounts' in c_user:
-            for account in c_user['accounts']:
-                if account['username'] == d.username:
-                    directory_id = account['directory_id']
-                    print(directory_id)
-                    goc = AdditionalUserInfo.objects.get_or_create(user=d)
-                    if goc[1]:
-                        goc[0].directory_id = directory_id
-                        goc[0].save()
+        if len(response.data['results']) > 0:
+            c_user = response.data['results'][0]
+            if 'accounts' in c_user:
+                for account in c_user['accounts']:
+                    if account['username'] == d.username:
+                        directory_id = account['directory_id']
+                        print(directory_id)
+                        goc = AdditionalUserInfo.objects.get_or_create(user=d)
+                        if goc[1]:
+                            goc[0].directory_id = directory_id
+                            goc[0].save()
+        else:
+            sentry_sdk.capture_message("No Camelot result for username {}".format(d.username))
         return self.validate_user(attrs, d)
 
 
