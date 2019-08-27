@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from os import environ
-from os.path import normpath
+from os import environ, path
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from .base import *
 
 #######################
@@ -73,3 +76,10 @@ MIDDLEWARE += [
 ]
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
 
+###############################
+# Weberservices configuration #
+###############################
+
+CAMELOTWS_DESCRIPTION = 'https://camelotv2-test-siham.u-strasbg.fr/site_media/description.json'
+CAMELOTWS_BASE_URL = 'https://camelotv2-test-siham.u-strasbg.fr'
+CAMELOTWS_TOKEN = environ.get('CAMELOTWS_TOKEN', '{{ camelotws_token }}')
