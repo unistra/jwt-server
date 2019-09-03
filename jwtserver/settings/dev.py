@@ -2,9 +2,6 @@
 
 from os import environ, path
 
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-
 from .base import *
 
 #######################
@@ -90,3 +87,6 @@ CAMELOTWS_TOKEN = environ.get('CAMELOTWS_TOKEN', '{{ camelotws_token }}')
 #     environment="dev",
 #     release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
 # )
+
+RSA_PASSWORD = environ.get('RSA_PASSWORD')
+check_key('myKey.pem', 'SIGNING_KEY', password=RSA_PASSWORD)

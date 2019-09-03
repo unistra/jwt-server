@@ -62,3 +62,10 @@ sentry_sdk.init(
     environment="test",
     release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
 )
+
+
+##############
+# Encryption #
+##############
+RSA_PASSWORD = '{{ rsa_password }}'
+check_key('myKey.pem', 'SIGNING_KEY', password=RSA_PASSWORD)
