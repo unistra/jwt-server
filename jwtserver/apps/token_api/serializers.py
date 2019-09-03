@@ -1,3 +1,5 @@
+import datetime
+
 import sentry_sdk
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -36,7 +38,11 @@ class TokenObtainCASSerializer(UserTokenSerializer):
 
     def get_token(self, user):
         t = RefreshToken.for_user(user)
-        t['iss'] = self.context['request'].get_host()
+        #t['iss'] = self.context['request'].get_host()
+        t['iss'] = 'Ernest'
+        #t['issuer'] = self.context['request'].get_host()
+        t['sub'] = user.username
+        t['nbf'] = datetime.datetime.now().timestamp()
         try:
             self.verifyUserData(user)
             t['directory_id'] = user.additionaluserinfo.directory_id
