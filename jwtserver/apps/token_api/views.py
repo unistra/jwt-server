@@ -102,7 +102,7 @@ def redirect_ticket(request, **kwargs):
 
 def to_https(uri):
     if uri[:5] != 'https':
-       uri = uri.replace('http://', 'https://')
+        uri = uri.replace('http://', 'https://')
     return uri
 
 

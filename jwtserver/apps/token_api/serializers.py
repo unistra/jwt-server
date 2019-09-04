@@ -64,9 +64,7 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         :param user: user to check
         :return: None
         """
-        try:
-            user.additionaluserinfo.directory_id
-        except ObjectDoesNotExist:
+        if not hasattr(user, 'additionaluserinfo'):
             response = get_user(username=user.username)
             if len(response.data['results']) > 0:
                 c_user = response.data['results'][0]
