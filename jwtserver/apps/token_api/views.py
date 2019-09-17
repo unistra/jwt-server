@@ -15,6 +15,7 @@ from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
 from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer, TokenObtainDummySerializer, UserSerializer
+from jwtserver.apps.token_api.utils import force_https
 from jwtserver.settings.base import CAS_SERVER_URL
 
 
@@ -42,7 +43,7 @@ def service(request, **kwargs):
     verify_url = request.build_absolute_uri(reverse('token_service_verify'))
     service_url = request.build_absolute_uri(
         reverse('redirect_ticket', kwargs={'redirect_url': base64.b64encode(verify_url.encode()).decode("utf-8")}))
-    cas_url = CAS_SERVER_URL + 'login?' + urlencode({'service': to_https(service_url)})
+    cas_url = CAS_SERVER_URL + 'login?' + urlencode({'service': force_https(service_url)})
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response['Location'] = cas_url
     return response
@@ -58,7 +59,7 @@ def service_verify(request, **kwargs):
     data = {
         'service': request.GET.get('service'),
         'ticket': request.GET.get('ticket')}
-    url = to_https(request.build_absolute_uri(reverse('token_obtain_cas')))
+    url = force_https(request.build_absolute_uri(reverse('token_obtain_cas')))
     add_breadcrumb(category='auth',
                    message="url : {}".format(url),
                    level='info', )
@@ -89,7 +90,7 @@ def redirect_ticket(request, **kwargs):
     custom_headers = {}
     try:
         redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
-        uri = to_https(request.build_absolute_uri('?'))
+        uri = force_https(request.build_absolute_uri('?'))
         custom_headers['service'] = uri
         custom_headers['ticket'] = request.GET.get('ticket')
     except UnicodeDecodeError as e:
@@ -98,12 +99,6 @@ def redirect_ticket(request, **kwargs):
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response['Location'] = redirect_url + '?' + urlencode(custom_headers)
     return response
-
-
-def to_https(uri):
-    if uri[:5] != 'https':
-        uri = uri.replace('http://', 'https://')
-    return uri
 
 
 class DummyList(ListCreateAPIView):

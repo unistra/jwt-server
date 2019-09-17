@@ -90,3 +90,8 @@ CAMELOTWS_TOKEN = environ.get('CAMELOTWS_TOKEN', '{{ camelotws_token }}')
 
 RSA_PASSWORD = environ.get('RSA_PASSWORD')
 check_key('myKey.pem', 'SIGNING_KEY', password=RSA_PASSWORD)
+
+#########
+# STAGE #
+#########
+STAGE = 'dev'

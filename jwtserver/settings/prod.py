@@ -54,11 +54,19 @@ CAMELOTWS_DESCRIPTION = 'https://camelotv2-ws.u-strasbg.fr/site_media/descriptio
 CAMELOTWS_BASE_URL = 'https://camelotv2-ws.u-strasbg.fr'
 CAMELOTWS_TOKEN = '{{ camelotws_token }}'
 
+#########
+# STAGE #
+#########
+STAGE = '{{ goal }}'
 
+
+##########
+# Sentry #
+##########
 sentry_sdk.init(
     dsn="https://0e41ea754eff4321a9f36c95039f5910@sentry-test.app.unistra.fr/16",
     integrations=[DjangoIntegration()],
-    environment="prod",
+    environment=STAGE,
     release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
 )
 
