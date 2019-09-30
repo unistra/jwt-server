@@ -76,3 +76,13 @@ sentry_sdk.init(
 ##############
 RSA_PASSWORD = '{{ rsa_password }}'
 check_key('myKey.pem', 'SIGNING_KEY', password=RSA_PASSWORD)
+
+#######
+# JWT #
+#######
+SIMPLE_JWT.update(
+    {
+        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int('{{ jwt_access_lifetime }}')),
+        'REFRESH_TOKEN_LIFETIME': timedelta(days=int('{{ jwt_refresh_lifetime }}'))
+    }
+)
