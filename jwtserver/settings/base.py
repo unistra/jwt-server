@@ -2,7 +2,8 @@
 import os
 from os.path import abspath, basename, dirname, join, normpath, isfile
 from datetime import timedelta
-
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 ######################
 # Path configuration #
 ######################
@@ -337,20 +338,39 @@ CAS_ADMIN_AUTH = False
 CAS_ADMIN_PREFIX = '/admin/'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'USER_ID_FIELD': 'username',
     'ALGORITHM': 'RS256',
 }
 
+##############
+# Encryption #
+##############
 
-def check_key(filename, key_type):
+def check_key(filename, key_type, **kwargs):
     full_path = join(dirname(abspath(__file__)), "../../keys", filename)
     if isfile(full_path):
-        SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
+        if key_type == 'SIGNING_KEY':
+            with open(full_path, "rb") as key_file:
+                # Read key with passphrase
+                if 'password' not in kwargs:
+                    raise ValueError("No password provided for private key")
+                private_key = serialization.load_pem_private_key(
+                    key_file.read(),
+                    password=kwargs['password'].encode(),
+                    backend=default_backend()
+                )
 
+                # Uncrypted version, OpenSSL compliant
+                pem = private_key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=serialization.NoEncryption()
+                )
 
-check_key('myKey.pem', 'SIGNING_KEY')
+                SIMPLE_JWT[key_type] = private_key
+        else:
+            SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
+
 check_key('myPublic.pem', 'VERIFYING_KEY')
 
 #####################

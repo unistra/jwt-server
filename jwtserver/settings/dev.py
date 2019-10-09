@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from os import environ, path
-
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
+from os import environ
 
 from .base import *
 
@@ -12,7 +9,6 @@ from .base import *
 #######################
 
 DEBUG = True
-
 
 ##########################
 # Database configuration #
@@ -43,12 +39,11 @@ ALLOWED_HOSTS = [
 #####################
 
 LOGGING['handlers']['file']['filename'] = environ.get('LOG_DIR',
-        normpath(join('/tmp', '%s.log' % SITE_NAME)))
+                                                      normpath(join('/tmp', '%s.log' % SITE_NAME)))
 LOGGING['handlers']['file']['level'] = 'DEBUG'
 
 for logger in LOGGING['loggers']:
     LOGGING['loggers'][logger]['level'] = 'DEBUG'
-
 
 ###########################
 # Unit test configuration #
@@ -90,3 +85,21 @@ CAMELOTWS_TOKEN = environ.get('CAMELOTWS_TOKEN', '{{ camelotws_token }}')
 #     environment="dev",
 #     release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
 # )
+
+RSA_PASSWORD = environ.get('RSA_PASSWORD')
+check_key('myKey.pem', 'SIGNING_KEY', password=RSA_PASSWORD)
+
+#########
+# STAGE #
+#########
+STAGE = 'dev'
+
+#######
+# JWT #
+#######
+SIMPLE_JWT.update(
+    {
+        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(environ.get('JWT_ACCESS_LIFETIME'))),
+        'REFRESH_TOKEN_LIFETIME': timedelta(days=int(environ.get('JWT_REFRESH_LIFETIME')))
+    }
+)
