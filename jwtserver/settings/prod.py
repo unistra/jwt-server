@@ -46,14 +46,6 @@ SECRET_KEY = '{{ secret_key }}'
 DIPSTRAP_VERSION = '{{ dipstrap_version }}'
 DIPSTRAP_STATIC_URL += '%s/' % DIPSTRAP_VERSION
 
-###############################
-# Weberservices configuration #
-###############################
-
-CAMELOTWS_DESCRIPTION = 'https://camelotv2-ws.u-strasbg.fr/site_media/description.json'
-CAMELOTWS_BASE_URL = 'https://camelotv2-ws.u-strasbg.fr'
-CAMELOTWS_TOKEN = '{{ camelotws_token }}'
-
 #########
 # STAGE #
 #########
@@ -85,3 +77,15 @@ SIMPLE_JWT.update(
         'REFRESH_TOKEN_LIFETIME': timedelta(days=int('{{ jwt_refresh_lifetime }}'))
     }
 )
+
+########
+# LDAP #
+########
+LDAP_PROTOCOL = '{{ ldap_protocol }}'
+LDAP_SERVER = '{{ ldap_server }}'
+LDAP_PORT = '{{ ldap_port }}'
+LDAP_CONNEXION = f'{LDAP_PROTOCOL}://{LDAP_SERVER}:{LDAP_PORT}'
+LDAP_USER = '{{ ldap_user }}'
+LDAP_PASSWORD = '{{ ldap_password }}'
+LDAP_BRANCH = '{{ ldap_branch }}'
+LDAP_FILTER = '{{ ldap_filter }}'
