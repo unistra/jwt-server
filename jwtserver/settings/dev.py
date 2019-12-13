@@ -71,14 +71,6 @@ MIDDLEWARE += [
 ]
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
 
-###############################
-# Weberservices configuration #
-###############################
-
-CAMELOTWS_DESCRIPTION = 'https://camelotv2-test-siham.u-strasbg.fr/site_media/description.json'
-CAMELOTWS_BASE_URL = 'https://camelotv2-test-siham.u-strasbg.fr'
-CAMELOTWS_TOKEN = environ.get('CAMELOTWS_TOKEN', '{{ camelotws_token }}')
-
 # sentry_sdk.init(
 #     dsn="https://0e41ea754eff4321a9f36c95039f5910@sentry-test.app.unistra.fr/16",
 #     integrations=[DjangoIntegration()],
@@ -103,3 +95,15 @@ SIMPLE_JWT.update(
         'REFRESH_TOKEN_LIFETIME': timedelta(days=int(environ.get('JWT_REFRESH_LIFETIME')))
     }
 )
+
+########
+# LDAP #
+########
+LDAP_PROTOCOL = environ.get('LDAP_PROTOCOL', 'ldap')
+LDAP_SERVER = environ.get('LDAP_SERVER')
+LDAP_PORT = int(environ.get('LDAP_PORT', 389))
+LDAP_CONNEXION = f'{LDAP_PROTOCOL}://{LDAP_SERVER}:{LDAP_PORT}'
+LDAP_USER = environ.get('LDAP_USER')
+LDAP_PASSWORD = environ.get('LDAP_PASSWORD')
+LDAP_BRANCH = environ.get('LDAP_BRANCH', 'ou=people,o=annuaire')
+LDAP_FILTER = environ.get('LDAP_FILTER', '(&(udsSourcePresent=TRUE)(uid={}))')
