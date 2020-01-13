@@ -42,7 +42,7 @@ def service(request, **kwargs):
     """
     verify_url = request.build_absolute_uri(reverse('token_service_verify'))
     service_url = request.build_absolute_uri(
-        reverse('redirect_ticket', kwargs={'redirect_url': base64.b64encode(verify_url.encode()).decode("utf-8")}))
+        reverse('redirect_ticket', kwargs={'redirect_url': base64.urlsafe_b64encode(verify_url.encode()).decode("utf-8")}))
     cas_url = CAS_SERVER_URL + 'login?' + urlencode({'service': force_https(service_url)})
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response['Location'] = cas_url
@@ -89,7 +89,7 @@ def redirect_ticket(request, **kwargs):
     """
     custom_headers = {}
     try:
-        redirect_url = base64.b64decode(kwargs['redirect_url']).decode("utf-8")
+        redirect_url = base64.urlsafe_b64decode(kwargs['redirect_url']).decode("utf-8")
         uri = force_https(request.build_absolute_uri('?'))
         custom_headers['service'] = uri
         custom_headers['ticket'] = request.GET.get('ticket')

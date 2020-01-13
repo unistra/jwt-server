@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.status import HTTP_302_FOUND
 
+from django.conf import settings
 
 class GenericTokenTests(TestCase):
     def setUp(self):
@@ -14,6 +15,7 @@ class GenericTokenTests(TestCase):
         self.username = "dummy"
         self.password = "{}".format(uuid4())
         self.user = User.objects.create_user(username=self.username, password=self.password)
+        settings.STAGE = 'test'
 
     def test_redirect(self):
         target = base64.b64encode(b'http://127.0.0.1')
