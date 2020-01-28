@@ -9,7 +9,7 @@ from jwtserver.libs.decorators import MemoizeWithTimeout
 logger = logging.getLogger(__name__)
 
 
-@MemoizeWithTimeout(300)
+@MemoizeWithTimeout(60)
 def get_client():
     print("Connection")
     connexion = ldap.initialize(settings.LDAP_CONNEXION, bytes_mode=False)
