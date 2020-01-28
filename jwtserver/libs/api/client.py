@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 @MemoizeWithTimeout(60)
 def get_client():
-    print("Connection")
     connexion = ldap.initialize(settings.LDAP_CONNEXION, bytes_mode=False)
     connexion.simple_bind_s(settings.LDAP_USER, settings.LDAP_PASSWORD)
     return connexion
