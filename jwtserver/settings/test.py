@@ -57,7 +57,7 @@ STAGE = '{{ goal }}'
 # Sentry #
 ##########
 sentry_sdk.init(
-    dsn="https://0e41ea754eff4321a9f36c95039f5910@sentry-test.app.unistra.fr/16",
+    dsn="https://5ccdeb9b7d9e4e70a824349302ae43a8@sentry.app.unistra.fr/11",
     integrations=[DjangoIntegration()],
     environment=STAGE,
     release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
