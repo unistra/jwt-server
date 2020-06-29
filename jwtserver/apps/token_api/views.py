@@ -14,6 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
+from jwtserver.apps.token_api.models import AuthorizedService
 from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer, TokenObtainDummySerializer, UserSerializer
 from jwtserver.apps.token_api.utils import force_https
 from jwtserver.settings.base import CAS_SERVER_URL
@@ -42,7 +43,8 @@ def service(request, **kwargs):
     """
     verify_url = request.build_absolute_uri(reverse('token_service_verify'))
     service_url = request.build_absolute_uri(
-        reverse('redirect_ticket', kwargs={'redirect_url': base64.urlsafe_b64encode(verify_url.encode()).decode("utf-8")}))
+        reverse('redirect_ticket',
+                kwargs={'redirect_url': base64.urlsafe_b64encode(verify_url.encode()).decode("utf-8")}))
     cas_url = CAS_SERVER_URL + 'login?' + urlencode({'service': force_https(service_url)})
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response['Location'] = cas_url
@@ -131,6 +133,9 @@ class TokenObtainCASView(TokenViewBase):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
+        except AuthorizedService.DoesNotExist:
+            return Response("Unauthorized service, please contact administrators to register your service",
+                            status=status.HTTP_403_FORBIDDEN)
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK, )
 

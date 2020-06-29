@@ -1,4 +1,6 @@
+import base64
 import datetime
+import re
 
 import sentry_sdk
 from django.conf import settings
@@ -9,6 +11,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from jwtserver.apps.token_api.models import AuthorizedService
 from jwtserver.libs.api.client import get_user
 
 
@@ -39,12 +42,20 @@ class TokenObtainCASSerializer(UserTokenSerializer):
 
     def get_token(self, user):
         t = RefreshToken.for_user(user)
-        # t['iss'] = self.context['request'].get_host()
-        t['iss'] = 'Ernest'
-        # t['issuer'] = self.context['request'].get_host()
+
+        encoded = re.search('/([^/]*)$', self.context['request'].POST['service']).group(1)
+        service = re.search('https?://([^/]*)', base64.urlsafe_b64decode(encoded).decode("utf-8")).group(1)
+
+        authorized_service = AuthorizedService.objects.get(data__service=service)
+
+        if 'issuer' in authorized_service.data:
+            t['iss'] = authorized_service.data['issuer']
+        else:
+            t['iss'] = self.context['request'].get_host()
+
         t['sub'] = user.username
         t['nbf'] = datetime.datetime.now().timestamp()
-        additionaluserinfo = get_user(user.username)
+        additionaluserinfo = get_user(user.username, authorized_service.data['fields'])
         if additionaluserinfo is not None:
             for k,v in additionaluserinfo.items():
                 t[k] = v
