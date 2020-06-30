@@ -25,11 +25,6 @@ def get_user(username, fields=None):
         return None
     people = results[0]
 
-    if not fields:
-        fields = {'username': 'uid'}
-    elif 'username' not in fields:
-        fields.update({'username': 'uid'})
-
     def get_attr(attr):
         return people[1][attr][0].decode("utf-8")
 
