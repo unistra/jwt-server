@@ -360,13 +360,6 @@ def check_key(filename, key_type, **kwargs):
                     backend=default_backend()
                 )
 
-                # Uncrypted version, OpenSSL compliant
-                pem = private_key.private_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                    encryption_algorithm=serialization.NoEncryption()
-                )
-
                 SIMPLE_JWT[key_type] = private_key
         else:
             SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
