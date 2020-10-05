@@ -97,7 +97,7 @@ def test():
     }
     env.user = 'root'  # user for ssh
     env.backends = ['127.0.0.1']
-    env.server_name = 'jwtserver-test.u-strasbg.fr'
+    env.server_name = 'jwtserver-test.app.unistra.fr'
     env.short_server_name = 'jwtserver-test'
     env.static_folder = '/site_media/'
     env.server_ip = ''
