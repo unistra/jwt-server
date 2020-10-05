@@ -62,7 +62,7 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         return t
 
     def validate(self, attrs):
-        d = CASBackend().authenticate(ticket=attrs['ticket'], service=attrs['service'])
+        d = CASBackend().authenticate(self.context['request'], ticket=attrs['ticket'], service=attrs['service'])
         if not d:
             raise AuthenticationFailed()
         return self.validate_user(attrs, d)

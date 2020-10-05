@@ -1,4 +1,4 @@
-Django>1.11,<1.12
+Django<2.3
 djangorestframework
 djangorestframework_simplejwt
 django-cors-headers

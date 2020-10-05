@@ -334,7 +334,7 @@ CAS_USERNAME_FORMAT = lambda username: username.lower().strip()
 
 CAS_FORCE_SSL_SERVICE_URL = True
 
-CAS_ADMIN_AUTH = False
+CAS_ADMIN_AUTH = True
 CAS_ADMIN_PREFIX = '/admin/'
 
 SIMPLE_JWT = {

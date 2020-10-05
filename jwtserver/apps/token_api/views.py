@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from rest_framework import status, permissions
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -69,16 +70,16 @@ def service_verify(request, **kwargs):
                    message="data : {}".format(data),
                    level='info', )
     distant = requests.post(url, data=data)
-    if distant.status_code != 200:
-        if distant.status_code != 401:
-            add_breadcrumb(category='auth',
-                           message="response code : {}".format(distant.status_code),
-                           level='info', )
-            capture_message('Error consuming ticket')
-        return JsonResponse({'error': "Error consuming ticket : '{}'".format(distant.status_code),
-                             'response': json.loads(distant.text)},
-                            status=status.HTTP_400_BAD_REQUEST)
-    return JsonResponse(json.loads(distant.text), status=status.HTTP_200_OK)
+    if distant.status_code == 200:
+        return JsonResponse(json.loads(distant.text), status=status.HTTP_200_OK)
+    if distant.status_code != 401:
+        add_breadcrumb(category='auth',
+                       message="response code : {}".format(distant.status_code),
+                       level='info', )
+        capture_message('Error consuming ticket')
+    return JsonResponse({'error': "Error consuming ticket : '{}'".format(distant.status_code),
+                         'response': json.loads(distant.text)},
+                        status=distant.status_code)
 
 
 def redirect_ticket(request, **kwargs):
@@ -134,8 +135,7 @@ class TokenObtainCASView(TokenViewBase):
         except TokenError as e:
             raise InvalidToken(e.args[0])
         except AuthorizedService.DoesNotExist:
-            return Response("Unauthorized service, please contact administrators to register your service",
-                            status=status.HTTP_403_FORBIDDEN)
+            raise PermissionDenied("Unauthorized service, please contact administrators to register your service")
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK, )
 

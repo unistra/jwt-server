@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.urls import path
 from django.conf import settings
 from django.contrib import admin
 
@@ -10,6 +11,7 @@ urlpatterns = [
     # Examples:
     url(r'^$', home, name='home'),
     url(r'^api/', include('jwtserver.apps.token_api.urls')),
+    path('accounts/', include('django_cas.urls')),
     url(r'^admin/', admin.site.urls),
 ]
 
