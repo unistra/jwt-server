@@ -46,6 +46,21 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         encoded = re.search('/([^/]*)$', self.context['request'].POST['service']).group(1)
         service = re.search('https?://([^/]*)', base64.urlsafe_b64decode(encoded).decode("utf-8")).group(1)
 
+        # {
+        #     "fields": {
+        #         "orgUnit": [
+        #             "supannEntiteAffectationPrincipale",
+        #             "supannEntiteAffectation"
+        #         ],
+        #         "username": "uid",
+        #         "affiliation": [
+        #             "eduPersonPrimaryAffiliation",
+        #             "eduPersonAffiliation"
+        #         ],
+        #         "organization": "supannEtablissement"
+        #     },
+        #     "service": "192.168.0.1:8000"
+        # }
         authorized_service = AuthorizedService.objects.get(data__service=service)
 
         if 'issuer' in authorized_service.data:
