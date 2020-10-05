@@ -44,7 +44,8 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         t = RefreshToken.for_user(user)
 
         encoded = re.search('/([^/]*)$', self.context['request'].POST['service']).group(1)
-        service = re.search('https?://([^/]*)', base64.urlsafe_b64decode(encoded).decode("utf-8")).group(1)
+        service_and_port = re.search('^https?://([^/]*)?', base64.urlsafe_b64decode(encoded).decode("utf-8")).group(1)
+        service = re.search('^([^:]+)(:[0-9]+)?$', service_and_port).group(1)
 
         # {
         #     "fields": {

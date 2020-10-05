@@ -114,3 +114,4 @@ LDAP_PASSWORD = environ.get('LDAP_PASSWORD')
 LDAP_BRANCH = environ.get('LDAP_BRANCH', 'ou=people,o=annuaire')
 LDAP_FILTER = environ.get('LDAP_FILTER', '(&(udsSourcePresent=TRUE)(uid={}))')
 
+CAS_FORCE_SSL_SERVICE_URL = False
