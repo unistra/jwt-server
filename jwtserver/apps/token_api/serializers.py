@@ -2,10 +2,8 @@ import base64
 import datetime
 import re
 
-import sentry_sdk
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
 from django_cas.backends import CASBackend
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
@@ -43,7 +41,13 @@ class TokenObtainCASSerializer(UserTokenSerializer):
     def get_token(self, user):
         t = RefreshToken.for_user(user)
 
-        encoded = re.search('/([^/]*)$', self.context['request'].POST['service']).group(1)
+        base = ""
+        if 'request' in self.context and 'service' in self.context['request'].POST:
+            base = self.context['request'].POST.get('service', False)
+        else:
+            base = self.context['request'].data.get('service', False)
+
+        encoded = re.search('/([^/]*)$', base).group(1)
         service_and_port = re.search('^https?://([^/]*)?', base64.urlsafe_b64decode(encoded).decode("utf-8")).group(1)
         service = re.search('^([^:]+)(:[0-9]+)?$', service_and_port).group(1)
 
@@ -60,7 +64,7 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         #         ],
         #         "organization": "supannEtablissement"
         #     },
-        #     "service": "192.168.0.1:8000"
+        #     "service": "192.168.0.1"
         # }
         authorized_service = AuthorizedService.objects.get(data__service=service)
 
