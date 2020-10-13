@@ -94,3 +94,8 @@ LDAP_USER = '{{ ldap_user }}'
 LDAP_PASSWORD = '{{ ldap_password }}'
 LDAP_BRANCH = '{{ ldap_branch }}'
 LDAP_FILTER = '{{ ldap_filter }}'
+
+#####################
+#       CAS         #
+#####################
+CAS_SERVER_URL = 'https://cas6-dev.unistra.fr:443/cas/'
