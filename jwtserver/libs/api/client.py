@@ -36,9 +36,13 @@ def get_user(username, fields=None):
                + list(set(get_attrs(attr)) - set(get_attrs(primary_attr)))
 
     def get(attr):
-        if isinstance(attr, str):
-            return get_attr(attr)
-        elif isinstance(attr, list):
-            return get_ordered_attrs(attr[0], attr[1])
+        try:
+            if isinstance(attr, str):
+                return get_attr(attr)
+            elif isinstance(attr, list):
+                return get_ordered_attrs(attr[0], attr[1])
+        except KeyError:
+            # Attribute is not available for user
+            pass
 
-    return {k: get(v) for k,v in fields.items()}
+    return {k: get(v) for k,v in fields.items() if get(v) is not None}
