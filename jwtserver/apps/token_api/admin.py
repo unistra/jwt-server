@@ -5,4 +5,9 @@ from .models import (AuthorizedService, )
 
 @admin.register(AuthorizedService)
 class AuthorizedServiceAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('__str__', 'keys')
+
+    def keys(self, obj):
+        if 'fields' in obj.data:
+            return ', '.join(obj.data['fields'].keys())
+        return ''
