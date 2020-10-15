@@ -132,7 +132,7 @@ def preprod():
     """Define preprod stage"""
     env.roledefs = {
         'web': ['django-pprd-w1.u-strasbg.fr', 'django-pprd-w2.u-strasbg.fr'],
-        'lb': ['rp3.u-strasbg.fr'],
+        'lb': ['rp-dip-pprd-public.di.unistra.fr'],
     }
     # env.user = 'root'  # user for ssh
     env.backends = env.roledefs['web']
