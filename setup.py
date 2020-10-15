@@ -33,7 +33,7 @@ recursive_requirements('requirements.txt', libraries, dependency_links)
 
 setup(
     name='jwtserver',
-    version='1.3.2',
+    version='1.3.3',
     packages=find_packages(),
     install_requires=libraries,
     dependency_links=dependency_links,
