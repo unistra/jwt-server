@@ -1,3 +1,4 @@
+import json
 import time
 
 
@@ -25,8 +26,9 @@ class MemoizeWithTimeout(object):
         self._timeouts[f] = self.timeout
 
         def func(*args, **kwargs):
+            ar = tuple([item if isinstance(item, str) else json.dumps(item) for item in args])
             kw = sorted(kwargs.items())
-            key = (args, tuple(kw))
+            key = (ar, tuple(kw))
             try:
                 v = self._caches[f][key]
                 if (time.time() - v[1]) > self.timeout:

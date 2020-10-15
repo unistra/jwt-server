@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from rest_framework import status, permissions
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
@@ -14,9 +15,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
+from jwtserver.apps.token_api.models import AuthorizedService
 from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer, TokenObtainDummySerializer, UserSerializer
 from jwtserver.apps.token_api.utils import force_https
-from jwtserver.settings.base import CAS_SERVER_URL
+from django.conf import settings
 
 
 def get_tokens_for_user(user):
@@ -42,8 +44,9 @@ def service(request, **kwargs):
     """
     verify_url = request.build_absolute_uri(reverse('token_service_verify'))
     service_url = request.build_absolute_uri(
-        reverse('redirect_ticket', kwargs={'redirect_url': base64.urlsafe_b64encode(verify_url.encode()).decode("utf-8")}))
-    cas_url = CAS_SERVER_URL + 'login?' + urlencode({'service': force_https(service_url)})
+        reverse('redirect_ticket',
+                kwargs={'redirect_url': base64.urlsafe_b64encode(verify_url.encode()).decode("utf-8")}))
+    cas_url = settings.CAS_SERVER_URL + 'login?' + urlencode({'service': force_https(service_url)})
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response['Location'] = cas_url
     return response
@@ -67,16 +70,16 @@ def service_verify(request, **kwargs):
                    message="data : {}".format(data),
                    level='info', )
     distant = requests.post(url, data=data)
-    if distant.status_code != 200:
-        if distant.status_code != 401:
-            add_breadcrumb(category='auth',
-                           message="response code : {}".format(distant.status_code),
-                           level='info', )
-            capture_message('Error consuming ticket')
-        return JsonResponse({'error': "Error consuming ticket : '{}'".format(distant.status_code),
-                             'response': json.loads(distant.text)},
-                            status=status.HTTP_400_BAD_REQUEST)
-    return JsonResponse(json.loads(distant.text), status=status.HTTP_200_OK)
+    if distant.status_code == 200:
+        return JsonResponse(json.loads(distant.text), status=status.HTTP_200_OK)
+    if distant.status_code != 401:
+        add_breadcrumb(category='auth',
+                       message="response code : {}".format(distant.status_code),
+                       level='info', )
+        capture_message('Error consuming ticket')
+    return JsonResponse({'error': "Error consuming ticket : '{}'".format(distant.status_code),
+                         'response': json.loads(distant.text)},
+                        status=distant.status_code)
 
 
 def redirect_ticket(request, **kwargs):
@@ -131,6 +134,8 @@ class TokenObtainCASView(TokenViewBase):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
+        except AuthorizedService.DoesNotExist:
+            raise PermissionDenied("Unauthorized service, please contact administrators to register your service")
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK, )
 

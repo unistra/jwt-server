@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from os import environ
+from os import path
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *
 
@@ -23,8 +27,10 @@ DEBUG = True
 # name : PROJECT_ROOT_DIR/default.db
 
 
-DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
-DATABASES['default']['NAME'] = 'jwtserver.db'
+DATABASES['default']['HOST'] = environ.get('DB_HOST')
+DATABASES['default']['USER'] = environ.get('DB_USER')
+DATABASES['default']['PASSWORD'] = environ.get('DB_PWD')
+DATABASES['default']['NAME'] = environ.get('DB_NAME')
 
 ############################
 # Allowed hosts & Security #
@@ -107,3 +113,9 @@ LDAP_USER = environ.get('LDAP_USER')
 LDAP_PASSWORD = environ.get('LDAP_PASSWORD')
 LDAP_BRANCH = environ.get('LDAP_BRANCH', 'ou=people,o=annuaire')
 LDAP_FILTER = environ.get('LDAP_FILTER', '(&(udsSourcePresent=TRUE)(uid={}))')
+
+#####################
+#       CAS         #
+#####################
+CAS_SERVER_URL = 'https://cas6-dev.unistra.fr:443/cas/'
+CAS_FORCE_SSL_SERVICE_URL = False
