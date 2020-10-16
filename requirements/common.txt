@@ -1,4 +1,4 @@
-Django>1.11,<1.12
+Django>2.2,<2.3
 djangorestframework
 djangorestframework_simplejwt
 django-cors-headers
@@ -7,3 +7,4 @@ sentry-sdk==0.7.14
 requests==2.22.0
 cryptography==2.7
 pyldap==3.0.0
+psycopg2-binary

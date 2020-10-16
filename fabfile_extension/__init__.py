@@ -97,7 +97,7 @@ def test():
     }
     env.user = 'root'  # user for ssh
     env.backends = ['127.0.0.1']
-    env.server_name = 'jwtserver-test.u-strasbg.fr'
+    env.server_name = 'jwtserver-test.app.unistra.fr'
     env.short_server_name = 'jwtserver-test'
     env.static_folder = '/site_media/'
     env.server_ip = ''
@@ -108,7 +108,22 @@ def test():
     env.goal = 'test'
     env.socket_port = '8036'
     env.socket_host = '127.0.0.1'
-    env.map_settings = {}
+    env.map_settings = {
+        'default_db_host': "DATABASES['default']['HOST']",
+        'default_db_user': "DATABASES['default']['USER']",
+        'default_db_password': "DATABASES['default']['PASSWORD']",
+        'default_db_name': "DATABASES['default']['NAME']",
+        'rsa_password': "RSA_PASSWORD",
+        'jwt_access_lifetime': 'JWT_ACCESS_LIFETIME',
+        'jwt_refresh_lifetime': 'JWT_REFRESH_LIFETIME',
+        'ldap_protocol': 'LDAP_PROTOCOL',
+        'ldap_server': 'LDAP_SERVER',
+        'ldap_port': 'LDAP_PORT',
+        'ldap_user': 'LDAP_USER',
+        'ldap_password': 'LDAP_PASSWORD',
+        'ldap_branch': 'LDAP_BRANCH',
+        'ldap_filter': 'LDAP_FILTER'
+    }
     execute(build_env)
 
 
@@ -117,7 +132,7 @@ def preprod():
     """Define preprod stage"""
     env.roledefs = {
         'web': ['django-pprd-w1.u-strasbg.fr', 'django-pprd-w2.u-strasbg.fr'],
-        'lb': ['rp3.u-strasbg.fr'],
+        'lb': ['rp-dip-pprd-public.di.unistra.fr'],
     }
     # env.user = 'root'  # user for ssh
     env.backends = env.roledefs['web']
@@ -137,6 +152,16 @@ def preprod():
         'default_db_password': "DATABASES['default']['PASSWORD']",
         'default_db_name': "DATABASES['default']['NAME']",
         'secret_key': "SECRET_KEY",
+        'rsa_password': "RSA_PASSWORD",
+        'jwt_access_lifetime': 'JWT_ACCESS_LIFETIME',
+        'jwt_refresh_lifetime': 'JWT_REFRESH_LIFETIME',
+        'ldap_protocol': 'LDAP_PROTOCOL',
+        'ldap_server': 'LDAP_SERVER',
+        'ldap_port': 'LDAP_PORT',
+        'ldap_user': 'LDAP_USER',
+        'ldap_password': 'LDAP_PASSWORD',
+        'ldap_branch': 'LDAP_BRANCH',
+        'ldap_filter': 'LDAP_FILTER'
     }
     execute(build_env)
 
@@ -166,6 +191,16 @@ def prod():
         'default_db_password': "DATABASES['default']['PASSWORD']",
         'default_db_name': "DATABASES['default']['NAME']",
         'secret_key': "SECRET_KEY",
+        'rsa_password': "RSA_PASSWORD",
+        'jwt_access_lifetime': 'JWT_ACCESS_LIFETIME',
+        'jwt_refresh_lifetime': 'JWT_REFRESH_LIFETIME',
+        'ldap_protocol': 'LDAP_PROTOCOL',
+        'ldap_server': 'LDAP_SERVER',
+        'ldap_port': 'LDAP_PORT',
+        'ldap_user': 'LDAP_USER',
+        'ldap_password': 'LDAP_PASSWORD',
+        'ldap_branch': 'LDAP_BRANCH',
+        'ldap_filter': 'LDAP_FILTER'
     }
     execute(build_env)
 

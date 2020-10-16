@@ -334,7 +334,7 @@ CAS_USERNAME_FORMAT = lambda username: username.lower().strip()
 
 CAS_FORCE_SSL_SERVICE_URL = True
 
-CAS_ADMIN_AUTH = False
+CAS_ADMIN_AUTH = True
 CAS_ADMIN_PREFIX = '/admin/'
 
 SIMPLE_JWT = {
@@ -358,13 +358,6 @@ def check_key(filename, key_type, **kwargs):
                     key_file.read(),
                     password=kwargs['password'].encode(),
                     backend=default_backend()
-                )
-
-                # Uncrypted version, OpenSSL compliant
-                pem = private_key.private_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                    encryption_algorithm=serialization.NoEncryption()
                 )
 
                 SIMPLE_JWT[key_type] = private_key
