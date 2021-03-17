@@ -4,7 +4,8 @@ from django.contrib import admin
 from django.contrib.postgres.forms.jsonb import InvalidJSONInput, JSONField as JSONFormField
 from django import forms
 
-from .models import (AuthorizedService, )
+from .models import (ApplicationToken, AuthorizedService, )
+
 
 class PrettyJSONField(JSONFormField):
     # https://code.djangoproject.com/ticket/29150
@@ -35,3 +36,8 @@ class AuthorizedServiceAdmin(admin.ModelAdmin):
         if 'fields' in obj.data:
             return ', '.join(obj.data['fields'].keys())
         return ''
+
+
+@admin.register(ApplicationToken)
+class ApplicationTokenAdmin(admin.ModelAdmin):
+    pass

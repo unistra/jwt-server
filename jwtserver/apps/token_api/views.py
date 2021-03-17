@@ -8,15 +8,16 @@ from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from rest_framework import status, permissions
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import get_object_or_404, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
-from jwtserver.apps.token_api.models import AuthorizedService
-from jwtserver.apps.token_api.serializers import TokenObtainCASSerializer, TokenObtainDummySerializer, UserSerializer
+from jwtserver.apps.token_api.models import ApplicationToken, AuthorizedService
+from jwtserver.apps.token_api.serializers import ApplicationTokenSerializer, TokenObtainCASSerializer, \
+    TokenObtainDummySerializer, UserSerializer
 from jwtserver.apps.token_api.utils import force_https
 from django.conf import settings
 
@@ -138,6 +139,30 @@ class TokenObtainCASView(TokenViewBase):
             raise PermissionDenied("Unauthorized service, please contact administrators to register your service")
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK, )
+
+
+class TokenOMaticView(TokenViewBase):
+    queryset = ApplicationToken.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        application_token: ApplicationToken = self.get_object()
+        service: AuthorizedService = application_token.authorized_service
+        serializer = ApplicationTokenSerializer(
+            data={**request.data, **{"service": str(service), "ticket": ""}}, context={"request": request, "username": application_token.account, "service": service}
+        )
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+        except AuthorizedService.DoesNotExist:
+            raise PermissionDenied("Unauthorized service")
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+    def get_object(self):
+        obj = get_object_or_404(self.queryset, auth_token=self.request.data.get("token", None))
+        # May raise a permission denied
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 
 class TokenObtainDummyView(TokenViewBase):

@@ -3,6 +3,7 @@ import datetime
 import re
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django_cas.backends import CASBackend
 from rest_framework import serializers
@@ -87,6 +88,33 @@ class TokenObtainCASSerializer(UserTokenSerializer):
             raise AuthenticationFailed()
         return self.validate_user(attrs, d)
 
+
+class ApplicationTokenSerializer(TokenObtainCASSerializer):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields["ticket"]
+
+    def validate(self, attrs):
+        user = get_user_model().objects.get(username=self.context["username"])
+        return self.validate_user(attrs, user)
+
+    def get_token(self, user):
+        t = RefreshToken.for_user(user)
+        authorized_service = self.context["service"]
+
+        if 'issuer' in authorized_service.data:
+            t['iss'] = authorized_service.data['issuer']
+        else:
+            t['iss'] = self.context['request'].get_host()
+
+        t['sub'] = user.username
+        t['nbf'] = datetime.datetime.now().timestamp()
+        additionaluserinfo = get_user(user.username, authorized_service.data['fields'])
+        if additionaluserinfo is not None:
+            for k,v in additionaluserinfo.items():
+                t[k] = v
+        return t
 
 
 class TokenObtainDummySerializer(UserTokenSerializer):
