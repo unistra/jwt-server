@@ -63,3 +63,4 @@ class ApplicationTokenTest(APITestCase):
             self.assertEqual(
                 access_token["iss"], self.authorized_service.data["issuer"]
             )
+            self.assertEqual(response.data["service"], str(self.authorized_service))
