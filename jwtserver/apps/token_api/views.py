@@ -143,26 +143,39 @@ class TokenObtainCASView(TokenViewBase):
 
 class TokenOMaticView(TokenViewBase):
     queryset = ApplicationToken.objects.all()
+    serializer_class = ApplicationTokenSerializer
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.service = None
+        self.application_token = None
 
     def post(self, request, *args, **kwargs):
-        application_token: ApplicationToken = self.get_object()
-        service: AuthorizedService = application_token.authorized_service
-        serializer = ApplicationTokenSerializer(
-            data={**request.data, **{"service": str(service), "ticket": ""}}, context={"request": request, "username": application_token.account, "service": service}
-        )
+        token = request.data.get("token", None)
+        service_name = request.data.get("service", None)
+        try:
+            self.application_token = self.queryset.get(auth_token=token)
+        except ApplicationToken.DoesNotExist:
+            return self.permission_denied(request, "invalid_token")
+        try:
+            self.service = AuthorizedService.objects.get(data__service=service_name)
+        except AuthorizedService.DoesNotExist:
+            return self.permission_denied(request, "invalid_service")
+        if self.application_token.authorized_service != self.service:
+            return self.permission_denied(request, "invalid_token")
+
+        serializer = self.get_serializer(data={**request.data})
         try:
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
-        except AuthorizedService.DoesNotExist:
-            raise PermissionDenied("Unauthorized service")
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
-    def get_object(self):
-        obj = get_object_or_404(self.queryset, auth_token=self.request.data.get("token", None))
-        # May raise a permission denied
-        self.check_object_permissions(self.request, obj)
-        return obj
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["username"] = self.application_token.account
+        context["service"] = self.service
+        return context
 
 
 class TokenObtainDummyView(TokenViewBase):

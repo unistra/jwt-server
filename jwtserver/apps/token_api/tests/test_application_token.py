@@ -1,3 +1,4 @@
+import secrets
 from unittest.mock import patch
 
 import jwt
@@ -39,28 +40,55 @@ class ApplicationTokenTest(APITestCase):
             "organization": "ORG",
         }
 
-    def test_get_token(self):
-        with patch(
-            "jwtserver.apps.token_api.serializers.get_user"
-        ) as mock_ldap:
-            mock_ldap.return_value = self.get_user_return
-            response = self.client.post(
-                reverse("token_o_matic"),
-                {
-                    "token": self.application_token.auth_token,
-                    "service": str(self.authorized_service),
-                },
-                format="json",
-            )
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            access_token = jwt.decode(
-                response.data["access"],
-                settings.SIMPLE_JWT["SIGNING_KEY"],
-                algorithm=settings.SIMPLE_JWT["SIGNING_KEY"],
-            )
-            self.assertEqual(access_token["user_id"], self.user.username)
-            self.assertEqual(access_token["username"], self.user.username)
-            self.assertEqual(
-                access_token["iss"], self.authorized_service.data["issuer"]
-            )
-            self.assertEqual(response.data["service"], str(self.authorized_service))
+    def _make_response(self, token=None, service=None):
+        if token is None:
+            token = self.application_token.auth_token
+        if service is None:
+            service = str(self.authorized_service)
+        response = self.client.post(
+            reverse("token_o_matic"),
+            {
+                "token": token,
+                "service": service,
+            },
+            format="json",
+        )
+        return response
+
+    @patch("jwtserver.apps.token_api.serializers.get_user")
+    def test_get_token(self, get_user_mock):
+        get_user_mock.return_value = self.get_user_return
+        response = self._make_response()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        access_token = jwt.decode(
+            response.data["access"],
+            settings.SIMPLE_JWT["SIGNING_KEY"],
+            algorithm=settings.SIMPLE_JWT["SIGNING_KEY"],
+        )
+        self.assertEqual(access_token["user_id"], self.user.username)
+        self.assertEqual(access_token["username"], self.user.username)
+        self.assertEqual(
+            access_token["iss"], self.authorized_service.data["issuer"]
+        )
+        self.assertEqual(response.data["service"], str(self.authorized_service))
+
+    def test_invalid_token_raises_permission_denied(self):
+        response = self._make_response(token=secrets.token_urlsafe(50))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data["detail"], "invalid_token")
+
+    def test_invalid_service_raises_permission_denied(self):
+        response = self._make_response(service="non-existent-service.unistra.fr")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data["detail"], "invalid_service")
+
+    def test_service_and_token_must_match(self):
+        other_service = AuthorizedService.objects.create(
+            data={
+                "fields": {},
+                "service": "other-service.unistra.fr"
+            }
+        )
+        response = self._make_response(service=str(other_service))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data["detail"], "invalid_token")
