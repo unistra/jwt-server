@@ -16,8 +16,12 @@ from django.test.runner import DiscoverRunner
 Run tests script
 """
 
-test_runner = DiscoverRunner(pattern='tests.py', verbosity=2,
-                             interactive=True, failfast=False)
+test_runner = DiscoverRunner(
+    pattern='test_*.py',
+    verbosity=2,
+    interactive=True,
+    failfast=False
+)
 
 test_apps = ['jwtserver']
 test_apps = test_apps if len(sys.argv) <= 1 else sys.argv[1:]
