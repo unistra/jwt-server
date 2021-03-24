@@ -70,7 +70,9 @@ class ApplicationTokenTest(APITestCase):
         self.assertEqual(
             access_token["iss"], self.authorized_service.data["issuer"]
         )
-        self.assertEqual(response.data["service"], str(self.authorized_service))
+        self.assertEqual(
+            response.data["service"], str(self.authorized_service)
+        )
 
     def test_invalid_token_raises_permission_denied(self):
         response = self._make_response(token=secrets.token_urlsafe(50))
@@ -78,16 +80,15 @@ class ApplicationTokenTest(APITestCase):
         self.assertEqual(response.data["detail"], "invalid_token")
 
     def test_invalid_service_raises_permission_denied(self):
-        response = self._make_response(service="non-existent-service.unistra.fr")
+        response = self._make_response(
+            service="non-existent-service.unistra.fr"
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data["detail"], "invalid_service")
 
     def test_service_and_token_must_match(self):
         other_service = AuthorizedService.objects.create(
-            data={
-                "fields": {},
-                "service": "other-service.unistra.fr"
-            }
+            data={"fields": {}, "service": "other-service.unistra.fr"}
         )
         response = self._make_response(service=str(other_service))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
