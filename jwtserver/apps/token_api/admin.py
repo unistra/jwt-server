@@ -42,4 +42,4 @@ class AuthorizedServiceAdmin(admin.ModelAdmin):
 
 @admin.register(ApplicationToken)
 class ApplicationTokenAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ["auth_token"]
