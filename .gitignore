@@ -2,7 +2,6 @@ keys/
 *.py[cod]
 __pycache__
 .idea
-.coveragerc
 
 # C extensions
 *.so
