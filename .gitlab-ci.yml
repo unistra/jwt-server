@@ -1,0 +1,21 @@
+stages:
+  - test
+
+services:
+  - postgres
+
+variables:
+  POSTGRES_DB: jwtserver-test
+  POSTGRES_USER: jwtserver
+  POSTGRES_PASSWORD: jwtserver
+
+before_script:
+  - apt-get update && apt-get install -y build-essential libpq-dev libldap2-dev libsasl2-dev python-dev libssl-dev
+
+unittest:
+  stage: test
+  tags:
+    - python3.6
+  script:
+    - pip3 install tox
+    - tox

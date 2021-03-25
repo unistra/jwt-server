@@ -4,6 +4,7 @@ import time
 
 class MemoizeWithTimeout(object):
     """Memoize With Timeout"""
+
     _caches = {}
     _timeouts = {}
 
@@ -26,7 +27,12 @@ class MemoizeWithTimeout(object):
         self._timeouts[f] = self.timeout
 
         def func(*args, **kwargs):
-            ar = tuple([item if isinstance(item, str) else json.dumps(item) for item in args])
+            ar = tuple(
+                [
+                    item if isinstance(item, str) else json.dumps(item)
+                    for item in args
+                ]
+            )
             kw = sorted(kwargs.items())
             key = (ar, tuple(kw))
             try:

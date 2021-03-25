@@ -1,0 +1,14 @@
+[run]
+source = .
+omit =
+    .tox/*
+    manage.py
+    setup.py
+    fabfile_extension/*
+    jwtserver/apps/token_api/tests/*
+    jwtserver/settings/*
+    run_tests.py
+
+[report]
+exclude_lines =
+    pragma: no-cover

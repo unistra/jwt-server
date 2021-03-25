@@ -6,3 +6,4 @@ pycodestyle
 django-debug-toolbar
 django-extensions
 tox
+flake8
