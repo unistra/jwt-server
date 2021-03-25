@@ -219,11 +219,10 @@ class TokenOMaticView(TokenViewBase):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
-        except User.DoesNotExist:
-            raise Http404
-        except UserNotFoundError:
+        except (User.DoesNotExist, UserNotFoundError):
             raise Http404
         data = serializer.validated_data
+        # We don't want to give refresh tokens
         del data["refresh"]
         return Response(data, status=status.HTTP_200_OK)
 
