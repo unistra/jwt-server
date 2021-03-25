@@ -1,3 +1,4 @@
+import secrets
 import uuid
 
 from django.contrib.postgres.fields import JSONField
@@ -16,8 +17,6 @@ class AuthorizedService(models.Model):
 
 
 def generate_auth_token():
-    import secrets
-
     return secrets.token_urlsafe(50)
 
 
@@ -36,3 +35,6 @@ class ApplicationToken(models.Model):
     auth_token = models.CharField(
         max_length=255, null=False, default=generate_auth_token
     )
+
+    def __str__(self):
+        return f'{self.authorized_service.data["service"]} / {self.account}'
