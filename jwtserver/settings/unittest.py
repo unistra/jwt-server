@@ -18,6 +18,7 @@ DATABASES['default']['HOST'] = environ.get('DB_HOST')
 DATABASES['default']['USER'] = "postgres"
 DATABASES['default']['PASSWORD'] = environ.get('DB_PWD')
 DATABASES['default']['NAME'] = environ.get('TEST_DB_NAME')
+DATABASES['TEST'] = {'NAME': "jwtserver-test"}
 
 ############################
 # Allowed hosts & Security #

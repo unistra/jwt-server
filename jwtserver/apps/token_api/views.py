@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
@@ -16,14 +16,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
-from jwtserver.apps.token_api.models import ApplicationToken, AuthorizedService
-from jwtserver.apps.token_api.serializers import (
+from .models import ApplicationToken, AuthorizedService
+from .serializers import (
     ApplicationTokenSerializer,
     TokenObtainCASSerializer,
     TokenObtainDummySerializer,
     UserSerializer,
 )
-from jwtserver.apps.token_api.utils import force_https
+from .utils import force_https
+from ...libs.api.client import UserNotFoundError
 
 
 def get_tokens_for_user(user):
@@ -188,6 +189,7 @@ class TokenObtainCASView(TokenViewBase):
 
 
 class TokenOMaticView(TokenViewBase):
+    # http_method_names = ["POST"]
     queryset = ApplicationToken.objects.all()
     serializer_class = ApplicationTokenSerializer
 
@@ -217,6 +219,10 @@ class TokenOMaticView(TokenViewBase):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
+        except User.DoesNotExist:
+            raise Http404
+        except UserNotFoundError:
+            raise Http404
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
     def get_serializer_context(self):

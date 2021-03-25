@@ -3,7 +3,6 @@ import datetime
 import re
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django_cas.backends import CASBackend
 from rest_framework import serializers
@@ -35,8 +34,8 @@ class UserTokenSerializer(serializers.Serializer):
         token["iss"] = self.get_issuer(authorized_service)
         token["sub"] = user.username
         token["nbf"] = datetime.datetime.now().timestamp()
-        additionaluserinfo = get_user(
-            user.username, authorized_service.data["fields"]
+        additionaluserinfo = self.get_user_info(
+           user.username, authorized_service.data["fields"]
         )
         if additionaluserinfo is not None:
             for k, v in additionaluserinfo.items():
@@ -48,6 +47,11 @@ class UserTokenSerializer(serializers.Serializer):
             return authorized_service.data["issuer"]
         else:
             return self.context["request"].get_host()
+
+    def get_user_info(self, username, fields):
+        return get_user(
+            username, fields,
+        )
 
 
 class TokenObtainCASSerializer(UserTokenSerializer):
@@ -95,7 +99,7 @@ class ApplicationTokenSerializer(UserTokenSerializer):
     service = serializers.CharField()
 
     def validate(self, attrs):
-        user = get_user_model().objects.get(username=self.context["username"])
+        user = User.objects.get(username=self.context["username"])
         return self.validate_user(attrs, user)
 
     def get_service(self):
@@ -104,6 +108,12 @@ class ApplicationTokenSerializer(UserTokenSerializer):
             authorized_service, AuthorizedService
         ):
             return authorized_service
+
+    def get_user_info(self, username, fields):
+        # We want to raise an exception if user is not found in LDAP
+        return get_user(
+            username, fields, raise_exception=True,
+        )
 
 
 class TokenObtainDummySerializer(UserTokenSerializer):

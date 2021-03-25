@@ -93,3 +93,16 @@ class ApplicationTokenTest(APITestCase):
         response = self._make_response(service=str(other_service))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data["detail"], "invalid_token")
+
+    def test_non_existent_user_returns_not_found_error(self):
+        self.application_token.account = "non-existent-user"
+        self.application_token.save()
+        response = self._make_response()
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @patch("jwtserver.libs.api.client.get_client")
+    def test_non_existent_ldap_user_returns_not_found_error(self, client_mock):
+        with self.settings(LDAP_BRANCH="", LDAP_FILTER=""):
+            client_mock.return_value.search_s.return_value = []
+            response = self._make_response()
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
