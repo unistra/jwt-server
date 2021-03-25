@@ -74,6 +74,13 @@ class ApplicationTokenTest(APITestCase):
             response.data["service"], str(self.authorized_service)
         )
 
+    @patch("jwtserver.apps.token_api.serializers.get_user")
+    def test_only_access_token_is_returned(self, get_user_mock):
+        get_user_mock.return_value = self.get_user_return
+        response = self._make_response()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertListEqual(list(response.data.keys()), ["service", "access"])
+
     def test_invalid_token_raises_permission_denied(self):
         response = self._make_response(token=secrets.token_urlsafe(50))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

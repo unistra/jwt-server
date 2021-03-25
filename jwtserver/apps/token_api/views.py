@@ -223,7 +223,9 @@ class TokenOMaticView(TokenViewBase):
             raise Http404
         except UserNotFoundError:
             raise Http404
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        data = serializer.validated_data
+        del data["refresh"]
+        return Response(data, status=status.HTTP_200_OK)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
