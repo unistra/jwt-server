@@ -113,3 +113,9 @@ class ApplicationTokenTest(APITestCase):
             client_mock.return_value.search_s.return_value = []
             response = self._make_response()
             self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_method_is_not_allowed(self):
+        response = self.client.get(reverse("token_o_matic"))
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
+        )

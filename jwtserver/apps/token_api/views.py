@@ -189,7 +189,7 @@ class TokenObtainCASView(TokenViewBase):
 
 
 class TokenOMaticView(TokenViewBase):
-    # http_method_names = ["POST"]
+    allowed_methods = ["post"]
     queryset = ApplicationToken.objects.all()
     serializer_class = ApplicationTokenSerializer
 
