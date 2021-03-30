@@ -35,7 +35,7 @@ class UserTokenSerializer(serializers.Serializer):
         token["sub"] = user.username
         token["nbf"] = datetime.datetime.now().timestamp()
         additionaluserinfo = self.get_user_info(
-           user.username, authorized_service.data["fields"]
+            user.username, authorized_service.data["fields"]
         )
         if additionaluserinfo is not None:
             for k, v in additionaluserinfo.items():
@@ -50,27 +50,9 @@ class UserTokenSerializer(serializers.Serializer):
 
     def get_user_info(self, username, fields):
         return get_user(
-            username, fields,
+            username,
+            fields,
         )
-
-
-class TokenObtainCASSerializer(UserTokenSerializer):
-    """
-    Generates token in exchange of a CAS ticket
-    """
-
-    service = serializers.CharField()
-    ticket = serializers.CharField()
-
-    def validate(self, attrs):
-        d = CASBackend().authenticate(
-            self.context["request"],
-            ticket=attrs["ticket"],
-            service=attrs["service"],
-        )
-        if not d:
-            raise AuthenticationFailed()
-        return self.validate_user(attrs, d)
 
     def get_service(self):
         if (
@@ -94,6 +76,25 @@ class TokenObtainCASSerializer(UserTokenSerializer):
         return authorized_service
 
 
+class TokenObtainCASSerializer(UserTokenSerializer):
+    """
+    Generates token in exchange of a CAS ticket
+    """
+
+    service = serializers.CharField()
+    ticket = serializers.CharField()
+
+    def validate(self, attrs):
+        d = CASBackend().authenticate(
+            self.context["request"],
+            ticket=attrs["ticket"],
+            service=attrs["service"],
+        )
+        if not d:
+            raise AuthenticationFailed()
+        return self.validate_user(attrs, d)
+
+
 class ApplicationTokenSerializer(UserTokenSerializer):
 
     service = serializers.CharField()
@@ -112,7 +113,9 @@ class ApplicationTokenSerializer(UserTokenSerializer):
     def get_user_info(self, username, fields):
         # We want to raise an exception if user is not found in LDAP
         return get_user(
-            username, fields, raise_exception=True,
+            username,
+            fields,
+            raise_exception=True,
         )
 
 
