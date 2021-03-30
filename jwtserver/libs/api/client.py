@@ -20,16 +20,28 @@ def get_client():
     return connexion
 
 
+def get_ldap_filter(uid, conditions=None) -> str:
+    filters = ""
+    if isinstance(conditions, dict) and "ldap_filters" in conditions:
+        filters = "".join(
+            [f"({filter})" for filter in conditions["ldap_filters"]]
+        )
+    filter = settings.LDAP_FILTER.format(uid=uid, additional_filters=filters)
+    logger.debug(f"LDAP filter {filter}")
+
+    return filter
+
+
 @MemoizeWithTimeout(timeout=86400)
-def get_user(username, fields=None, raise_exception=False):
+def get_user(username, fields=None, raise_exception=False, conditions=None):
+    filter = get_ldap_filter(username, conditions)
+
     results = get_client().search_s(
-        settings.LDAP_BRANCH,
-        ldap.SCOPE_SUBTREE,
-        settings.LDAP_FILTER.format(username),
+        settings.LDAP_BRANCH, ldap.SCOPE_SUBTREE, filter
     )
 
     if len(results) == 0 and raise_exception:
-        raise UserNotFoundError("User not found")
+        raise UserNotFoundError(f"User <{username}> not found")
 
     if len(results) != 1:
         logger.error(
