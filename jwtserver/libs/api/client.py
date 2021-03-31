@@ -4,7 +4,7 @@ import ldap
 import sentry_sdk
 from django.conf import settings
 
-from jwtserver.libs.decorators import MemoizeWithTimeout
+from ..decorators import MemoizeWithTimeout
 
 logger = logging.getLogger(__name__)
 
