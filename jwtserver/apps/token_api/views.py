@@ -181,6 +181,8 @@ class TokenObtainCASView(TokenViewBase):
             raise PermissionDenied(
                 "Unauthorized service, please contact administrators to register your service"  # noqa: E501
             )
+        except UserNotFoundError as e:
+            return self.permission_denied(request, e)
 
         return Response(
             serializer.validated_data,

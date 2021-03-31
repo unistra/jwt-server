@@ -40,6 +40,11 @@ def get_user(username, fields=None, raise_exception=False, conditions=None):
         settings.LDAP_BRANCH, ldap.SCOPE_SUBTREE, filter
     )
 
+    if isinstance(conditions, dict) and conditions.get(
+        "ldap_must_exist", False
+    ):
+        raise_exception = True
+
     if len(results) == 0 and raise_exception:
         raise UserNotFoundError(f"User <{username}> not found")
 
