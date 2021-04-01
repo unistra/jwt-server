@@ -14,8 +14,8 @@ Serveur de JSON web token à partir de tickets CAS.
 
 Le serveur utilise des clés RSA, qui doivent être présentes dans un répertoire `keys` à la racine.
  - `myKey.pem` : clé privée, utilisée pour signer les tokens
- - `myPblic.pem` : clé publique, utilisée pour vérifier les tokens
- 
+ - `myPublic.pem` : clé publique, utilisée pour vérifier les tokens
+
  Le mot de passe de la clé est déclaré dans le paramètre `RSA_PASSWORD`
  
  ### Déclaration de service
@@ -35,9 +35,14 @@ Le serveur utilise des clés RSA, qui doivent être présentes dans un répertoi
         "directory_id": "udsDirectoryId",
         "organization": "supannEtablissement"
     },
-    "service": "127.0.0.1:8000"
+    "service": "127.0.0.1:8000",
+    "conditions": {
+        "ldap_filters": [],
+        "ldap_must_exist": false
+    }
 }
 ```
+
 Le token généré contient alors :
 
 ```json
@@ -71,13 +76,34 @@ Le token généré contient alors :
    - la clé est le nom utilisé dans le token, la valeur correspond au champ attendu depuis le LDAP
    - on peut utiliser un champ unique ou la composition de plusieurs champs
    
-À noter qu'il est possible de surcharger l'emetteur du token en introduisant une clé `issuer` dans le champ `data`.
+ ### Personnalisation de l'émetteur
+
+ Il est possible de surcharger l'emetteur du token (champ `iss` du token) en introduisant une clé `issuer` dans le champ `data`.
+
+ ### Ajout de conditions d'accès
+ 
+ Il est possible d'ajouter des conditions supplémentaires en rajoutant un clé `conditions` au champ `data` du service.
+ La clé `conditions` peut avoir une sous-clé `ldap_filters` qui est une liste de filtres supplémentaires ajoutés à 
+ la requête LDAP. 
+
+ Par exemple :
+ ```json
+{
+    "conditions": {
+       "ldap_filters": ["memberOf=cn=group-name,ou=groups,o=org"]
+    }
+}
+```
+ Donnera la requête : `(&(uid=username)(memberOf=cm=group-name,ou=groups,o=org)`
+
+ Par défaut, si aucune entrée n'est trouvée dans le LDAP, un token sera tout de même généré. 
+ La condition `"ldap_must_exist": true` génèrera une réponse `403 Forbidden`.
  
  ### Vérification de fonctionnement
  
- Une route `/api/service` permet de générer un token.
+ Une route `/api/service/` permet de générer un token.
  
- En local, vous devriez donc avoir une réponse sur [http://127.0.0.1/api/service](http://127.0.0.1/api/service)
+ En local, vous devriez donc avoir une réponse sur [http://127.0.0.1/api/service/](http://127.0.0.1/api/service/)
  
  ## Développement
  
