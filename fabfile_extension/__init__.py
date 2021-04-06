@@ -87,7 +87,6 @@ def dev():
     env.map_settings = {}
     execute(build_env)
 
-
 @task
 def test():
     """Define test stage"""

@@ -27,6 +27,8 @@ def env_setup():
         print("Setting origin in the temp repo to be {}".format(distant_repo))
         local("git remote remove origin")
         local("git remote add origin {}".format(distant_repo))
+        print("Checking out to deployed tag {}".format(env.tag))
+        local("git checkout {}".format(env.tag))
         project_version = local("git describe --long", capture=True)
         print("Getting project version to declare to Sentry ({})".format(project_version))
 
