@@ -4,7 +4,7 @@ omit =
     .tox/*
     manage.py
     setup.py
-    fabfile_extension/*
+    fabfile/*
     jwtserver/apps/token_api/tests/*
     jwtserver/settings/*
     run_tests.py
