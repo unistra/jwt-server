@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from django.test import override_settings, TestCase
 
+from ...api import client
 from ...api.client import get_ldap_filter, get_user, UserNotFoundError
 
 
@@ -31,6 +32,12 @@ class LdapFilterTest(TestCase):
     def test_conditions_may_be_none(self):
         filter = get_ldap_filter("login", conditions=None)
         self.assertEqual(filter, "(&(uid=login))")
+
+    def test_error_is_logged_when_ldap_filters_is_not_iterable(self):
+        with self.assertLogs(client.__name__) as ctx:
+            filter = get_ldap_filter("login", conditions={"ldap_filters": 12})
+            self.assertEqual("(&(uid=login))", filter)
+            self.assertIn("ldap_filters error", str(ctx.output))
 
 
 @override_settings(

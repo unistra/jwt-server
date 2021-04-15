@@ -23,9 +23,14 @@ def get_client():
 def get_ldap_filter(uid, conditions=None) -> str:
     filters = ""
     if isinstance(conditions, dict) and "ldap_filters" in conditions:
-        filters = "".join(
-            [f"({filter})" for filter in conditions["ldap_filters"]]
-        )
+        try:
+            filters = "".join(
+                [f"({filter})" for filter in conditions["ldap_filters"]]
+            )
+        except TypeError:
+            # conditions["ldap_filters"] is not iterable ?
+            logger.exception("AuthorizedService ldap_filters error.")
+            pass
     filter = settings.LDAP_FILTER.format(uid=uid, additional_filters=filters)
     logger.debug(f"LDAP filter {filter}")
 
