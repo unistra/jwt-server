@@ -1,10 +1,17 @@
 import json
 
-from django.contrib import admin
-from django.contrib.postgres.forms.jsonb import InvalidJSONInput, JSONField as JSONFormField
 from django import forms
+from django.contrib import admin
+from django.contrib.postgres.forms.jsonb import (
+    InvalidJSONInput,
+    JSONField as JSONFormField,
+)
 
-from .models import (AuthorizedService, )
+from .models import (
+    ApplicationToken,
+    AuthorizedService,
+)
+
 
 class PrettyJSONField(JSONFormField):
     # https://code.djangoproject.com/ticket/29150
@@ -18,20 +25,21 @@ class PrettyJSONField(JSONFormField):
 
 class AuthorizedServiceForm(forms.ModelForm):
     class Meta:
-        field_classes = {
-            'data': PrettyJSONField
-        }
-        widgets = {
-            'data': forms.Textarea(attrs={'rows': 20, 'cols': 80})
-        }
+        field_classes = {"data": PrettyJSONField}
+        widgets = {"data": forms.Textarea(attrs={"rows": 20, "cols": 80})}
 
 
 @admin.register(AuthorizedService)
 class AuthorizedServiceAdmin(admin.ModelAdmin):
     form = AuthorizedServiceForm
-    list_display = ('__str__', 'keys')
+    list_display = ("__str__", "keys")
 
     def keys(self, obj):
-        if 'fields' in obj.data:
-            return ', '.join(obj.data['fields'].keys())
-        return ''
+        if "fields" in obj.data:
+            return ", ".join(obj.data["fields"].keys())
+        return ""
+
+
+@admin.register(ApplicationToken)
+class ApplicationTokenAdmin(admin.ModelAdmin):
+    readonly_fields = ["auth_token"]

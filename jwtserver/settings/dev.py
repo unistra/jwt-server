@@ -58,6 +58,7 @@ for logger in LOGGING['loggers']:
 INSTALLED_APPS += [
     'coverage',
     'debug_toolbar',
+    'django_extensions',
 ]
 
 ############
@@ -112,7 +113,10 @@ LDAP_CONNEXION = f'{LDAP_PROTOCOL}://{LDAP_SERVER}:{LDAP_PORT}'
 LDAP_USER = environ.get('LDAP_USER')
 LDAP_PASSWORD = environ.get('LDAP_PASSWORD')
 LDAP_BRANCH = environ.get('LDAP_BRANCH', 'ou=people,o=annuaire')
-LDAP_FILTER = environ.get('LDAP_FILTER', '(&(udsSourcePresent=TRUE)(uid={}))')
+LDAP_FILTER = environ.get(
+    'LDAP_FILTER',
+    '(&(udsSourcePresent=TRUE)(uid={uid}){additional_filters})'
+)
 
 #####################
 #       CAS         #
