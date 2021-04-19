@@ -1,11 +1,11 @@
 import json
 
+from django import forms
 from django.contrib import admin
 from django.contrib.postgres.forms.jsonb import (
     InvalidJSONInput,
     JSONField as JSONFormField,
 )
-from django import forms
 
 from .models import (
     ApplicationToken,

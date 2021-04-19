@@ -35,7 +35,9 @@ class UserTokenSerializer(serializers.Serializer):
         token["sub"] = user.username
         token["nbf"] = datetime.datetime.now().timestamp()
         additionaluserinfo = self.get_user_info(
-            user.username, authorized_service.data["fields"]
+            user.username,
+            authorized_service.data["fields"],
+            conditions=authorized_service.data.get("conditions", None),
         )
         if additionaluserinfo is not None:
             for k, v in additionaluserinfo.items():
@@ -48,10 +50,11 @@ class UserTokenSerializer(serializers.Serializer):
         else:
             return self.context["request"].get_host()
 
-    def get_user_info(self, username, fields):
+    def get_user_info(self, username, fields, conditions=None):
         return get_user(
             username,
             fields,
+            conditions=conditions,
         )
 
     def get_service(self):
@@ -110,12 +113,13 @@ class ApplicationTokenSerializer(UserTokenSerializer):
         ):
             return authorized_service
 
-    def get_user_info(self, username, fields):
+    def get_user_info(self, username, fields, conditions=None):
         # We want to raise an exception if user is not found in LDAP
         return get_user(
             username,
             fields,
             raise_exception=True,
+            conditions=self.context["service"].data.get("conditions", None),
         )
 
 

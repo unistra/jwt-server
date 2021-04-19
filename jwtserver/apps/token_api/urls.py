@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-from jwtserver.apps.token_api import views
+from . import views
 
 urlpatterns = [
     url(
