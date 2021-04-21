@@ -33,12 +33,7 @@ class MemoizeWithTimeout(object):
                     for item in args
                 ]
             )
-            kw = tuple(
-                [
-                    item if isinstance(item, str) else json.dumps(item)
-                    for item in kwargs
-                ]
-            )
+            kw = json.dumps(kwargs)
             key = (ar, kw)
             try:
                 v = self._caches[f][key]
