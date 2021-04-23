@@ -3,7 +3,7 @@ djangorestframework
 djangorestframework_simplejwt
 django-cors-headers
 django-cas-sso
-sentry-sdk==0.7.14
+sentry-sdk==1.0.0
 requests==2.22.0
 cryptography==2.7
 pyldap==3.0.0
