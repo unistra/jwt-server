@@ -54,10 +54,9 @@ def get_user(username, fields=None, raise_exception=False, conditions=None):
         raise UserNotFoundError(f"User <{username}> not found")
 
     if len(results) != 1:
-        logger.error(
-            f"Received {len(results)} results for query on {username}"
-        )
-        sentry_sdk.capture_message(
+        # https://stackoverflow.com/questions/56306792/how-to-define-logging-level-in-sentry-python-sdk  # noqa: E501
+        sentry_sdk.set_level("info")
+        logger.info(
             f"Received {len(results)} results for query on {username}"
         )
         return None
