@@ -3,6 +3,7 @@ import uuid
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class AuthorizedService(models.Model):
@@ -29,7 +30,7 @@ class ApplicationToken(models.Model):
     account = models.CharField(
         max_length=255,
         null=True,
-        help_text="LDAP account to generate a token for",
+        help_text=_("LDAP account to generate a token for"),
     )
     auth_token = models.CharField(
         max_length=255, null=False, default=generate_auth_token

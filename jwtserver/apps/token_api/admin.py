@@ -2,10 +2,12 @@ import json
 
 from django import forms
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.contrib.postgres.forms.jsonb import (
     InvalidJSONInput,
     JSONField as JSONFormField,
 )
+from django.utils.translation import ugettext_lazy as _
 
 from .models import (
     ApplicationToken,
@@ -40,6 +42,26 @@ class AuthorizedServiceAdmin(admin.ModelAdmin):
         return ""
 
 
+class ApplicationTokenForm(forms.ModelForm):
+    class Meta:
+        model = ApplicationToken
+        fields = "__all__"
+
+    def clean_account(self):
+        account = self.cleaned_data.get("account")
+        User = get_user_model()
+        try:
+            User.objects.get(username=account)
+        except User.DoesNotExist:
+            raise forms.ValidationError(
+                _("User %(account)s does not exist"),
+                params={"account": account},
+                code="invalid",
+            )
+        return account
+
+
 @admin.register(ApplicationToken)
 class ApplicationTokenAdmin(admin.ModelAdmin):
     readonly_fields = ["auth_token"]
+    form = ApplicationTokenForm
