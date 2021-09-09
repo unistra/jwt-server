@@ -19,3 +19,15 @@ unittest:
   script:
     - pip3 install tox
     - tox
+
+safety:
+  stage: test
+  tags:
+    - python3.6
+  script:
+    - apt update && apt install -y build-essential libpq-dev libsasl2-dev python-dev libldap2-dev libssl-dev
+    - pip3 install -r requirements/dev.txt
+    - safety check
+  only:
+    - develop
+    - master
