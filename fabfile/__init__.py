@@ -18,7 +18,7 @@ env.application_name = 'jwtserver'   # name of webapp
 env.root_package_name = 'jwtserver'  # name of app in webapp
 
 env.remote_home = '/home/django'  # remote home root
-env.remote_python_version = '3.6'  # python version
+env.remote_python_version = '3.7'  # python version
 env.remote_virtualenv_root = join(env.remote_home, '.virtualenvs')  # venv root
 env.remote_virtualenv_dir = join(env.remote_virtualenv_root,
                                  env.application_name)  # venv for webapp dir
