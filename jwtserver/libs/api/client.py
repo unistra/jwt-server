@@ -30,18 +30,18 @@ def get_ldap_filter(uid, conditions=None) -> str:
             # conditions["ldap_filters"] is not iterable ?
             logger.exception("AuthorizedService ldap_filters error.")
             pass
-    filter = settings.LDAP_FILTER.format(uid=uid, additional_filters=filters)
-    logger.debug(f"LDAP filter {filter}")
+    _filter = settings.LDAP_FILTER.format(uid=uid, additional_filters=filters)
+    logger.debug(f"LDAP filter {_filter}")
 
-    return filter
+    return _filter
 
 
 @MemoizeWithTimeout(timeout=86400)
 def get_user(username, fields=None, raise_exception=False, conditions=None):
-    filter = get_ldap_filter(username, conditions)
+    _filter = get_ldap_filter(username, conditions)
 
     results = get_client().search_s(
-        settings.LDAP_BRANCH, ldap.SCOPE_SUBTREE, filter
+        settings.LDAP_BRANCH, ldap.SCOPE_SUBTREE, _filter
     )
 
     if isinstance(conditions, dict) and conditions.get(
