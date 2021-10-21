@@ -17,7 +17,7 @@ class AuthorizedService(models.Model):
         return super().__str__()
 
     def clean(self):
-        if AuthorizedService.objects.filter(
+        if self.pk is None and AuthorizedService.objects.filter(
             data__service=self.data.get("service")
         ).exists():
             raise ValidationError(
