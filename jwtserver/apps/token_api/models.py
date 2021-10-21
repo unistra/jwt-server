@@ -2,6 +2,7 @@ import secrets
 import uuid
 
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -14,6 +15,23 @@ class AuthorizedService(models.Model):
         if "service" in self.data:
             return self.data["service"]
         return super().__str__()
+
+    def clean(self):
+        if AuthorizedService.objects.filter(
+            data__service=self.data.get("service")
+        ).exists():
+            raise ValidationError(
+                {
+                    "data": _(
+                        "Service \"%(name)s\" already exists"
+                        % {"name": self.data.get("service")}
+                    )
+                }
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
 
 def generate_auth_token():

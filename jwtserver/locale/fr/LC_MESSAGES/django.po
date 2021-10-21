@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-03 10:50+0200\n"
+"POT-Creation-Date: 2021-10-21 08:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,14 +23,19 @@ msgstr ""
 msgid "User %(account)s does not exist"
 msgstr "L'utilisateur %(account)s n'existe pas"
 
-#: jwtserver/apps/token_api/models.py:33
+#: jwtserver/apps/token_api/models.py:26
+#, python-format
+msgid "Service \"%(name)s\" already exists"
+msgstr "Le service \"%(name)s\" existe déjà"
+
+#: jwtserver/apps/token_api/models.py:51
 msgid "LDAP account to generate a token for"
 msgstr "Compte LDAP à utiliser"
 
 #: jwtserver/templates/404.html:6
 msgid "Page not found"
-msgstr ""
+msgstr "Page non trouvée"
 
 #: jwtserver/templates/500.html:6
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
