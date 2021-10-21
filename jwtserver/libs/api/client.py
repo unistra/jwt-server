@@ -21,7 +21,7 @@ def get_client():
 
 def get_ldap_filter(uid, conditions=None) -> str:
     filters = ""
-    if isinstance(conditions, dict) and "ldap_filters" in conditions:
+    if isinstance(conditions, dict) and conditions.get("ldap_filters"):
         try:
             filters = "(&" + "".join(
                 [f"({filter})" for filter in conditions["ldap_filters"]]
