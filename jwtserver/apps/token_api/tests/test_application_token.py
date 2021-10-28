@@ -63,7 +63,7 @@ class ApplicationTokenTest(APITestCase):
         access_token = jwt.decode(
             response.data["access"],
             settings.SIMPLE_JWT["SIGNING_KEY"],
-            algorithm=settings.SIMPLE_JWT["SIGNING_KEY"],
+            algorithms=settings.SIMPLE_JWT["ALGORITHM"],
         )
         self.assertEqual(access_token["user_id"], self.user.username)
         self.assertEqual(access_token["username"], self.user.username)

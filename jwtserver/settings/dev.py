@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from os import environ
 from os import path
 
@@ -115,7 +113,7 @@ LDAP_PASSWORD = environ.get('LDAP_PASSWORD')
 LDAP_BRANCH = environ.get('LDAP_BRANCH', 'ou=people,o=annuaire')
 LDAP_FILTER = environ.get(
     'LDAP_FILTER',
-    '(&(udsSourcePresent=TRUE)(uid={uid}){additional_filters})'
+    'uid={uid}'
 )
 
 #####################

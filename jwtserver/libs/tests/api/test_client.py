@@ -6,7 +6,7 @@ from ...api import client
 from ...api.client import get_ldap_filter, get_user, UserNotFoundError
 
 
-@override_settings(LDAP_FILTER="(&(uid={uid}){additional_filters})")
+@override_settings(LDAP_FILTER="uid={uid}")
 class LdapFilterTest(TestCase):
     def setUp(self) -> None:
         self.conditions = {
@@ -21,27 +21,27 @@ class LdapFilterTest(TestCase):
         filter = get_ldap_filter("login", self.conditions)
         self.assertEqual(
             filter,
-            "(&(uid=login)(memberOf=cn=list-name@unistra.fr,ou=groups,o=org)(any other filter))",  # noqa: E501
+            "(&(uid=login)(&(memberOf=cn=list-name@unistra.fr,ou=groups,o=org)(any other filter)))",  # noqa: E501
         )
 
     def test_additional_filters_can_be_empty(self):
         conditions = {}
         filter = get_ldap_filter("login", conditions)
-        self.assertEqual(filter, "(&(uid=login))")
+        self.assertEqual(filter, "uid=login")
 
     def test_conditions_may_be_none(self):
         filter = get_ldap_filter("login", conditions=None)
-        self.assertEqual(filter, "(&(uid=login))")
+        self.assertEqual(filter, "uid=login")
 
     def test_error_is_logged_when_ldap_filters_is_not_iterable(self):
         with self.assertLogs(client.__name__) as ctx:
             filter = get_ldap_filter("login", conditions={"ldap_filters": 12})
-            self.assertEqual("(&(uid=login))", filter)
+            self.assertEqual("uid=login", filter)
             self.assertIn("ldap_filters error", str(ctx.output))
 
 
 @override_settings(
-    LDAP_FILTER="(&(uid={uid}){additional_filters})", LDAP_BRANCH=""
+    LDAP_FILTER="uid={uid}", LDAP_BRANCH=""
 )
 @patch("jwtserver.libs.api.client.get_client")
 class ClientRaisesExceptionOnNoUserFound(TestCase):
