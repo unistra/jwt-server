@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
-"""
-"""
-
-from fabric.api import (env, roles, execute, task)
 from os.path import join
-from . import sentry
 
 import pydiploy
+from fabric.api import env, execute, roles, task
+
+from . import sentry
 
 # edit config here !
 
@@ -87,6 +83,7 @@ def dev():
     env.map_settings = {}
     execute(build_env)
 
+
 @task
 def test():
     """Define test stage"""
@@ -130,7 +127,7 @@ def test():
 def preprod():
     """Define preprod stage"""
     env.roledefs = {
-        'web': ['django-pprd-w1.u-strasbg.fr', 'django-pprd-w2.u-strasbg.fr'],
+        'web': ['django-pprd-w3.di.unistra.fr', 'django-pprd-w4.di.unistra.fr'],
         'lb': ['rp-dip-pprd-public.di.unistra.fr'],
     }
     # env.user = 'root'  # user for ssh
@@ -138,7 +135,7 @@ def preprod():
     env.server_name = 'jwtserver-pprd.app.unistra.fr'
     env.short_server_name = 'jwtserver-pprd'
     env.static_folder = '/site_media/'
-    env.server_ip = '130.79.254.28'
+    env.server_ip = '130.79.245.212'
     env.no_shared_sessions = False
     env.server_ssl_on = True
     env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'
