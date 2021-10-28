@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import os
-from setuptools import setup
-from setuptools import find_packages
+
+from setuptools import find_packages, setup
+
+VERSION = '1.4.4'
 
 
 with open('README.md') as readme:
@@ -33,7 +33,7 @@ recursive_requirements('requirements.txt', libraries, dependency_links)
 
 setup(
     name='jwtserver',
-    version='1.4.3',
+    version=VERSION,
     packages=find_packages(),
     install_requires=libraries,
     dependency_links=dependency_links,
