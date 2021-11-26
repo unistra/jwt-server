@@ -166,7 +166,7 @@ def preprod():
 def prod():
     """Define prod stage"""
     env.roledefs = {
-        'web': ['django-w3.u-strasbg.fr', 'django-w4.u-strasbg.fr'],
+        'web': ['django-w7.di.unistra.fr', 'django-w8.di.unistra.fr'],
         'lb': ['rp-dip-public-m.di.unistra.fr', 'rp-dip-public-s.di.unistra.fr']
     }
     # env.user = 'root'  # user for ssh
@@ -174,7 +174,7 @@ def prod():
     env.server_name = 'jwtserver.app.unistra.fr'
     env.short_server_name = 'jwtserver'
     env.static_folder = '/site_media/'
-    env.server_ip = '130.79.254.87'
+    env.server_ip = '130.79.245.214'
     env.no_shared_sessions = False
     env.server_ssl_on = True
     env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'
