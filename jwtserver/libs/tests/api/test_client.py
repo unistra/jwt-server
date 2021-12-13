@@ -1,9 +1,9 @@
 from unittest.mock import patch
 
-from django.test import override_settings, TestCase
+from django.test import TestCase, override_settings
 
 from ...api import client
-from ...api.client import get_ldap_filter, get_user, UserNotFoundError
+from ...api.client import UserNotFoundError, get_ldap_filter, get_user
 
 
 @override_settings(LDAP_FILTER="uid={uid}")
@@ -40,9 +40,7 @@ class LdapFilterTest(TestCase):
             self.assertIn("ldap_filters error", str(ctx.output))
 
 
-@override_settings(
-    LDAP_FILTER="uid={uid}", LDAP_BRANCH=""
-)
+@override_settings(LDAP_FILTER="uid={uid}", LDAP_BRANCH="")
 @patch("jwtserver.libs.api.client.get_client")
 class ClientRaisesExceptionOnNoUserFound(TestCase):
     def test_no_result_raises_exception(self, client_mock):

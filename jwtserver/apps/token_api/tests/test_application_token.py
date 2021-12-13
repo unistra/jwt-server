@@ -67,12 +67,8 @@ class ApplicationTokenTest(APITestCase):
         )
         self.assertEqual(access_token["user_id"], self.user.username)
         self.assertEqual(access_token["username"], self.user.username)
-        self.assertEqual(
-            access_token["iss"], self.authorized_service.data["issuer"]
-        )
-        self.assertEqual(
-            response.data["service"], str(self.authorized_service)
-        )
+        self.assertEqual(access_token["iss"], self.authorized_service.data["issuer"])
+        self.assertEqual(response.data["service"], str(self.authorized_service))
 
     @patch("jwtserver.apps.token_api.serializers.get_user")
     def test_only_access_token_is_returned(self, get_user_mock):
@@ -87,9 +83,7 @@ class ApplicationTokenTest(APITestCase):
         self.assertEqual(response.data["detail"], "invalid_token")
 
     def test_invalid_service_raises_permission_denied(self):
-        response = self._make_response(
-            service="non-existent-service.unistra.fr"
-        )
+        response = self._make_response(service="non-existent-service.unistra.fr")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data["detail"], "invalid_service")
 
@@ -116,6 +110,4 @@ class ApplicationTokenTest(APITestCase):
 
     def test_get_method_is_not_allowed(self):
         response = self.client.get(reverse("token_o_matic"))
-        self.assertEqual(
-            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
-        )
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

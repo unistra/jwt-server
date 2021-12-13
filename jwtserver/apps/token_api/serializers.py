@@ -9,8 +9,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import AuthorizedService
 from ...libs.api.client import get_user
+from .models import AuthorizedService
 
 
 class UserTokenSerializer(serializers.Serializer):
@@ -58,10 +58,7 @@ class UserTokenSerializer(serializers.Serializer):
         )
 
     def get_service(self):
-        if (
-            "request" in self.context
-            and "service" in self.context["request"].POST
-        ):
+        if "request" in self.context and "service" in self.context["request"].POST:
             base = self.context["request"].POST.get("service", False)
         else:
             base = self.context["request"].data.get("service", False)
@@ -72,9 +69,7 @@ class UserTokenSerializer(serializers.Serializer):
             base64.urlsafe_b64decode(encoded).decode("utf-8"),
         ).group(1)
         service = re.search("^([^:]+)(:[0-9]+)?$", service_and_port).group(1)
-        authorized_service = AuthorizedService.objects.get(
-            data__service=service
-        )
+        authorized_service = AuthorizedService.objects.get(data__service=service)
 
         return authorized_service
 

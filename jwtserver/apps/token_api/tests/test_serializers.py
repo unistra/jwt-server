@@ -20,9 +20,7 @@ class UserTokenSerializerTest(TestCase):
         request = Mock()
         request.get_host.return_value = "jwtserver.unistra.fr"
         serializer = UserTokenSerializer(data={}, context={"request": request})
-        self.assertEqual(
-            "jwtserver.unistra.fr", serializer.get_issuer(self.service)
-        )
+        self.assertEqual("jwtserver.unistra.fr", serializer.get_issuer(self.service))
 
     def test_use_issuer_in_service_if_defined(self):
         service = AuthorizedService.objects.create(
@@ -32,9 +30,7 @@ class UserTokenSerializerTest(TestCase):
         self.assertEqual("issuer.unistra.fr", serializer.get_issuer(service))
 
     def test_get_service_from_request(self):
-        service = AuthorizedService.objects.create(
-            data={"service": "localhost"}
-        )
+        service = AuthorizedService.objects.create(data={"service": "localhost"})
         request = self.factory.post(
             reverse("token_obtain_cas"),
             {
@@ -46,15 +42,11 @@ class UserTokenSerializerTest(TestCase):
         self.assertEqual(service, serializer.get_service())
 
 
-@patch(
-    "jwtserver.apps.token_api.serializers.UserTokenSerializer.validate_user"
-)
+@patch("jwtserver.apps.token_api.serializers.UserTokenSerializer.validate_user")
 @patch("jwtserver.apps.token_api.serializers.CASBackend")
 class TokenObtainCASSerializerTest(TestCase):
     def setUp(self) -> None:
-        AuthorizedService.objects.create(
-            data={"service": "localhost", "fields": {}}
-        )
+        AuthorizedService.objects.create(data={"service": "localhost", "fields": {}})
         self.request = RequestFactory().post(
             reverse("token_obtain_cas"),
             {

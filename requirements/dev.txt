@@ -8,3 +8,4 @@ django-extensions
 tox
 flake8
 safety
+black

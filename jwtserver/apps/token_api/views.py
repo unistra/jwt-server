@@ -58,9 +58,9 @@ def service(request, **kwargs):
         reverse(
             "redirect_ticket",
             kwargs={
-                "redirect_url": base64.urlsafe_b64encode(
-                    verify_url.encode()
-                ).decode("utf-8")
+                "redirect_url": base64.urlsafe_b64encode(verify_url.encode()).decode(
+                    "utf-8"
+                )
             },
         )
     )
@@ -98,9 +98,7 @@ def service_verify(request, **kwargs):
     )
     distant = requests.post(url, data=data)
     if distant.status_code == 200:
-        return JsonResponse(
-            json.loads(distant.text), status=status.HTTP_200_OK
-        )
+        return JsonResponse(json.loads(distant.text), status=status.HTTP_200_OK)
     if distant.status_code != 401:
         add_breadcrumb(
             category="auth",
@@ -110,9 +108,7 @@ def service_verify(request, **kwargs):
         capture_message("Error consuming ticket")
     return JsonResponse(
         {
-            "error": "Error consuming ticket : '{}'".format(
-                distant.status_code
-            ),
+            "error": f"Error consuming ticket : '{distant.status_code}'",
             "response": json.loads(distant.text),
         },
         status=distant.status_code,
@@ -129,9 +125,7 @@ def redirect_ticket(request, **kwargs):
     """
     custom_headers = {}
     try:
-        redirect_url = base64.urlsafe_b64decode(kwargs["redirect_url"]).decode(
-            "utf-8"
-        )
+        redirect_url = base64.urlsafe_b64decode(kwargs["redirect_url"]).decode("utf-8")
         uri = force_https(request.build_absolute_uri("?"))
         custom_headers["service"] = uri
         custom_headers["ticket"] = request.GET.get("ticket")
@@ -152,7 +146,8 @@ def jwks(request):
     key_id = str(uuid3(NAMESPACE_DNS, str(public_key.public_numbers().e)))
     data = json.loads(RSAPSSAlgorithm(SHA256).to_jwk(public_key))
     data['kid'] = key_id
-    return JsonResponse({'keys':[data]})
+    return JsonResponse({'keys': [data]})
+
 
 class DummyList(ListCreateAPIView):
     """
@@ -165,9 +160,7 @@ class DummyList(ListCreateAPIView):
 
     def get_queryset(self):
         return (
-            super()
-            .get_queryset()
-            .filter(username__iexact=self.request.user.username)
+            super().get_queryset().filter(username__iexact=self.request.user.username)
         )
 
 
@@ -221,9 +214,7 @@ class TokenOMaticView(TokenViewBase):
         except ApplicationToken.DoesNotExist:
             return self.permission_denied(request, "invalid_token")
         try:
-            self.service = AuthorizedService.objects.get(
-                data__service=service_name
-            )
+            self.service = AuthorizedService.objects.get(data__service=service_name)
         except AuthorizedService.DoesNotExist:
             return self.permission_denied(request, "invalid_service")
         if self.application_token.authorized_service != self.service:
