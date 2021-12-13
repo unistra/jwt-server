@@ -1,0 +1,33 @@
+[tool.black]
+line-length = 88
+skip-string-normalization = true
+target-version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | jwtserver\/settings
+    | jwtserver\/apps\/token_api\/migrations
+    | fabfile
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | manage.py
+  | tox.ini
+  | .coveragerc
+                     # the root of the project
+)
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3

@@ -1,12 +1,17 @@
 import base64
 import json
 from urllib.parse import urlencode
+from uuid import NAMESPACE_DNS, uuid3
 
 import requests
+from cryptography.hazmat.primitives._serialization import PublicFormat
+from cryptography.hazmat.primitives.hashes import SHA256
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse
+from jwt import PyJWK
+from jwt.algorithms import RSAPSSAlgorithm
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
@@ -16,6 +21,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
+from ...libs.api.client import UserNotFoundError
 from .models import ApplicationToken, AuthorizedService
 from .serializers import (
     ApplicationTokenSerializer,
@@ -24,7 +30,6 @@ from .serializers import (
     UserSerializer,
 )
 from .utils import force_https
-from ...libs.api.client import UserNotFoundError
 
 
 def get_tokens_for_user(user):
@@ -83,12 +88,12 @@ def service_verify(request, **kwargs):
     url = force_https(request.build_absolute_uri(reverse("token_obtain_cas")))
     add_breadcrumb(
         category="auth",
-        message="url : {}".format(url),
+        message=f"url : {url}",
         level="info",
     )
     add_breadcrumb(
         category="auth",
-        message="data : {}".format(data),
+        message=f"data : {data}",
         level="info",
     )
     distant = requests.post(url, data=data)
@@ -99,7 +104,7 @@ def service_verify(request, **kwargs):
     if distant.status_code != 401:
         add_breadcrumb(
             category="auth",
-            message="response code : {}".format(distant.status_code),
+            message=f"response code : {distant.status_code}",
             level="info",
         )
         capture_message("Error consuming ticket")
@@ -140,6 +145,14 @@ def redirect_ticket(request, **kwargs):
     response["Location"] = redirect_url + "?" + urlencode(custom_headers)
     return response
 
+
+def jwks(request):
+    private_key = settings.SIMPLE_JWT['SIGNING_KEY']
+    public_key = private_key.public_key()
+    key_id = str(uuid3(NAMESPACE_DNS, str(public_key.public_numbers().e)))
+    data = json.loads(RSAPSSAlgorithm(SHA256).to_jwk(public_key))
+    data['kid'] = key_id
+    return JsonResponse({'keys':[data]})
 
 class DummyList(ListCreateAPIView):
     """
