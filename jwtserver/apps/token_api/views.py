@@ -4,13 +4,11 @@ from urllib.parse import urlencode
 from uuid import NAMESPACE_DNS, uuid3
 
 import requests
-from cryptography.hazmat.primitives._serialization import PublicFormat
 from cryptography.hazmat.primitives.hashes import SHA256
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse
-from jwt import PyJWK
 from jwt.algorithms import RSAPSSAlgorithm
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
