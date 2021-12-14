@@ -1,15 +1,12 @@
 import base64
 import json
 from urllib.parse import urlencode
-from uuid import NAMESPACE_DNS, uuid3
 
 import requests
-from cryptography.hazmat.primitives.hashes import SHA256
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, JsonResponse
 from django.urls import reverse
-from jwt.algorithms import RSAPSSAlgorithm
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
@@ -27,7 +24,7 @@ from .serializers import (
     TokenObtainDummySerializer,
     UserSerializer,
 )
-from .utils import force_https
+from .utils import force_https, generate_jwks
 
 
 def get_tokens_for_user(user):
@@ -139,12 +136,7 @@ def redirect_ticket(request, **kwargs):
 
 
 def jwks(request):
-    private_key = settings.SIMPLE_JWT['SIGNING_KEY']
-    public_key = private_key.public_key()
-    key_id = str(uuid3(NAMESPACE_DNS, str(public_key.public_numbers().e)))
-    data = json.loads(RSAPSSAlgorithm(SHA256).to_jwk(public_key))
-    data['kid'] = key_id
-    return JsonResponse({'keys': [data]})
+    return JsonResponse(generate_jwks())
 
 
 class DummyList(ListCreateAPIView):

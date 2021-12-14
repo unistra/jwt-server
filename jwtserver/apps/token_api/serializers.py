@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from ...libs.api.client import get_user
 from .models import AuthorizedService
+from .utils import generate_jwks, generate_public_key_id
 
 
 class UserTokenSerializer(serializers.Serializer):
@@ -34,6 +35,7 @@ class UserTokenSerializer(serializers.Serializer):
         token["iss"] = self.get_issuer(authorized_service)
         token["sub"] = user.username
         token["nbf"] = datetime.datetime.now().timestamp()
+        token["kid"] = generate_public_key_id()
         additionaluserinfo = self.get_user_info(
             user.username,
             authorized_service.data["fields"],
@@ -130,7 +132,9 @@ class TokenObtainDummySerializer(UserTokenSerializer):
     def get_token(cls, user):
         if not settings.DEBUG:
             return None
-        return RefreshToken.for_user(User(username="dummy"))
+        token: RefreshToken = RefreshToken.for_user(user)
+        token["kid"] = generate_public_key_id()
+        return token
 
     def validate(self, attrs):
         return self.validate_user(attrs, User(username="dummy"))
