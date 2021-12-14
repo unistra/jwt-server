@@ -35,7 +35,6 @@ class UserTokenSerializer(serializers.Serializer):
         token["iss"] = self.get_issuer(authorized_service)
         token["sub"] = user.username
         token["nbf"] = datetime.datetime.now().timestamp()
-        # token["kid"] = generate_public_key_id()
         additionaluserinfo = self.get_user_info(
             user.username,
             authorized_service.data["fields"],
@@ -134,7 +133,6 @@ class TokenObtainDummySerializer(UserTokenSerializer):
         if not settings.DEBUG:
             return None
         token: ExtendedRefreshToken = ExtendedRefreshToken.for_user(user)
-        token["kid"] = generate_public_key_id()
         return token
 
     def validate(self, attrs):

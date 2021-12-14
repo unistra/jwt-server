@@ -30,16 +30,24 @@ def generate_public_key_id():
 
 def _public_key():
     private_key = settings.SIMPLE_JWT['SIGNING_KEY']
-    return private_key.public_key()
+    if settings.SIMPLE_JWT['ALGORITHM'] == 'RS256':
+        return private_key.public_key()
+    else:
+        return 'should-define-key-id'
 
 
 class ExtendedToken(Token):
     def __str__(self):
+        headers = (
+            {"kid": generate_public_key_id()}
+            if settings.SIMPLE_JWT['ALGORITHM'] == 'RS256'
+            else None
+        )
         return jwt.encode(
             self.payload,
             key=settings.SIMPLE_JWT['SIGNING_KEY'],
-            algorithm="RS256",
-            headers={"kid": generate_public_key_id()},
+            algorithm=settings.SIMPLE_JWT['ALGORITHM'],
+            headers=headers,
         )
 
 
