@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import os
+
 from os.path import abspath, basename, dirname, join, normpath, isfile
-from datetime import timedelta
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
+
 ######################
 # Path configuration #
 ######################
@@ -365,6 +366,7 @@ def check_key(filename, key_type, **kwargs):
             SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
 
 check_key('myPublic.pem', 'VERIFYING_KEY')
+
 
 #####################
 #       CORS        #

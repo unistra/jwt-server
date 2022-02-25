@@ -1,18 +1,19 @@
-from django.conf.urls import include, url
-from django.urls import path
 from django.conf import settings
 from django.contrib import admin
+from django.urls import include, path, re_path
 
+from .apps.token_api.views import jwks
 from .views import home
 
 admin.autodiscover()
 
 urlpatterns = [
     # Examples:
-    url(r"^$", home, name="home"),
-    url(r"^api/", include("jwtserver.apps.token_api.urls")),
+    path('', home, name="home"),
+    path('api/', include("jwtserver.apps.token_api.urls")),
     path("accounts/", include("django_cas.urls")),
-    url(r"^admin/", admin.site.urls),
+    path('admin/', admin.site.urls),
+    re_path(r"^.well-known/jwks.json", jwks),
 ]
 
 # debug toolbar for dev
@@ -20,5 +21,5 @@ if settings.DEBUG and "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
     urlpatterns += [
-        url(r"^__debug__/", include(debug_toolbar.urls)),
+        path('__debug__/', include(debug_toolbar.urls)),
     ]
