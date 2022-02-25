@@ -157,7 +157,8 @@ def preprod():
         'ldap_user': 'LDAP_USER',
         'ldap_password': 'LDAP_PASSWORD',
         'ldap_branch': 'LDAP_BRANCH',
-        'ldap_filter': 'LDAP_FILTER'
+        'ldap_filter': 'LDAP_FILTER',
+        'cas_server_url': 'CAS_SERVER_URL',
     }
     execute(build_env)
 
@@ -199,7 +200,8 @@ def full_preprod():
         'ldap_user': 'LDAP_USER',
         'ldap_password': 'LDAP_PASSWORD',
         'ldap_branch': 'LDAP_BRANCH',
-        'ldap_filter': 'LDAP_FILTER'
+        'ldap_filter': 'LDAP_FILTER',
+        'cas_server_url': 'CAS_SERVER_URL',
     }
     execute(build_env)
 
