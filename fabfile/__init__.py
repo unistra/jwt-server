@@ -167,7 +167,6 @@ def full_preprod():
     """Define preprod stage"""
     # Specific content
     env.application_name = 'jwtserver-2'  # name of webapp
-    env.root_package_name = 'jwtserver-2'  # name of app in webapp
 
     env.roledefs = {
         'web': ['django-pprd-w3.di.unistra.fr', 'django-pprd-w4.di.unistra.fr'],
@@ -175,7 +174,7 @@ def full_preprod():
     }
     # env.user = 'root'  # user for ssh
     env.backends = env.roledefs['web']
-    env.server_name = 'jwtserver-pprd.app.unistra.fr'
+    env.server_name = 'jwtserver-pprd-full.app.unistra.fr'
     env.short_server_name = 'jwtserver-pprd'
     env.static_folder = '/site_media/'
     env.server_ip = '130.79.245.212'
