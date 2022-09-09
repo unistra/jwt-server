@@ -2,7 +2,7 @@ import os
 
 from setuptools import find_packages, setup
 
-VERSION = '1.4.4'
+VERSION = '1.5.0'
 
 
 with open('README.md') as readme:
