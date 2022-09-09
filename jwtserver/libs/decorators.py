@@ -2,7 +2,7 @@ import json
 import time
 
 
-class MemoizeWithTimeout(object):
+class MemoizeWithTimeout:
     """Memoize With Timeout"""
 
     _caches = {}
@@ -28,10 +28,7 @@ class MemoizeWithTimeout(object):
 
         def func(*args, **kwargs):
             ar = tuple(
-                [
-                    item if isinstance(item, str) else json.dumps(item)
-                    for item in args
-                ]
+                item if isinstance(item, str) else json.dumps(item) for item in args
             )
             kw = json.dumps(kwargs)
             key = (ar, kw)

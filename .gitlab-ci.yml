@@ -15,10 +15,21 @@ before_script:
 unittest:
   stage: test
   tags:
-    - python3.7
+    - cluster
+  image: unistra/python3.7-ci:latest
   script:
-    - pip3 install tox
-    - tox
+    - pip3 install -r requirements/dev.txt
+    - tox -e py37
+
+black:
+  stage: test
+  tags:
+    - cluster
+  image: unistra/python3.7-ci:latest
+  script:
+    - pip3 install -r requirements/dev.txt
+    - tox -e black
+
 
 safety:
   stage: test

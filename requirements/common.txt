@@ -1,11 +1,11 @@
 Django<3.0
-djangorestframework
-djangorestframework_simplejwt
+djangorestframework==3.12.4
+djangorestframework_simplejwt==5.0.0
 django-cors-headers
-django-cas-sso
-sentry-sdk==1.0.0
-requests==2.22.0
+django-cas-sso==1.2.6
+sentry-sdk==1.9.8
+requests==2.28.1
 cryptography==3.4.8
 psycopg2-binary<2.9  # https://stackoverflow.com/questions/68024060/assertionerror-database-connection-isnt-set-to-utc
-python-ldap==3.3.1
+python-ldap==3.4.2
 sqlparse==0.4.2

@@ -16,6 +16,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
+from ...libs.api.client import UserNotFoundError
 from .models import ApplicationToken, AuthorizedService
 from .serializers import (
     ApplicationTokenSerializer,
@@ -23,8 +24,7 @@ from .serializers import (
     TokenObtainDummySerializer,
     UserSerializer,
 )
-from .utils import force_https
-from ...libs.api.client import UserNotFoundError
+from .utils import force_https, generate_jwks
 
 
 def get_tokens_for_user(user):
@@ -53,9 +53,9 @@ def service(request, **kwargs):
         reverse(
             "redirect_ticket",
             kwargs={
-                "redirect_url": base64.urlsafe_b64encode(
-                    verify_url.encode()
-                ).decode("utf-8")
+                "redirect_url": base64.urlsafe_b64encode(verify_url.encode()).decode(
+                    "utf-8"
+                )
             },
         )
     )
@@ -83,31 +83,27 @@ def service_verify(request, **kwargs):
     url = force_https(request.build_absolute_uri(reverse("token_obtain_cas")))
     add_breadcrumb(
         category="auth",
-        message="url : {}".format(url),
+        message=f"url : {url}",
         level="info",
     )
     add_breadcrumb(
         category="auth",
-        message="data : {}".format(data),
+        message=f"data : {data}",
         level="info",
     )
     distant = requests.post(url, data=data)
     if distant.status_code == 200:
-        return JsonResponse(
-            json.loads(distant.text), status=status.HTTP_200_OK
-        )
+        return JsonResponse(json.loads(distant.text), status=status.HTTP_200_OK)
     if distant.status_code != 401:
         add_breadcrumb(
             category="auth",
-            message="response code : {}".format(distant.status_code),
+            message=f"response code : {distant.status_code}",
             level="info",
         )
         capture_message("Error consuming ticket")
     return JsonResponse(
         {
-            "error": "Error consuming ticket : '{}'".format(
-                distant.status_code
-            ),
+            "error": f"Error consuming ticket : '{distant.status_code}'",
             "response": json.loads(distant.text),
         },
         status=distant.status_code,
@@ -124,9 +120,7 @@ def redirect_ticket(request, **kwargs):
     """
     custom_headers = {}
     try:
-        redirect_url = base64.urlsafe_b64decode(kwargs["redirect_url"]).decode(
-            "utf-8"
-        )
+        redirect_url = base64.urlsafe_b64decode(kwargs["redirect_url"]).decode("utf-8")
         uri = force_https(request.build_absolute_uri("?"))
         custom_headers["service"] = uri
         custom_headers["ticket"] = request.GET.get("ticket")
@@ -141,6 +135,10 @@ def redirect_ticket(request, **kwargs):
     return response
 
 
+def jwks(request):
+    return JsonResponse(generate_jwks())
+
+
 class DummyList(ListCreateAPIView):
     """
     List of users
@@ -152,9 +150,7 @@ class DummyList(ListCreateAPIView):
 
     def get_queryset(self):
         return (
-            super()
-            .get_queryset()
-            .filter(username__iexact=self.request.user.username)
+            super().get_queryset().filter(username__iexact=self.request.user.username)
         )
 
 
@@ -208,9 +204,7 @@ class TokenOMaticView(TokenViewBase):
         except ApplicationToken.DoesNotExist:
             return self.permission_denied(request, "invalid_token")
         try:
-            self.service = AuthorizedService.objects.get(
-                data__service=service_name
-            )
+            self.service = AuthorizedService.objects.get(data__service=service_name)
         except AuthorizedService.DoesNotExist:
             return self.permission_denied(request, "invalid_service")
         if self.application_token.authorized_service != self.service:

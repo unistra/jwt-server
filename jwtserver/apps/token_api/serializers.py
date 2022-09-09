@@ -9,8 +9,9 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import AuthorizedService
 from ...libs.api.client import get_user
+from .models import AuthorizedService
+from .utils import ExtendedRefreshToken, generate_jwks, generate_public_key_id
 
 
 class UserTokenSerializer(serializers.Serializer):
@@ -27,8 +28,8 @@ class UserTokenSerializer(serializers.Serializer):
 
         return data
 
-    def get_token(self, user) -> RefreshToken:
-        token: RefreshToken = RefreshToken.for_user(user)
+    def get_token(self, user) -> ExtendedRefreshToken:
+        token: ExtendedRefreshToken = ExtendedRefreshToken.for_user(user)
         authorized_service = self.get_service()
 
         token["iss"] = self.get_issuer(authorized_service)
@@ -42,6 +43,7 @@ class UserTokenSerializer(serializers.Serializer):
         if additionaluserinfo is not None:
             for k, v in additionaluserinfo.items():
                 token[k] = v
+        print(token)
         return token
 
     def get_issuer(self, authorized_service: AuthorizedService):
@@ -58,10 +60,7 @@ class UserTokenSerializer(serializers.Serializer):
         )
 
     def get_service(self):
-        if (
-            "request" in self.context
-            and "service" in self.context["request"].POST
-        ):
+        if "request" in self.context and "service" in self.context["request"].POST:
             base = self.context["request"].POST.get("service", False)
         else:
             base = self.context["request"].data.get("service", False)
@@ -72,9 +71,7 @@ class UserTokenSerializer(serializers.Serializer):
             base64.urlsafe_b64decode(encoded).decode("utf-8"),
         ).group(1)
         service = re.search("^([^:]+)(:[0-9]+)?$", service_and_port).group(1)
-        authorized_service = AuthorizedService.objects.get(
-            data__service=service
-        )
+        authorized_service = AuthorizedService.objects.get(data__service=service)
 
         return authorized_service
 
@@ -135,7 +132,8 @@ class TokenObtainDummySerializer(UserTokenSerializer):
     def get_token(cls, user):
         if not settings.DEBUG:
             return None
-        return RefreshToken.for_user(User(username="dummy"))
+        token: ExtendedRefreshToken = ExtendedRefreshToken.for_user(user)
+        return token
 
     def validate(self, attrs):
         return self.validate_user(attrs, User(username="dummy"))

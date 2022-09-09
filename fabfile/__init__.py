@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
-"""
-"""
-
-from fabric.api import (env, roles, execute, task)
 from os.path import join
-from . import sentry
 
 import pydiploy
+from fabric.api import env, execute, roles, task
+
+from . import sentry
 
 # edit config here !
 
@@ -87,6 +83,7 @@ def dev():
     env.map_settings = {}
     execute(build_env)
 
+
 @task
 def test():
     """Define test stage"""
@@ -130,7 +127,7 @@ def test():
 def preprod():
     """Define preprod stage"""
     env.roledefs = {
-        'web': ['django-pprd-w1.u-strasbg.fr', 'django-pprd-w2.u-strasbg.fr'],
+        'web': ['django-pprd-w3.di.unistra.fr', 'django-pprd-w4.di.unistra.fr'],
         'lb': ['rp-dip-pprd-public.di.unistra.fr'],
     }
     # env.user = 'root'  # user for ssh
@@ -138,7 +135,7 @@ def preprod():
     env.server_name = 'jwtserver-pprd.app.unistra.fr'
     env.short_server_name = 'jwtserver-pprd'
     env.static_folder = '/site_media/'
-    env.server_ip = '130.79.254.28'
+    env.server_ip = '130.79.245.212'
     env.no_shared_sessions = False
     env.server_ssl_on = True
     env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'
@@ -160,7 +157,50 @@ def preprod():
         'ldap_user': 'LDAP_USER',
         'ldap_password': 'LDAP_PASSWORD',
         'ldap_branch': 'LDAP_BRANCH',
-        'ldap_filter': 'LDAP_FILTER'
+        'ldap_filter': 'LDAP_FILTER',
+        'cas_server_url': 'CAS_SERVER_URL',
+    }
+    execute(build_env)
+
+@task
+def full_preprod():
+    """Define preprod stage"""
+    # Specific content
+    env.application_name = 'jwtserver-2'  # name of webapp
+
+    env.roledefs = {
+        'web': ['django-pprd-w3.di.unistra.fr', 'django-pprd-w4.di.unistra.fr'],
+        'lb': ['rp-dip-pprd-public.di.unistra.fr'],
+    }
+    # env.user = 'root'  # user for ssh
+    env.backends = env.roledefs['web']
+    env.server_name = 'jwtserver-pprd-full.app.unistra.fr'
+    env.short_server_name = 'jwtserver-pprd'
+    env.static_folder = '/site_media/'
+    env.server_ip = '130.79.245.212'
+    env.no_shared_sessions = False
+    env.server_ssl_on = True
+    env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'
+    env.path_to_cert_key = '/etc/ssl/private/mega_wildcard.key'
+    env.goal = 'preprod'
+    env.socket_port = '8046'
+    env.map_settings = {
+        'default_db_host': "DATABASES['default']['HOST']",
+        'default_db_user': "DATABASES['default']['USER']",
+        'default_db_password': "DATABASES['default']['PASSWORD']",
+        'default_db_name': "DATABASES['default']['NAME']",
+        'secret_key': "SECRET_KEY",
+        'rsa_password': "RSA_PASSWORD",
+        'jwt_access_lifetime': 'JWT_ACCESS_LIFETIME',
+        'jwt_refresh_lifetime': 'JWT_REFRESH_LIFETIME',
+        'ldap_protocol': 'LDAP_PROTOCOL',
+        'ldap_server': 'LDAP_SERVER',
+        'ldap_port': 'LDAP_PORT',
+        'ldap_user': 'LDAP_USER',
+        'ldap_password': 'LDAP_PASSWORD',
+        'ldap_branch': 'LDAP_BRANCH',
+        'ldap_filter': 'LDAP_FILTER',
+        'cas_server_url': 'CAS_SERVER_URL',
     }
     execute(build_env)
 
@@ -169,7 +209,7 @@ def preprod():
 def prod():
     """Define prod stage"""
     env.roledefs = {
-        'web': ['django-w3.u-strasbg.fr', 'django-w4.u-strasbg.fr'],
+        'web': ['django-w7.di.unistra.fr', 'django-w8.di.unistra.fr'],
         'lb': ['rp-dip-public-m.di.unistra.fr', 'rp-dip-public-s.di.unistra.fr']
     }
     # env.user = 'root'  # user for ssh
@@ -177,7 +217,7 @@ def prod():
     env.server_name = 'jwtserver.app.unistra.fr'
     env.short_server_name = 'jwtserver'
     env.static_folder = '/site_media/'
-    env.server_ip = '130.79.254.87'
+    env.server_ip = '130.79.245.214'
     env.no_shared_sessions = False
     env.server_ssl_on = True
     env.path_to_cert = '/etc/ssl/certs/mega_wildcard.pem'

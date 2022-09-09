@@ -23,9 +23,11 @@ def get_ldap_filter(uid, conditions=None) -> str:
     filters = ""
     if isinstance(conditions, dict) and conditions.get("ldap_filters"):
         try:
-            filters = "(&" + "".join(
-                [f"({filter})" for filter in conditions["ldap_filters"]]
-            ) + ")"
+            filters = (
+                "(&"
+                + "".join([f"({filter})" for filter in conditions["ldap_filters"]])
+                + ")"
+            )
         except TypeError:
             # conditions["ldap_filters"] is not iterable ?
             logger.exception("AuthorizedService ldap_filters error.")
@@ -42,22 +44,16 @@ def get_ldap_filter(uid, conditions=None) -> str:
 def get_user(username, fields=None, raise_exception=False, conditions=None):
     _filter = get_ldap_filter(username, conditions)
 
-    results = get_client().search_s(
-        settings.LDAP_BRANCH, ldap.SCOPE_SUBTREE, _filter
-    )
+    results = get_client().search_s(settings.LDAP_BRANCH, ldap.SCOPE_SUBTREE, _filter)
 
-    if isinstance(conditions, dict) and conditions.get(
-        "ldap_must_exist", False
-    ):
+    if isinstance(conditions, dict) and conditions.get("ldap_must_exist", False):
         raise_exception = True
 
     if len(results) == 0 and raise_exception:
         raise UserNotFoundError(f"User <{username}> not found")
 
     if len(results) != 1:
-        logger.debug(
-            f"Received {len(results)} results for query on {username}"
-        )
+        logger.debug(f"Received {len(results)} results for query on {username}")
         return None
     people = results[0]
 

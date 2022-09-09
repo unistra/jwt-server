@@ -2,7 +2,7 @@ import os
 
 from setuptools import find_packages, setup
 
-VERSION = '1.4.4'
+VERSION = '1.5.0'
 
 
 with open('README.md') as readme:
@@ -18,8 +18,7 @@ def recursive_requirements(requirement_file, libs, links, path=''):
                 requirement_file = requirement.split()[1]
                 if not path:
                     path = requirement_file.rsplit('/', 1)[0]
-                recursive_requirements(requirement_file, libs, links,
-                                       path=path)
+                recursive_requirements(requirement_file, libs, links, path=path)
             elif requirement.startswith('-f'):
                 links.append(requirement.split()[1])
             elif requirement.startswith('-e'):
