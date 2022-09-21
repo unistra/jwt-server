@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django_cas.backends import CASBackend
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from ...libs.api.client import get_user
@@ -43,7 +44,6 @@ class UserTokenSerializer(serializers.Serializer):
         if additionaluserinfo is not None:
             for k, v in additionaluserinfo.items():
                 token[k] = v
-        print(token)
         return token
 
     def get_issuer(self, authorized_service: AuthorizedService):
@@ -74,6 +74,34 @@ class UserTokenSerializer(serializers.Serializer):
         authorized_service = AuthorizedService.objects.get(data__service=service)
 
         return authorized_service
+
+
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+    access = serializers.CharField(read_only=True)
+
+    def validate(self, attrs):
+        refresh = ExtendedRefreshToken(attrs["refresh"])
+
+        data = {'access': str(refresh.access_token)}
+
+        if api_settings.ROTATE_REFRESH_TOKENS:
+            if api_settings.BLACKLIST_AFTER_ROTATION:
+                try:
+                    # Attempt to blacklist the given refresh token
+                    refresh.blacklist()
+                except AttributeError:
+                    # If blacklist app not installed, `blacklist` method will
+                    # not be present
+                    pass
+
+            refresh.set_jti()
+            refresh.set_exp()
+            refresh.set_iat()
+
+            data['refresh'] = str(refresh)
+
+        return data
 
 
 class TokenObtainCASSerializer(UserTokenSerializer):

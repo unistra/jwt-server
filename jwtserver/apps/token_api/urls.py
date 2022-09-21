@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.urls import path, re_path
-from rest_framework_simplejwt.views import TokenRefreshView
 
 from . import views
 
@@ -10,7 +9,7 @@ urlpatterns = [
         views.TokenObtainCASView.as_view(),
         name="token_obtain_cas",
     ),
-    path('token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
+    path('token/refresh/', views.TokenRefreshView.as_view(), name="token_refresh"),
     path('service/', views.service, name="token_service"),
     path('service/verify', views.service_verify, name="token_service_verify"),
     re_path(
