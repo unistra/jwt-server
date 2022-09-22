@@ -26,10 +26,10 @@ DEBUG = True
 # name : PROJECT_ROOT_DIR/default.db
 
 
-DATABASES['default']['HOST'] = environ.get('DB_HOST')
-DATABASES['default']['USER'] = environ.get('DB_USER')
-DATABASES['default']['PASSWORD'] = environ.get('DB_PWD')
-DATABASES['default']['NAME'] = environ.get('DB_NAME')
+DATABASES['default']['HOST'] = environ.get("DB_HOST", "localhost")
+DATABASES['default']['USER'] = environ.get("DB_USER", "jwtserver")
+DATABASES['default']['PASSWORD'] = environ.get("DB_PWD", "jwtserver")
+DATABASES['default']['NAME'] = environ.get("DB_NAME", "jwtserver")
 
 ############################
 # Allowed hosts & Security #

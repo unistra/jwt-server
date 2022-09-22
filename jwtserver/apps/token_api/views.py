@@ -22,6 +22,7 @@ from .serializers import (
     ApplicationTokenSerializer,
     TokenObtainCASSerializer,
     TokenObtainDummySerializer,
+    TokenRefreshSerializer,
     UserSerializer,
 )
 from .utils import force_https, generate_jwks
@@ -184,6 +185,11 @@ class TokenObtainCASView(TokenViewBase):
             serializer.validated_data,
             status=status.HTTP_200_OK,
         )
+
+
+class TokenRefreshView(TokenViewBase):
+
+    serializer_class = TokenRefreshSerializer
 
 
 class TokenOMaticView(TokenViewBase):
