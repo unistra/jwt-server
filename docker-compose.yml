@@ -1,0 +1,15 @@
+version: "3"
+services:
+    db:
+        image: "postgres:12"
+        container_name: "postgres_jwtserver"
+        environment:
+            - POSTGRES_PASSWORD=jwtserver
+            - POSTGRES_USER=jwtserver
+            - POSTGRES_DB=jwtserver
+        ports:
+            - "5432:5432"
+        volumes:
+            - jwtserver_db:/var/lib/postgresql/data
+volumes:
+    jwtserver_db:

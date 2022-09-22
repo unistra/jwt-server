@@ -347,6 +347,7 @@ SIMPLE_JWT = {
 # Encryption #
 ##############
 
+
 def check_key(filename, key_type, **kwargs):
     full_path = join(dirname(abspath(__file__)), "../../keys", filename)
     if isfile(full_path):
@@ -364,6 +365,7 @@ def check_key(filename, key_type, **kwargs):
                 SIMPLE_JWT[key_type] = private_key
         else:
             SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
+
 
 check_key('myPublic.pem', 'VERIFYING_KEY')
 

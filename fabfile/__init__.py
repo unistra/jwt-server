@@ -27,7 +27,7 @@ env.timezone = 'Europe/Paris'  # timezone for remote
 env.keep_releases = 3  # number of old releases to keep before cleaning
 env.extra_goals = ['preprod']  # add extra goal(s) to defaults (test,dev,prod)
 env.dipstrap_version = 'latest'
-env.verbose_output = False  # True for verbose output
+env.verbose_output = True  # True for verbose output
 
 # optional parameters
 
@@ -61,6 +61,13 @@ env.chaussette_backend = 'waitress'
 
 # env.nginx_start_confirmation = True # if True when nginx is not started
 # needs confirmation to start it.
+
+# Don't declare full_preprod as env.application_name will make declare_release fail
+env.releases_to_declare_to_sentry = [
+    "test",
+    "preprod",
+    "prod",
+]
 
 
 @task
@@ -295,7 +302,8 @@ def deploy_backend(update_pkg=False):
 
 @task
 def declare_release_to_sentry():
-    execute(sentry.declare_release)
+    if env.goal in env.releases_to_declare_to_sentry:
+        execute(sentry.declare_release)
 
 
 @roles('lb')
