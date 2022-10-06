@@ -363,8 +363,11 @@ def check_key(filename, key_type, **kwargs):
                 )
 
                 SIMPLE_JWT[key_type] = private_key
+                key_file.close()
         else:
-            SIMPLE_JWT[key_type] = open(full_path, 'rb').read()
+            key_file = open(full_path, 'rb')
+            SIMPLE_JWT[key_type] = key_file.read()
+            key_file.close()
 
 
 check_key('myPublic.pem', 'VERIFYING_KEY')
