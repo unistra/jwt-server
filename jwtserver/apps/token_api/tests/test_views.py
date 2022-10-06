@@ -15,19 +15,18 @@ FIXTURES_ROOT = Path(__file__).resolve(strict=True).parent / "keys/"
 
 
 class RefreshTokenViewTest(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = User.objects.create_user(
+    def setUp(self):
+        self.user = User.objects.create_user(
             username="username",
             email="username@unistra.fr",
         )
 
         key_file = open(FIXTURES_ROOT / "private-key.pem", "rb")
-        cls.private_key = load_pem_private_key(key_file.read(), password=None)
+        self.private_key = load_pem_private_key(key_file.read(), password=None)
         key_file.close()
 
         key_file = open(FIXTURES_ROOT / "public-key.pem", "rb")
-        cls.public_key = key_file.read()
+        self.public_key = key_file.read()
         key_file.close()
 
     def test_refreshed_access_token_has_kid_in_headers(self):
