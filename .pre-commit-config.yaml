@@ -4,25 +4,25 @@ exclude: "^.tox*|^fabfile*|^jwtserver/settings*"
 fail_fast: true
 repos:
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.0.0
+    rev: v3.3.1
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: 1.10.0
+    rev: 1.12.0
     hooks:
       - id: django-upgrade
         args: [--target-version, "3.2" ]
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
       - id: isort
   - repo: https://github.com/ambv/black
-    rev: 22.8.0
+    rev: 23.1.0
     hooks:
     - id: black
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.2.1
+    rev: 1.3.0
     hooks:
       - id: poetry-check
       - id: poetry-lock
@@ -48,7 +48,7 @@ repos:
         name: Export requirements/test.txt
         language: system
         pass_filenames: false
-        entry: poetry export --without-hashes -o requirements/test.txt --with test
+        entry: poetry export -o requirements/test.txt --with test
         files: ^(pyproject.toml|poetry.lock)$
   - repo: local
     hooks:
@@ -56,7 +56,7 @@ repos:
         name: Export requirements/preprod.txt
         language: system
         pass_filenames: false
-        entry: poetry export --without-hashes -o requirements/preprod.txt --with preprod
+        entry: poetry export -o requirements/preprod.txt --with preprod
         files: ^(pyproject.toml|poetry.lock)$
   - repo: local
     hooks:
@@ -64,5 +64,5 @@ repos:
         name: Export requirements/prod.txt
         language: system
         pass_filenames: false
-        entry: poetry export --without-hashes -o requirements/prod.txt --with prod
+        entry: poetry export -o requirements/prod.txt --with prod
         files: ^(pyproject.toml|poetry.lock)$

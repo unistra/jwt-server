@@ -5,7 +5,7 @@ description = ""
 authors = ["DIP - Université de Strasbourg <dnum-dip@unistra.fr>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.8,<3.11"
 Django = "~3.2.0"
 djangorestframework = "~3.14.0"
 djangorestframework-simplejwt = "~5.2.0"
@@ -45,7 +45,7 @@ pre-commit = "^2.20.0"
 [tool.black]
 line-length = 88
 skip-string-normalization = true
-target-version = ['py37']
+target-version = ['py39']
 include = '\.pyi?$'
 exclude = '''
 
