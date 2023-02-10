@@ -4,7 +4,7 @@ import jwt
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import override_settings
+from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -43,3 +43,44 @@ class RefreshTokenViewTest(APITestCase):
         access_token = response.data["access"]
         headers = jwt.get_unverified_header(access_token)
         self.assertIn("kid", headers.keys())
+
+
+class TokenForServiceTest(TestCase):
+    def test_anonymous_access_is_forbidden(self):
+        response = self.client.get(
+            reverse("token_for_service"),
+        )
+        self.assertRedirects(
+            response,
+            f"{reverse('django_cas:login')}?next={reverse('token_for_service')}",
+            fetch_redirect_response=False,
+        )
+
+    def test_non_superuser_access_forbidden(self):
+        user = User.objects.create_user(
+            username="username",
+            is_active=True,
+            is_staff=True,
+            is_superuser=False,
+        )
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse("token_for_service"),
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_superadmin_can_access(self):
+        user = User.objects.create_user(
+            username="username",
+            is_active=True,
+            is_staff=True,
+            is_superuser=True,
+        )
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse("token_for_service"),
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )

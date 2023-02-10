@@ -22,6 +22,11 @@ urlpatterns = [
         views.TokenOMaticView.as_view(),
         name="token_o_matic",
     ),
+    path(
+        'token-for-service/',
+        views.TokenForServiceView.as_view(),
+        name='token_for_service',
+    ),
 ]
 
 if settings.DEBUG:
