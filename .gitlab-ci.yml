@@ -16,16 +16,16 @@ unittest:
   stage: test
   tags:
     - cluster
-  image: unistra/python3.7-ci:latest
+  image: unistra/python3.9-ci:latest
   script:
     - pip3 install -r requirements/dev.txt
-    - tox -e py37
+    - tox -e py39
 
 black:
   stage: test
   tags:
     - cluster
-  image: unistra/python3.7-ci:latest
+  image: unistra/python3.9-ci:latest
   script:
     - pip3 install -r requirements/dev.txt
     - tox -e black
@@ -34,10 +34,11 @@ black:
 safety:
   stage: test
   tags:
-    - python3.7
+    - python3.9
   script:
     - apt update && apt install -y build-essential libpq-dev libsasl2-dev python-dev libldap2-dev libssl-dev
     - pip3 install -r requirements/dev.txt
+    - pip3 install -U setuptools
     - safety check
   only:
     - develop
