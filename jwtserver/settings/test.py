@@ -98,4 +98,4 @@ LDAP_FILTER = '{{ ldap_filter }}'
 #####################
 #       CAS         #
 #####################
-CAS_SERVER_URL = 'https://cas6-dev.unistra.fr:443/cas/'
+CAS_SERVER_URL = 'https://cas-dev.unistra.fr:443/cas/'

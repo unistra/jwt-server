@@ -3,16 +3,11 @@ import json
 from django import forms
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.forms.jsonb import (
-    InvalidJSONInput,
-    JSONField as JSONFormField,
-)
-from django.utils.translation import ugettext_lazy as _
+from django.forms import JSONField as JSONFormField
+from django.forms.fields import InvalidJSONInput
+from django.utils.translation import gettext_lazy as _
 
-from .models import (
-    ApplicationToken,
-    AuthorizedService,
-)
+from .models import ApplicationToken, AuthorizedService
 
 
 class PrettyJSONField(JSONFormField):

@@ -4,7 +4,7 @@ import jwt
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import override_settings
+from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -15,16 +15,19 @@ FIXTURES_ROOT = Path(__file__).resolve(strict=True).parent / "keys/"
 
 
 class RefreshTokenViewTest(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = User.objects.create_user(
+    def setUp(self):
+        self.user = User.objects.create_user(
             username="username",
             email="username@unistra.fr",
         )
-        cls.private_key = load_pem_private_key(
-            open(FIXTURES_ROOT / "private-key.pem", "rb").read(), password=None
-        )
-        cls.public_key = open(FIXTURES_ROOT / "public-key.pem", "rb").read()
+
+        key_file = open(FIXTURES_ROOT / "private-key.pem", "rb")
+        self.private_key = load_pem_private_key(key_file.read(), password=None)
+        key_file.close()
+
+        key_file = open(FIXTURES_ROOT / "public-key.pem", "rb")
+        self.public_key = key_file.read()
+        key_file.close()
 
     def test_refreshed_access_token_has_kid_in_headers(self):
         jwt_config = settings.SIMPLE_JWT
@@ -40,3 +43,44 @@ class RefreshTokenViewTest(APITestCase):
         access_token = response.data["access"]
         headers = jwt.get_unverified_header(access_token)
         self.assertIn("kid", headers.keys())
+
+
+class TokenForServiceTest(TestCase):
+    def test_anonymous_access_is_forbidden(self):
+        response = self.client.get(
+            reverse("token_for_service"),
+        )
+        self.assertRedirects(
+            response,
+            f"{reverse('django_cas:login')}?next={reverse('token_for_service')}",
+            fetch_redirect_response=False,
+        )
+
+    def test_non_superuser_access_forbidden(self):
+        user = User.objects.create_user(
+            username="username",
+            is_active=True,
+            is_staff=True,
+            is_superuser=False,
+        )
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse("token_for_service"),
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_superadmin_can_access(self):
+        user = User.objects.create_user(
+            username="username",
+            is_active=True,
+            is_staff=True,
+            is_superuser=True,
+        )
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse("token_for_service"),
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )

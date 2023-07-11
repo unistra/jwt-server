@@ -124,7 +124,6 @@ class TokenObtainCASSerializer(UserTokenSerializer):
 
 
 class ApplicationTokenSerializer(UserTokenSerializer):
-
     service = serializers.CharField()
 
     def validate(self, attrs):

@@ -4,9 +4,12 @@ from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
 from django.urls import reverse
+from django.views import View
 from rest_framework import permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView
@@ -17,6 +20,7 @@ from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
 from ...libs.api.client import UserNotFoundError
+from .forms import TokenForServiceForm
 from .models import ApplicationToken, AuthorizedService
 from .serializers import (
     ApplicationTokenSerializer,
@@ -188,7 +192,6 @@ class TokenObtainCASView(TokenViewBase):
 
 
 class TokenRefreshView(TokenViewBase):
-
     serializer_class = TokenRefreshSerializer
 
 
@@ -262,3 +265,50 @@ class TokenObtainDummyView(TokenViewBase):
             serializer.validated_data,
             status=status.HTTP_200_OK,
         )
+
+
+class TokenForServiceView(UserPassesTestMixin, View):
+    """
+    Generate JWT Access token for configured services and logged-in user
+    """
+
+    form_class = TokenForServiceForm
+    initial = {"service": None}
+    template_name = "token_for_service.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial=self.initial)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            authorized_service = form.cleaned_data["service"]
+            serializer = ApplicationTokenSerializer(
+                data={"service": authorized_service.data["service"]},
+                context={
+                    "username": request.user.username,
+                    "request": request,
+                    "service": authorized_service,
+                },
+            )
+            try:
+                serializer.is_valid(raise_exception=True)
+            except Exception as error:
+                raise InvalidToken(error.args[0])
+            data = serializer.validated_data
+            form = self.form_class(
+                initial={
+                    "service": authorized_service,
+                    "token": data["access"],
+                }
+            )
+            return render(request, self.template_name, {"form": form})
+
+        return HttpResponseRedirect(reverse("token_for_service"))
+
+    def test_func(self):
+        user: User = self.request.user
+        if user and user.is_authenticated and user.is_active and user.is_superuser:
+            return True
+        return False
