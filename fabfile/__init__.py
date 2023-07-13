@@ -302,7 +302,7 @@ def deploy_backend(update_pkg=False):
 
 @task
 def declare_release_to_sentry():
-    if env.goal in env.releases_to_declare_to_sentry:
+    if env.goal in env.releases_to_declare_to_sentry and env.application_name != "jwtserver-2":
         execute(sentry.declare_release)
 
 
