@@ -8,7 +8,7 @@ from ..decorators import MemoizeWithTimeout
 logger = logging.getLogger(__name__)
 
 
-class UserNotFoundError(ldap.LDAPError):
+class LDAPUserNotFoundError(ldap.LDAPError):
     pass
 
 
@@ -50,7 +50,7 @@ def get_user(username, fields=None, raise_exception=False, conditions=None):
         raise_exception = True
 
     if len(results) == 0 and raise_exception:
-        raise UserNotFoundError(f"User <{username}> not found")
+        raise LDAPUserNotFoundError(f"User <{username}> not found in LDAP")
 
     if len(results) != 1:
         logger.debug(f"Received {len(results)} results for query on {username}")

@@ -6,6 +6,7 @@ import requests
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied as DjangoPermissionDenied
 from django.http import Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -19,7 +20,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
-from ...libs.api.client import UserNotFoundError
+from ...libs.api.client import LDAPUserNotFoundError
 from .forms import TokenForServiceForm
 from .models import ApplicationToken, AuthorizedService
 from .serializers import (
@@ -182,7 +183,7 @@ class TokenObtainCASView(TokenViewBase):
             raise PermissionDenied(
                 "Unauthorized service, please contact administrators to register your service"  # noqa: E501
             )
-        except UserNotFoundError as e:
+        except LDAPUserNotFoundError as e:
             return self.permission_denied(request, e)
 
         return Response(
@@ -224,7 +225,7 @@ class TokenOMaticView(TokenViewBase):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
-        except (User.DoesNotExist, UserNotFoundError):
+        except (User.DoesNotExist, LDAPUserNotFoundError):
             raise Http404
         data = serializer.validated_data
         # We don't want to give refresh tokens
@@ -294,6 +295,8 @@ class TokenForServiceView(UserPassesTestMixin, View):
             )
             try:
                 serializer.is_valid(raise_exception=True)
+            except LDAPUserNotFoundError as error:
+                raise DjangoPermissionDenied(str(error))
             except Exception as error:
                 raise InvalidToken(error.args[0])
             data = serializer.validated_data

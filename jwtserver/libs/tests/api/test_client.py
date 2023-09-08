@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import TestCase, override_settings
 
 from ...api import client
-from ...api.client import UserNotFoundError, get_ldap_filter, get_user
+from ...api.client import LDAPUserNotFoundError, get_ldap_filter, get_user
 
 
 @override_settings(LDAP_FILTER="uid={uid}")
@@ -45,21 +45,21 @@ class LdapFilterTest(TestCase):
 class ClientRaisesExceptionOnNoUserFound(TestCase):
     def test_no_result_raises_exception(self, client_mock):
         client_mock.return_value.search_s.return_value = []
-        with self.assertRaises(UserNotFoundError) as ctx:
+        with self.assertRaises(LDAPUserNotFoundError) as ctx:
             get_user("login", raise_exception=True)
-        self.assertEqual(str(ctx.exception), "User <login> not found")
+        self.assertEqual(str(ctx.exception), "User <login> not found in LDAP")
 
     def test_no_result_and_ldap_must_exist_condition_raises_exception(
         self, client_mock
     ):
         client_mock.return_value.search_s.return_value = []
-        with self.assertRaises(UserNotFoundError) as ctx:
+        with self.assertRaises(LDAPUserNotFoundError) as ctx:
             get_user(
                 "login",
                 raise_exception=False,
                 conditions={"ldap_must_exist": True},
             )
-        self.assertEqual(str(ctx.exception), "User <login> not found")
+        self.assertEqual(str(ctx.exception), "User <login> not found in LDAP")
 
     def test_no_result_and_ldap_must_exist_not_in_condition_returns_none(
         self, client_mock
