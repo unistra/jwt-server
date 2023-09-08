@@ -1,5 +1,4 @@
 from os import environ
-from os.path import normpath
 from .base import *
 
 #######################
