@@ -1,9 +1,5 @@
 from datetime import timedelta
 from os import environ
-from os import path
-
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *
 
@@ -120,5 +116,5 @@ LDAP_FILTER = environ.get(
 #####################
 #       CAS         #
 #####################
-CAS_SERVER_URL = 'https://cas6-dev.unistra.fr:443/cas/'
+CAS_SERVER_URL = 'https://cas-dev.unistra.fr:443/cas/'
 CAS_FORCE_SSL_SERVICE_URL = False

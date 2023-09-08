@@ -1,15 +1,19 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import jwt
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
+from jwtserver.apps.token_api.models import AuthorizedService
 from jwtserver.apps.token_api.utils import ExtendedRefreshToken
+from jwtserver.libs.api.client import LDAPUserNotFoundError
 
 FIXTURES_ROOT = Path(__file__).resolve(strict=True).parent / "keys/"
 
@@ -67,6 +71,25 @@ class TokenForServiceTest(TestCase):
         response = self.client.get(
             reverse("token_for_service"),
         )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_not_found_in_ldap_is_forbidden(self):
+        user = User.objects.create_user(
+            username="username",
+            is_active=True,
+            is_staff=True,
+            is_superuser=True,
+        )
+        service = AuthorizedService.objects.create(
+            data={"service": "localhost", "fields": {"username": "uid"}},
+        )
+        self.client.force_login(user)
+        with patch("jwtserver.apps.token_api.serializers.get_user") as get_user_mock:
+            get_user_mock.side_effect = LDAPUserNotFoundError
+            response = self.client.post(
+                reverse("token_for_service"),
+                data={"service": service.id},
+            )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_superadmin_can_access(self):
