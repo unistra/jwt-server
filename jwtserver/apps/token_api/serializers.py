@@ -8,11 +8,12 @@ from django_cas.backends import CASBackend
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.settings import api_settings
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from ...libs.api.client import get_user
 from .models import AuthorizedService
-from .utils import ExtendedRefreshToken, generate_jwks, generate_public_key_id
+from .utils import ExtendedRefreshToken
+
+ADDITIONAL_DATA = 'claims'
 
 
 class UserTokenSerializer(serializers.Serializer):
@@ -44,11 +45,19 @@ class UserTokenSerializer(serializers.Serializer):
         if additionaluserinfo is not None:
             for k, v in additionaluserinfo.items():
                 token[k] = v
+        if ADDITIONAL_DATA in authorized_service.data:
+            for k, v in authorized_service.data[ADDITIONAL_DATA].items():
+                token[k] = v
         return token
 
     def get_issuer(self, authorized_service: AuthorizedService):
         if "issuer" in authorized_service.data:
             return authorized_service.data["issuer"]
+        if (
+            ADDITIONAL_DATA in authorized_service.data
+            and "issuer" in authorized_service.data[ADDITIONAL_DATA]
+        ):
+            return authorized_service.data[ADDITIONAL_DATA]["issuer"]
         else:
             return self.context["request"].get_host()
 
