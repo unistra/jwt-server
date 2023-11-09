@@ -15,7 +15,7 @@ def force_https(uri):
     return uri
 
 
-@lru_cache()
+@lru_cache
 def generate_jwks():
     key_id = generate_public_key_id()
     data = json.loads(RSAPSSAlgorithm(SHA256).to_jwk(_public_key()))
@@ -23,7 +23,7 @@ def generate_jwks():
     return {'keys': [data]}
 
 
-@lru_cache()
+@lru_cache
 def generate_public_key_id():
     return str(uuid3(NAMESPACE_DNS, str(_public_key().public_numbers().e)))
 
