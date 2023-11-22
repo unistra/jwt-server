@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from os.path import abspath, basename, dirname, join, normpath, isfile
-
+from pathlib import Path
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 
@@ -9,9 +6,9 @@ from cryptography.hazmat.primitives import serialization
 # Path configuration #
 ######################
 
-DJANGO_ROOT = dirname(dirname(abspath(__file__)))
-SITE_ROOT = dirname(DJANGO_ROOT)
-SITE_NAME = basename(DJANGO_ROOT)
+DJANGO_ROOT = Path(__file__).resolve(strict=True).parent.parent
+SITE_ROOT = DJANGO_ROOT.parent
+SITE_NAME = DJANGO_ROOT.name
 
 #######################
 # Debug configuration #
@@ -96,7 +93,7 @@ USE_TZ = True
 #######################
 
 LOCALE_PATHS = [
-    normpath(join(DJANGO_ROOT, 'locale')),
+    DJANGO_ROOT / 'locale',
 ]
 
 #######################
@@ -105,7 +102,7 @@ LOCALE_PATHS = [
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = normpath(join(DJANGO_ROOT, 'media'))
+MEDIA_ROOT = DJANGO_ROOT / 'media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -120,7 +117,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = normpath(join(SITE_ROOT, 'assets'))
+STATIC_ROOT = SITE_ROOT / 'assets'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -128,7 +125,7 @@ STATIC_URL = '/site_media/'
 
 # Additional locations of static files
 STATICFILES_DIRS = [
-    normpath(join(DJANGO_ROOT, 'static')),
+    DJANGO_ROOT / 'static',
 ]
 
 # List of finder classes that know how to find static files in
@@ -351,8 +348,8 @@ SIMPLE_JWT = {
 
 
 def check_key(filename, key_type, **kwargs):
-    full_path = join(dirname(abspath(__file__)), "../../keys", filename)
-    if isfile(full_path):
+    full_path = SITE_ROOT / 'keys' / filename
+    if full_path.is_file():
         if key_type == 'SIGNING_KEY':
             with open(full_path, "rb") as key_file:
                 # Read key with passphrase
