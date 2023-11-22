@@ -28,7 +28,8 @@
         "ldap_must_exist": {
           "type": "boolean"
         }
-      }
+      },
+      "additionalProperties": false
     }
   },
   "required": [
