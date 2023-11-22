@@ -25,3 +25,19 @@ class ApplicationTokenTest(TestCase):
             'Service "authorized_service.unistra.fr" already exists',
             ctx.exception.message_dict["data"][0],
         )
+
+    def test_invalid_json_for_authorized_service_raises_validation_error(self):
+        data = {
+            "service": "authorized_service.unistra.fr",
+            "unexpected": "field",
+        }
+        with self.assertRaises(ValidationError) as ctx:
+            AuthorizedService.objects.create(data=data)
+        self.assertIn(
+            "JSON Schema validation error",
+            ctx.exception.message_dict["data"][0],
+        )
+        self.assertIn(
+            "Additional properties are not allowed",
+            ctx.exception.message_dict["data"][0],
+        )
