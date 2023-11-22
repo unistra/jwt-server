@@ -6,9 +6,17 @@ from django.db import models
 from django.db.models import JSONField
 from django.utils.translation import gettext_lazy as _
 
+from jwtserver.apps.token_api.validators import JSONSchemaValidator
+
 
 class AuthorizedService(models.Model):
-    data = JSONField(blank=True, default=dict)
+    data = JSONField(
+        blank=True,
+        default=dict,
+        validators=[
+            JSONSchemaValidator("authorized_service.schema.json"),
+        ],
+    )
     creation_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

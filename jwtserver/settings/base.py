@@ -9,6 +9,7 @@ from cryptography.hazmat.primitives import serialization
 DJANGO_ROOT = Path(__file__).resolve(strict=True).parent.parent
 SITE_ROOT = DJANGO_ROOT.parent
 SITE_NAME = DJANGO_ROOT.name
+JSONSCHEMA_ROOT = DJANGO_ROOT / "apps/token_api/schemas"
 
 #######################
 # Debug configuration #
