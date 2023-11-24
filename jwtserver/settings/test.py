@@ -61,7 +61,7 @@ sentry_sdk.init(
     dsn="https://5ccdeb9b7d9e4e70a824349302ae43a8@sentry.app.unistra.fr/11",
     integrations=[DjangoIntegration()],
     environment=STAGE,
-    release=open(path.join(dirname(abspath(__file__)), "../../", "build.txt"), 'r').read()
+    release=open(SITE_ROOT / "build.txt", 'r').read()
 )
 
 
