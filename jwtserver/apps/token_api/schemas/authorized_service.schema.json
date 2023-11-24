@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft/2020-12/schema",
+  "id": "https://jwtserver.unistra.fr/schema/authorized_service.schema.json",
+  "title": "JSON configuration for a service",
+  "type": "object",
+  "properties": {
+    "service": {
+      "type": "string"
+    },
+    "issuer": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "object"
+    },
+    "claims": {
+      "type": "object"
+    },
+    "conditions": {
+      "type": "object",
+      "properties": {
+        "ldap_filters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ldap_must_exist": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "service"
+  ],
+  "additionalProperties": false
+}

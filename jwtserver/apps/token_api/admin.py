@@ -23,7 +23,11 @@ class PrettyJSONField(JSONFormField):
 class AuthorizedServiceForm(forms.ModelForm):
     class Meta:
         field_classes = {"data": PrettyJSONField}
-        widgets = {"data": forms.Textarea(attrs={"rows": 20, "cols": 80})}
+        widgets = {
+            "data": forms.Textarea(
+                attrs={"rows": 20, "cols": 80},
+            ),
+        }
 
 
 @admin.register(AuthorizedService)
