@@ -71,10 +71,12 @@ check_key('myKey.pem', 'SIGNING_KEY', password=RSA_PASSWORD)
 #######
 # JWT #
 #######
+JWT_ACCESS_LIFETIME = '{{ jwt_access_lifetime }}'
+JWT_REFRESH_LIFETIME = '{{ jwt_refresh_lifetime }}'
 SIMPLE_JWT.update(
     {
-        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int('{{ jwt_access_lifetime }}')),
-        'REFRESH_TOKEN_LIFETIME': timedelta(days=int('{{ jwt_refresh_lifetime }}'))
+        'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(JWT_ACCESS_LIFETIME)),
+        'REFRESH_TOKEN_LIFETIME': timedelta(days=int(JWT_REFRESH_LIFETIME)),
     }
 )
 
