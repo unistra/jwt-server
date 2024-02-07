@@ -6,6 +6,7 @@ omit =
     setup.py
     fabfile/*
     jwtserver/apps/token_api/tests/*
+    jwtserver/apps/token_api/migrations/*
     jwtserver/settings/*
     run_tests.py
 
