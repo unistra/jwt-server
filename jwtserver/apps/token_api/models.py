@@ -1,5 +1,6 @@
 import secrets
 import uuid
+from urllib.parse import urlparse
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -43,6 +44,29 @@ class AuthorizedService(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+    @staticmethod
+    def is_valid(url):
+        """
+        Extracts domain name from URL and checks if it is in the list of authorized services.
+
+        Args:
+            url (str): The URL to check.
+
+        Returns:
+            bool: True if the domain name is in the list of authorized services, False otherwise.
+        """
+        try:
+            # Extract domain name from URL
+            domain_name = urlparse(url).hostname
+
+            # Check if domain name is in the list of authorized services
+            return domain_name in AuthorizedService.objects.values_list(
+                "data__service", flat=True
+            )
+        except ValueError:
+            # If URL is invalid, return False
+            return False
 
 
 def generate_auth_token():
