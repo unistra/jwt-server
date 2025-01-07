@@ -11,7 +11,7 @@ from rest_framework_simplejwt.settings import api_settings
 
 from ...libs.api.client import get_user
 from .models import AuthorizedService
-from .utils import ExtendedRefreshToken
+from .utils import ExtendedRefreshToken, decode_service
 
 ADDITIONAL_DATA = 'claims'
 
@@ -74,12 +74,7 @@ class UserTokenSerializer(serializers.Serializer):
         else:
             base = self.context["request"].data.get("service", False)
 
-        encoded = re.search("/([^/]*)$", base).group(1)
-        service_and_port = re.search(
-            "^https?://([^/]*)?",
-            base64.urlsafe_b64decode(encoded).decode("utf-8"),
-        ).group(1)
-        service = re.search("^([^:]+)(:[0-9]+)?$", service_and_port).group(1)
+        service = decode_service(base)
         authorized_service = AuthorizedService.objects.get(data__service=service)
 
         return authorized_service

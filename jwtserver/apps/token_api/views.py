@@ -128,6 +128,10 @@ def redirect_ticket(request, **kwargs):
     try:
         redirect_url = base64.urlsafe_b64decode(kwargs["redirect_url"]).decode("utf-8")
         uri = force_https(request.build_absolute_uri("?"))
+        if not AuthorizedService.is_valid(redirect_url):
+            return HttpResponse(
+                "Unauthorized service", status=status.HTTP_403_FORBIDDEN
+            )
         custom_headers["service"] = uri
         custom_headers["ticket"] = request.GET.get("ticket")
     except UnicodeDecodeError:
