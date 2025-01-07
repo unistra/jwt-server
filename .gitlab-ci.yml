@@ -39,7 +39,7 @@ safety:
     - apt update && apt install -y build-essential libpq-dev libsasl2-dev python-dev libldap2-dev libssl-dev
     - pip3 install -r requirements/dev.txt
     - pip3 install -U setuptools
-    - safety check -i 51457
+    - safety check -i 66963
   only:
     - develop
     - master
