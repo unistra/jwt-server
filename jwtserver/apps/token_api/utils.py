@@ -1,4 +1,6 @@
+import base64
 import json
+import re
 from functools import lru_cache
 from uuid import NAMESPACE_DNS, uuid3
 
@@ -13,6 +15,21 @@ def force_https(uri):
     if settings.STAGE not in ('dev',) and uri[:5] != 'https':
         uri = uri.replace('http://', 'https://')
     return uri
+
+
+def decode_service(encoded_service: str) -> str:
+    # base64 decode the service and strip the protocol and port
+    try:
+        encoded = re.search("/([^/]*)$", encoded_service).group(1)
+        service_and_port = re.search(
+            "^https?://([^/]*)?",
+            base64.urlsafe_b64decode(encoded).decode("utf-8"),
+        ).group(1)
+        service = re.search("^([^:]+)(:[0-9]+)?$", service_and_port).group(1)
+    except AttributeError:
+        # .group() not an attribute of None (regex does not match)
+        return ""
+    return service
 
 
 @lru_cache
