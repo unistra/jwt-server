@@ -56,17 +56,11 @@ class AuthorizedService(models.Model):
         Returns:
             bool: True if the domain name is in the list of authorized services, False otherwise.
         """
-        try:
-            # Extract domain name from URL
-            domain_name = urlparse(url).hostname
+        # Extract domain name from URL
+        domain_name = urlparse(url).hostname
 
-            # Check if domain name is in the list of authorized services
-            return domain_name in AuthorizedService.objects.values_list(
-                "data__service", flat=True
-            )
-        except ValueError:
-            # If URL is invalid, return False
-            return False
+        # Check if domain name is in authorized services
+        return AuthorizedService.objects.filter(data__service=domain_name).exists()
 
 
 def generate_auth_token():
