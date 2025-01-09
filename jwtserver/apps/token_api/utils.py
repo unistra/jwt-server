@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, Token
 
 
 def force_https(uri):
-    if settings.STAGE not in ("dev") and uri[:5] != 'https':
+    if settings.STAGE != "dev" and not uri.startswith("https"):
         uri = uri.replace("http://", "https://")
     return uri
 
