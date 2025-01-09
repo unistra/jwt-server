@@ -22,8 +22,8 @@ unittest:
     - pip3 install -r requirements/dev.txt
     - tox -e py39
   artifacts:
-    reports:
-      junit: coverage.xml
+    paths:
+      - coverage.xml
 
 black:
   stage: test
@@ -63,6 +63,9 @@ sonarqube-check:
   script: 
     - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
   allow_failure: true
+  needs:
+    - job: unittest
+      artifacts: true
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_COMMIT_BRANCH == 'master'
