@@ -21,6 +21,9 @@ unittest:
   script:
     - pip3 install -r requirements/dev.txt
     - tox -e py39
+  artifacts:
+    reports:
+      junit: coverage.xml
 
 black:
   stage: test
