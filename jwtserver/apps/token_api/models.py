@@ -76,7 +76,7 @@ class ApplicationToken(models.Model):
     )
     account = models.CharField(
         max_length=255,
-        null=True,
+        blank=True,
         help_text=_("LDAP account to generate a token for"),
     )
     auth_token = models.CharField(
