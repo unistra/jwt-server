@@ -3,7 +3,7 @@ import base64
 from django.test import TestCase
 from django.urls import reverse
 
-from jwtserver.apps.token_api.utils import decode_service
+from jwtserver.apps.token_api.utils import decode_service, force_https
 
 
 class DecodeServiceTest(TestCase):
@@ -34,3 +34,30 @@ class DecodeServiceTest(TestCase):
             decode_service(encoded),
             "",
         )
+
+
+class ForceHttpsTest(TestCase):
+    def test_force_https(self):
+        urls = [
+            ("http://example.com", "https://example.com"),
+            ("https://example.com", "https://example.com"),
+        ]
+
+        for url, expected in urls:
+            self.assertEqual(
+                force_https(url),
+                expected,
+            )
+
+    def test_https_is_not_forced_in_dev(self):
+        urls = [
+            ("http://example.com", "http://example.com"),
+            ("https://example.com", "https://example.com"),
+        ]
+
+        with self.settings(STAGE="dev"):
+            for url, expected in urls:
+                self.assertEqual(
+                    force_https(url),
+                    expected,
+                )

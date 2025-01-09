@@ -8,6 +8,7 @@ from pathlib import Path
 #######################
 
 DEBUG = True
+STAGE = "unittest"
 
 ##########################
 # Database configuration #

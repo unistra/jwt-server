@@ -31,7 +31,6 @@ def get_ldap_filter(uid, conditions=None) -> str:
         except TypeError:
             # conditions["ldap_filters"] is not iterable ?
             logger.exception("AuthorizedService ldap_filters error.")
-            pass
     _filter = settings.LDAP_FILTER.format(uid=uid)
     if filters:
         _filter = f'(&({_filter}){filters})'
