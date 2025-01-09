@@ -22,7 +22,7 @@ def decode_service(encoded_service: str) -> str:
     try:
         encoded = re.search("/([^/]*)$", encoded_service).group(1)
         service_and_port = re.search(
-            "^https?://([^/]*)?",
+            "^https?://([^/]+)",
             base64.urlsafe_b64decode(encoded).decode("utf-8"),
         ).group(1)
         service = re.search("^([^:]+)(:[0-9]+)?$", service_and_port).group(1)
