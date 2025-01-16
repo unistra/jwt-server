@@ -1,3 +1,4 @@
+import base64
 from pathlib import Path
 from unittest.mock import patch
 
@@ -6,7 +7,6 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase

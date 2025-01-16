@@ -44,7 +44,7 @@ class AuthorizedServiceAdmin(admin.ModelAdmin):
 class ApplicationTokenForm(forms.ModelForm):
     class Meta:
         model = ApplicationToken
-        fields = "__all__"
+        fields = ["authorized_service", "account", "auth_token"]
 
     def clean_account(self):
         account = self.cleaned_data.get("account")
