@@ -9,44 +9,10 @@ variables:
   POSTGRES_DB: jwtserver-test
   POSTGRES_USER: jwtserver
   POSTGRES_PASSWORD: jwtserver
+  PYTHON_VERSION: "3.9"
 
 before_script:
   - apt-get update && apt-get install -y build-essential libpq-dev libldap2-dev libsasl2-dev python-dev libssl-dev
-
-unittest:
-  stage: test
-  tags:
-    - cluster
-  image: unistra/python3.9-ci:latest
-  script:
-    - pip3 install -r requirements/dev.txt
-    - tox -e py39
-  artifacts:
-    paths:
-      - coverage.xml
-
-black:
-  stage: test
-  tags:
-    - cluster
-  image: unistra/python3.9-ci:latest
-  script:
-    - pip3 install -r requirements/dev.txt
-    - tox -e black
-
-
-safety:
-  stage: test
-  tags:
-    - python3.9
-  script:
-    - apt update && apt install -y build-essential libpq-dev libsasl2-dev python-dev libldap2-dev libssl-dev
-    - pip3 install -r requirements/dev.txt
-    - pip3 install -U setuptools
-    - safety check -i 66963
-  only:
-    - develop
-    - master
 
 sonarqube-check:
   stage: sonarqube-check
@@ -71,3 +37,11 @@ sonarqube-check:
     - if: $CI_COMMIT_BRANCH == 'master'
     - if: $CI_COMMIT_BRANCH == 'main'
     - if: $CI_COMMIT_BRANCH == 'develop'
+
+include:
+  - project: "docker/template"
+    file: "python-black.gitlab-ci.yml"
+  - project: "docker/template"
+    file: "python-unittest.gitlab-ci.yml"
+  - project: "docker/template"
+    file: "python-safety.gitlab-ci.yml"
