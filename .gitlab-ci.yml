@@ -13,7 +13,7 @@ variables:
   PYTHON_VERSION: "3.9"
 
 before_script:
-  - apt-get update && apt-get install -y build-essential libpq-dev libldap2-dev libsasl2-dev python-dev libssl-dev
+  - apt-get update && apt-get install -y build-essential libpq-dev libldap2-dev libsasl2-dev libssl-dev
 
 sonarqube-check:
   stage: sonarqube-check
