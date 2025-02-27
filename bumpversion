@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# This script bumps the version of the project defined in `version.py` in the following files:
+# - pyproject.toml
+# - setup.py
+# - sonar-project.properties
+
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+VERSION=$(python -c 'from version import __version__; print(__version__)')
+
+echo "Bump version to ${bold}${VERSION}${normal}"
+
+poetry version $VERSION -q
+echo " ✅ pyproject.toml updated"
+
+sed -i "s/VERSION = \".*\"$/VERSION = \"$VERSION\"/" setup.py
+echo " ✅ setup.py updated"
+
+sed -i "s/^sonar.projectVersion=.*/sonar.projectVersion=$VERSION/" sonar-project.properties
+echo " ✅ sonar-project.properties updated"
