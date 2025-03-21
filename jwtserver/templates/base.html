@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load dipstrapfiles %}
-<html>
+<html lang="fr">
 <head>
     <title>{% block title %}jwtserver{% endblock %}</title>
     <meta charset="utf-8" />
@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% dipstrap 'css/bootstrap-unistra.min.css' %}">
     <link rel="stylesheet" href="{% dipstrap 'css/bootstrap-theme-unistra.min.css' %}">
     <link rel="stylesheet" href="{% dipstrap 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jwtserver.css' %}" type="text/css" title="no title" charset="utf-8" />
+    <link rel="stylesheet" href="{% static 'css/jwtserver.css' %}" type="text/css" title="no title"/>
 
     <script src="{% dipstrap 'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
     {% block head-javascript %}{% endblock %}

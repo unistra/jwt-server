@@ -47,3 +47,4 @@ htmlcov/
 .fab_tasks~
 *.db
 .env
+coverage.xml
