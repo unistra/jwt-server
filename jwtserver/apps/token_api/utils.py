@@ -2,6 +2,7 @@ import base64
 import json
 import re
 from functools import lru_cache
+from urllib.parse import urlparse
 from uuid import NAMESPACE_DNS, uuid3
 
 import jwt
@@ -21,15 +22,17 @@ def decode_service(encoded_service: str) -> str:
     # base64 decode the service and strip the protocol and port
     try:
         encoded = re.search("/([^/]*)$", encoded_service).group(1)
-        service_and_port = re.search(
-            "^https?://([^/]+)",
-            base64.urlsafe_b64decode(encoded).decode("utf-8"),
-        ).group(1)
-        service = re.search("^([^:]+)(:[0-9]+)?$", service_and_port).group(1)
+        decoded_service_and_port = base64.urlsafe_b64decode(encoded).decode("utf-8")
+        service = get_domain_from_service(decoded_service_and_port)
     except AttributeError:
         # .group() not an attribute of None (regex does not match)
         return ""
     return service
+
+
+def get_domain_from_service(service: str) -> str:
+    parsed = urlparse(service)
+    return parsed.hostname or ""
 
 
 @lru_cache
