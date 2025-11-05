@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jwt-server"
-version = "1.7.8"
+version = "1.7.9"
 description = ""
 authors = ["DIP - Université de Strasbourg <dnum-dip@unistra.fr>"]
 package-mode = false
