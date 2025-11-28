@@ -57,6 +57,7 @@ INSTALLED_APPS += [
     'coverage',
     'debug_toolbar',
     'django_extensions',
+    'django_vite',
 ]
 
 ############
@@ -121,3 +122,8 @@ LDAP_FILTER = environ.get(
 #####################
 CAS_SERVER_URL = 'https://cas-dev.unistra.fr:443/cas/'
 CAS_FORCE_SSL_SERVICE_URL = False
+
+####################
+#      VITE        #
+####################
+DJANGO_VITE["default"]["dev_mode"] = True

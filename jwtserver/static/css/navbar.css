@@ -1,0 +1,92 @@
+body {
+  > nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--u-navbar-height);
+    backdrop-filter: blur(4px);
+    background-color: oklch(from var(--u-body-bg-color) l c h / 0.60);
+    border-block-end: 1px solid var(--u-border-color);
+    z-index: 1000;
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+
+      [role="img"] {
+        display: flex;
+        font-size: 1.5rem;
+        line-height: 1;
+
+        span,
+        a {
+          display: flex;
+          text-decoration: none;
+          color: var(--u-text-color);
+
+          @media (prefers-reduced-motion: no-preference) {
+            transition: all 100ms ease-in-out;
+          }
+
+          &.hover {
+            background-color: var(--u-action-color);
+            color: var(--u-text-on-action-color);
+          }
+        }
+
+        .icons {
+          align-items: center;
+          font-size: 2rem;
+          font-weight: bold;
+          border: 1px solid var(--u-action-color);
+          padding: 0 0.5rem;
+        }
+
+        .text {
+          flex-direction: column;
+
+          .jwt {
+            padding: 0 0.5rem;
+            border-block-start: 1px solid var(--u-action-color);
+            border-inline-end: 1px solid var(--u-action-color);
+            width: fit-content;
+          }
+
+          .university {
+            span,
+            a {
+              border-block-start: 1px solid var(--u-action-color);
+              border-block-end: 1px solid var(--u-action-color);
+              border-inline-end: 1px solid var(--u-action-color);
+            }
+
+            a {
+              padding: 0 0.5rem;
+
+              &:hover {
+                background-color: var(--u-action-color);
+                color: var(--u-text-on-action-color);
+              }
+            }
+
+            span {
+              width: 0.25rem;
+            }
+          }
+        }
+      }
+
+      menu {
+        display: flex;
+        gap: 1rem;
+
+        li {
+          list-style: none;
+        }
+      }
+    }
+  }
+}

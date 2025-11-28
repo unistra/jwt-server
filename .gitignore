@@ -48,3 +48,7 @@ htmlcov/
 *.db
 .env
 coverage.xml
+
+# Vite
+node_modules
+jwtserver/static/dist/

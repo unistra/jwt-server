@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-21 08:53+0200\n"
+"POT-Creation-Date: 2025-11-28 11:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: jwtserver/apps/token_api/admin.py:57
+#: jwtserver/apps/token_api/admin.py:56
 #, python-format
 msgid "User %(account)s does not exist"
 msgstr "L'utilisateur %(account)s n'existe pas"
 
-#: jwtserver/apps/token_api/models.py:26
+#: jwtserver/apps/token_api/models.py:38
 #, python-format
 msgid "Service \"%(name)s\" already exists"
 msgstr "Le service \"%(name)s\" existe déjà"
 
-#: jwtserver/apps/token_api/models.py:51
+#: jwtserver/apps/token_api/models.py:80
 msgid "LDAP account to generate a token for"
 msgstr "Compte LDAP à utiliser"
 
@@ -39,3 +39,15 @@ msgstr "Page non trouvée"
 #: jwtserver/templates/500.html:6
 msgid "Error"
 msgstr "Erreur"
+
+#: jwtserver/templates/base.html:63
+msgid "home"
+msgstr "Accueil"
+
+#: jwtserver/templates/base.html:69
+msgid "token_for_service"
+msgstr "Token pour un service"
+
+#: jwtserver/templates/base.html:75
+msgid "admin"
+msgstr "Administration"

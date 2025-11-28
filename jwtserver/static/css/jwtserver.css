@@ -1,0 +1,64 @@
+:root {
+  --u-action-color: oklch(0.35 0.14 252.19);
+
+  --u-decoration-color: oklch(from var(--u-action-color) calc(l + 0.01) calc(c + 0.03) calc(h + 60));
+
+  --u-error-color: oklch(0.72 0.21 25.33);
+
+  --u-success-color: oklch(0.72 0.19 149.57);
+
+  --u-warning-color: oklch(0.72 0.22 97.14);
+
+  --u-info-color: oklch(0.72 0.19 259.82);
+
+  --u-action-bg-0: oklch(from var(--u-action-color) 0.87 0.04 h);
+  --u-action-bg-1: oklch(from var(--u-action-color) 0.82 0.05 h);
+  --u-action-bg-2: oklch(from var(--u-action-color) 0.78 0.06 h);
+  --u-action-bg-3: oklch(from var(--u-action-color) 0.74 0.07 h);
+  --u-action-bg-4: oklch(from var(--u-action-color) 0.70 0.08 h);
+  --u-action-bg-5: oklch(from var(--u-action-color) 0.66 0.09 h);
+  --u-action-bg-6: oklch(from var(--u-action-color) 0.62 0.10 h);
+  --u-action-bg-7: oklch(from var(--u-action-color) 0.58 0.11 h);
+  --u-action-bg-8: oklch(from var(--u-action-color) 0.54 0.12 h);
+
+  --u-body-bg-color: oklch(from var(--u-action-color) 0.99 0.01 h);
+
+  --u-border-color: oklch(from var(--u-action-color) 0.82 0.04 h);
+
+  --u-text-color: oklch(from var(--u-action-color) 0.01 0.05 h / 0.87);
+  --u-text-on-action-color: oklch(from var(--u-action-color) 0.98 0.02 h / 1);
+
+  --u-navbar-height: 5rem;
+}
+
+body {
+  margin: var(--u-navbar-height) 0 0 0;
+  width: 100%;
+  height: 200vh;
+
+  background-color: var(--u-body-bg-color);
+
+  font: 1.25rem / 1.2 "Unistra A", Roboto, sans-serif;
+
+  color: var(--u-text-color);
+}
+
+.container {
+  padding-inline-start: 1rem !important;
+  padding-inline-end: 1rem !important;
+  width: 100%;
+
+  @media (width > 768px) {
+    padding: 0;
+    max-width: 768px;
+    margin: 0 auto;
+  }
+
+  @media (width > 1024px) {
+    max-width: 1024px;
+  }
+
+  @media (width > 1280px) {
+    max-width: 1280px;
+  }
+}

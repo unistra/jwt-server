@@ -380,3 +380,14 @@ check_key('myPublic.pem', 'VERIFYING_KEY')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ('http://localhost:8080',)
 CORS_ALLOW_CREDENTIALS = True
+
+####################
+#      VITE        #
+####################
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": False,
+        "static_url_prefix": "dist/",
+        "manifest_path": DJANGO_ROOT / "jwtserver" / "static" / "dist" / "manifest.json",
+    },
+}
