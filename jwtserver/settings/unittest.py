@@ -1,7 +1,7 @@
 from os import environ
-from .base import *
 from pathlib import Path
 
+from .base import *
 
 #######################
 # Debug configuration #
@@ -45,3 +45,8 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": "S3creT~KEy",
 }
+
+####################
+#      VITE        #
+####################
+DJANGO_VITE["default"]["dev_mode"] = True

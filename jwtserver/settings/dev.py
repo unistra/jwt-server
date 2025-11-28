@@ -1,6 +1,5 @@
 from datetime import timedelta
 from os import environ
-from pathlib import Path
 
 from .base import *
 
@@ -57,7 +56,6 @@ INSTALLED_APPS += [
     'coverage',
     'debug_toolbar',
     'django_extensions',
-    'django_vite',
 ]
 
 ############

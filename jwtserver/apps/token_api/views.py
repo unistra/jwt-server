@@ -20,7 +20,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
-from ...libs.api.client import LDAPUserNotFoundError
 from .forms import TokenForServiceForm
 from .models import ApplicationToken, AuthorizedService
 from .serializers import (
@@ -31,6 +30,7 @@ from .serializers import (
     UserSerializer,
 )
 from .utils import force_https, generate_jwks
+from ...libs.api.client import LDAPUserNotFoundError
 
 
 def get_tokens_for_user(user):
@@ -279,7 +279,7 @@ class TokenForServiceView(UserPassesTestMixin, View):
 
     form_class = TokenForServiceForm
     initial = {"service": None}
-    template_name = "token_for_service.html"
+    template_name = "pages/token_for_service.html"
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
