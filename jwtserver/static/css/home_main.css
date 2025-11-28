@@ -35,7 +35,7 @@ main {
         --tw-shadow: 0 5px 3px 0 rgb(0 0 0 / 0.05);
         box-shadow: var(--tw-shadow-colored), var(--tw-shadow);
 
-        i {
+        > i {
           color: var(--base-color);
           width: 3rem;
           height: 3rem;
@@ -87,6 +87,67 @@ main {
 
         p {
           color: var(--u-text-subtitle-color);
+        }
+
+        button {
+          --api-text-color: var(--u-text-color);
+          --api-bg-color: oklch(from var(--api-text-color) 0.9 c h / 0.1);
+          --api-border-color: var(--u-decoration-color);
+
+          &[data-method="POST"] {
+            --api-text-color: var(--u-text-success-color);
+            --api-border-color: var(--u-success-color);
+          }
+
+          &[data-method="GET"] {
+            --api-text-color: var(--u-text-info-color);
+            --api-border-color: var(--u-info-color);
+          }
+
+          &[data-method="PUT"] {
+            --api-text-color: var(--u-text-warning-color);
+            --api-border-color: var(--u-warning-color);
+          }
+
+          &[data-method="DELETE"] {
+            --api-text-color: var(--u-text-error-color);
+            --api-border-color: var(--u-error-color);
+          }
+
+          width: 100%;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: var(--api-bg-color);
+          padding: 0.5rem 1rem;
+          line-height: 1.5rem;
+          color: var(--api-text-color);
+          border: 1px solid oklch(from var(--api-border-color) l c h / 0.2);
+          border-radius: 0.5rem;
+
+          &:hover {
+            i {
+              display: flex;
+            }
+          }
+
+          > span {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+
+            > span {
+              &:first-of-type {
+                font-weight: bold;
+              }
+            }
+          }
+
+          i {
+            display: none;
+            font-size: 1.5rem;
+          }
         }
       }
     }

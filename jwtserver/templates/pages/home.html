@@ -54,6 +54,21 @@
               {% endif %}
             </h3>
             <p>{{ service.description }}</p>
+
+            {% if request.user.is_superuser %}
+              <button
+                  aria-label="Copier l'endpoint {{ service.api.method }} /{{ service.api.path }}"
+                  data-endpoint="{{ request.build_absolute_uri }}{{ service.api.path }}"
+                  data-method="{{ service.api.method }}"
+              >
+                <span>
+                  <span>{{ service.api.method }}</span>
+                  <span>/{{ service.api.path }}</span>
+                </span>
+
+                <i class="us us-square-double" aria-hidden="true"></i>
+              </button>
+            {% endif %}
           </article>
         {% endfor %}
       </section>
@@ -89,7 +104,7 @@
       </a>
     </div>
     <div>
-
+      <div class="code"></div>
     </div>
   </section>
 {% endblock %}

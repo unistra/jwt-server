@@ -13,6 +13,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'jwtserver/static/js/jwtserver.js'),
+        home: resolve(__dirname, 'jwtserver/static/js/home.js'),
       },
     },
   },

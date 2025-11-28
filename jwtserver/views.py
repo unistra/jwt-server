@@ -16,6 +16,10 @@ def home(request):
                     'icon': 'us us-user',
                     'color': 'oklch(0.55 0.22 262.89)',
                     'is_debug': False,
+                    'api': {
+                        'path': 'api/token/',
+                        'method': 'POST',
+                    },
                 },
                 {
                     'title': _('Session Renewal'),
@@ -25,6 +29,10 @@ def home(request):
                     'icon': 'us us-arrows-rotate',
                     'color': 'oklch(0.6 0.13 163.22)',
                     'is_debug': False,
+                    'api': {
+                        'path': 'api/token/refresh/',
+                        'method': 'POST',
+                    },
                 },
                 {
                     'title': _('Token-o-Matic'),
@@ -34,6 +42,10 @@ def home(request):
                     'icon': 'nv nv-android',
                     'color': 'oklch(0.56 0.25 320.33)',
                     'is_debug': False,
+                    'api': {
+                        'path': 'api/token-o-matic/',
+                        'method': 'POST',
+                    },
                 },
                 {
                     'title': _('Service Verification'),
@@ -43,6 +55,10 @@ def home(request):
                     'icon': 'us us-arrows-rotate',
                     'color': 'oklch(0.65 0.19 41.11)',
                     'is_debug': False,
+                    'api': {
+                        'path': 'api/service/verify/',
+                        'method': 'POST',
+                    },
                 },
                 {
                     'title': _('Dummy Mode'),
@@ -52,6 +68,7 @@ def home(request):
                     'icon': 'us us-flask-sm',
                     'color': 'oklch(0.45 0.18 95.31)',
                     'is_debug': True,
+                    'api': {'path': 'api/dummy/token', 'method': 'GET'},
                 },
             ]
         },

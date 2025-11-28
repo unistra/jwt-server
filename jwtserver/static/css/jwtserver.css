@@ -46,6 +46,10 @@
   --u-text-color: oklch(from var(--u-decoration-color) 0.01 0.05 h / 0.87);
   --u-text-on-action-color: oklch(from var(--u-action-color) 0.98 0.02 h / 1);
   --u-text-subtitle-color: oklch(from var(--u-decoration-color) 0.2 0.03 h / 0.75);
+  --u-text-success-color: oklch(from var(--u-success-color) 0.43 0.2 h / 0.87);
+  --u-text-error-color: oklch(from var(--u-error-color) 0.43 0.2 h / 0.87);
+  --u-text-warning-color: oklch(from var(--u-warning-color) 0.43 0.2 h / 0.87);
+  --u-text-info-color: oklch(from var(--u-info-color) 0.43 0.2 h / 0.87);
 
   --u-navbar-height: 5rem;
 }
