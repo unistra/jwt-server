@@ -1,16 +1,117 @@
 section.container {
   display: grid;
   grid-template-columns: 1fr;
+  padding: 2rem 1rem;
 
   @media (width > 768px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
 
+
   > div {
     &:first-of-type {
+      h2 {
+        margin-block: 0;
+      }
+
       > p {
         color: var(--u-text-subtitle-color);
+      }
+
+      ul {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0;
+        margin: 0 0 2rem 0;
+
+        li {
+          --marker-size: 1.5rem;
+
+          list-style: none;
+          display: grid;
+          grid-template-columns: var(--marker-size) 1fr;
+          align-items: center;
+          gap: 1rem;
+
+          span {
+            width: var(--marker-size);
+            height: var(--marker-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: oklch(from var(--u-text-success-color) 0.95 c h / 0.2);
+            border-radius: 50%;
+            color: var(--u-text-success-color);
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+
+    &:last-of-type {
+      background-color: #1e1e2e;
+      border-radius: 0.5rem;
+      padding: 1rem;
+
+      &, & *:not(i) {
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1rem;
+        font-family: "Fira Code", monospace;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--u-text-on-action-color);
+        border-block-end: 1px solid oklch(from var(--u-text-on-action-color) l c h / 0.2);
+        padding-block-end: 0.5rem;
+
+        > div {
+          display: flex;
+          gap: 2rem;
+
+          ul {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            li {
+              width: 0.75rem;
+              height: 0.75rem;
+              border-radius: 50%;
+              list-style: none;
+
+              &:nth-child(1) {
+                background-color: var(--u-error-color);
+              }
+
+              &:nth-child(2) {
+                background-color: var(--u-warning-color);
+              }
+
+              &:nth-child(3) {
+                background-color: var(--u-success-color);
+              }
+            }
+          }
+
+          p {
+            margin: 0;
+          }
+        }
+      }
+
+      section {
+        pre {
+          margin: 0;
+        }
       }
     }
   }

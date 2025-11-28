@@ -20,14 +20,11 @@ const CasOptions = {
   options: {
     appIsAllAuth: true,
     authCasLogoutUrl: 'cas_authentication_logout',
-    hasFreeAPI: true,
-    jwtServerUrl: 'https://jwtserver-pprd.app.unistra.fr/api',
+    hasFreeAPI: false,
+    jwtServerUrl: 'https://jwtserver.unistra.fr/api',
     loginRoute: {name: 'login'},
     loginRouteIsInternal: true,
     serverCAS: 'https://cas.unistra.fr',
-    tokenErrorRoutes: {
-      /**@type number*/errorCode: /**@type string*/routeName,
-    }
   },
   router: router,
 };
@@ -38,7 +35,7 @@ app.mount('#app');
 `,
 ).then((html) => {
   console.log()
-  document.querySelector('.code').innerHTML = html
+  document.querySelector('.code > section').innerHTML = html
 })
 
 document.querySelectorAll('main .container > section article button').forEach((button) => {
@@ -51,3 +48,5 @@ document.querySelectorAll('main .container > section article button').forEach((b
     }, 2000)
   })
 })
+
+document.querySelector('.code button').forEach((button) => {})

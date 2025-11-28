@@ -13,6 +13,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="author" content="Direction du Numérique - Université de Strasbourg"/>
 
+  {% block meta %}{% endblock %}
+
   <link href="https://s3.unistra.fr" rel="preconnect">
 
   <link as="style"
@@ -30,6 +32,8 @@
   <link
       href="https://s3.unistra.fr/master/common/assets/fonts/nova-icons/1.0.2/css/nova-icons.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&Signature=hFFKhRhE9%2B1xVyIi%2F%2BQPD%2BftVbk%3D&Expires=1887617035"
       rel="stylesheet">
+
+  {% block output_css %}{% endblock %}
 
   {% vite_hmr_client %}
   {% vite_asset 'jwtserver/static/js/jwtserver.js' %}
@@ -96,13 +100,13 @@
 {% block content %}
   Contenu de jwtserver
 {% endblock %}
-<div class="navbar navbar-default navbar-fixed-bottom">
-  <footer>
-    <div class="container">
-      <p class="credit">&copy; Direction du Num&eacute;rique - Universit&eacute; de Strasbourg - {% now "Y" %}</p>
-    </div>
-  </footer>
-</div>
+
+<footer>
+  <div class="container">
+    <p>&copy; Direction du Numérique - DIP - Université de Strasbourg - {% now "Y" %}</p>
+  </div>
+</footer>
+
 {% block foot-javascript %}{% endblock %}
 </body>
 </html>

@@ -3,6 +3,37 @@
 {% load django_vite %}
 {% load i18n %}
 
+{% block title %}
+  {% trans 'Home | JWT Server - Université de Strasbourg' %}
+{% endblock %}
+
+{% block meta %}
+  <meta name="description"
+        content="Plateforme AuthProvider pour l'Université de Strasbourg : Authentification unifiée et sécurisée (JWT, CAS, LDAP). Intégrez facilement vos applications VueJS et services internes.">
+  <meta name="keywords"
+        content="authentification unistra, unistra auth, jwt unistra, cas jwt, ldap, vuejs authentication, token-o-matic, renouvellement session, université strasbourg">
+
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://jwtserver.app.unistra.fr/">
+
+  <meta property="og:title" content="AuthProvider Unistra - Authentification Unifiée & Sécurisée (JWT/CAS)">
+  <meta property="og:description"
+        content="Plateforme centrale de délivrance de jetons JWT et d'intégration sécurisée pour les applications VueJS et services de l'Université de Strasbourg.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jwtserver.app.unistra.fr/">
+  <meta property="og:site_name" content="AuthProvider Unistra">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AuthProvider Unistra : Authentification JWT/CAS pour VueJS">
+  <meta name="twitter:description"
+        content="Sécurité et intégration rapide pour l'écosystème Unistra. Gérez les jetons JWT, le renouvellement de session et les services M2M.">
+{% endblock %}
+
+{% block output_css %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+{% endblock %}
+
 {% block head-javascript %}
   {% vite_asset 'jwtserver/static/js/home.js' %}
 {% endblock %}
@@ -87,13 +118,21 @@
 
       <ul>
         <li>
-          Intercepteurs Axios préconfigurés
+          <span>
+            <i class="us us-check-alt"></i>
+          </span>
           {% trans "Axios interceptors preconfigured" %}
         </li>
         <li>
+          <span>
+            <i class="us us-check-alt"></i>
+          </span>
           {% trans "Automatic token refresh management" %}
         </li>
         <li>
+          <span>
+            <i class="us us-check-alt"></i>
+          </span>
           {% trans "Compatible with Vue 2 & Vue 3 (Composition API)" %}
         </li>
       </ul>
@@ -104,7 +143,23 @@
       </a>
     </div>
     <div>
-      <div class="code"></div>
+      <div class="code">
+        <header aria-hidden="true">
+          <div>
+            <ul>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
+
+            <p>maint.ts</p>
+          </div>
+        </header>
+
+        <section>
+
+        </section>
+      </div>
     </div>
   </section>
 {% endblock %}
