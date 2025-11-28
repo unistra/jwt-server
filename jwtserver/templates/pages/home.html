@@ -1,8 +1,95 @@
 {% extends "base.html" %}
 
+{% load django_vite %}
 {% load i18n %}
 
+{% block head-javascript %}
+  {% vite_asset 'jwtserver/static/js/home.js' %}
+{% endblock %}
+
 {% block content %}
-  <h1>{% trans 'JWT Server' %}</h1>
-  <p>{% trans 'Central platform for issuing JWT tokens for the Unistra ecosystem. Connect your VueJS applications to LDAP and CAS in just a few lines of code.' %}</p>
+  <header class="container">
+    <hgroup>
+      <h1>{% trans 'JWT Server' %}</h1>
+      <p>{% trans 'Central platform for issuing JWT tokens for the Unistra ecosystem.' %}</p>
+      <p>{% trans 'Connect your applications to CAS in just a few lines of code.' %}</p>
+    </hgroup>
+
+    <menu>
+      <li>
+        <a class="btn" href="#services">
+          {% trans 'Discover our services' %}
+          <span aria-hidden="true">👇</span>
+        </a>
+      </li>
+      <li>
+        {% url 'jwks' as jwks %}
+        <a class="btn btn-outline" href="{{ jwks }}">
+          {% trans 'View JWKS' %}
+          <span aria-hidden="true">🗝️</span>
+        </a>
+      </li>
+    </menu>
+  </header>
+
+  <main>
+    <div class="container">
+      <hgroup>
+        <h2 id="services">
+          {% trans 'API Services Catalogue' %}
+        </h2>
+        <p>
+          {% trans "This application exposes several REST endpoints to manage the complete lifecycle of your users' and services' authentication." %}
+        </p>
+      </hgroup>
+
+      <section>
+        {% for service in services %}
+          <article style="--base-color: {{ service.color }}">
+            <i class="{{ service.icon }}"></i>
+            <h3>
+              {{ service.title }}
+              {% if service.is_debug %}
+                <span>{% trans 'Debug Mode' %}</span>
+              {% endif %}
+            </h3>
+            <p>{{ service.description }}</p>
+          </article>
+        {% endfor %}
+      </section>
+    </div>
+  </main>
+
+  <section class="container">
+    <div>
+      <h2>
+        {% trans 'VueJS Native Integration' %}
+      </h2>
+
+      <p>
+        {% trans "Don't waste time reinventing token management. We provide an official package maintained by the Unistra community." %}
+      </p>
+
+      <ul>
+        <li>
+          Intercepteurs Axios préconfigurés
+          {% trans "Axios interceptors preconfigured" %}
+        </li>
+        <li>
+          {% trans "Automatic token refresh management" %}
+        </li>
+        <li>
+          {% trans "Compatible with Vue 2 & Vue 3 (Composition API)" %}
+        </li>
+      </ul>
+
+      <a class="btn" href="https://git.unistra.fr/vue-unistra/cas-authentication" target="_blank" rel="noopener">
+        {% trans 'Discover the package' %}
+        <span aria-hidden="true">🚀</span>
+      </a>
+    </div>
+    <div>
+
+    </div>
+  </section>
 {% endblock %}

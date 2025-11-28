@@ -1,0 +1,94 @@
+main {
+  background-color: var(--u-template-bg-color);
+  padding: 3rem 1rem 5rem 1rem;
+  border-block: 1px solid var(--u-template-border-color);
+
+  .container {
+    hgroup {
+      h2,
+      p {
+        text-align: center;
+      }
+    }
+
+    > section {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      @media (width > 768px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      @media (width > 1024px) {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      article {
+        --base-color: var(--u-decoration-color);
+
+        background-color: var(--u-body-bg-color);
+        padding: 2rem;
+        border: 1px solid var(--u-template-border-color);
+        border-radius: 0.5rem;
+        --tw-shadow-colored: 0 2px 5px 0 oklch(from var(--u-decoration-color) l c h / 0.1);
+        --tw-shadow: 0 5px 3px 0 rgb(0 0 0 / 0.05);
+        box-shadow: var(--tw-shadow-colored), var(--tw-shadow);
+
+        i {
+          color: var(--base-color);
+          width: 3rem;
+          height: 3rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 2rem;
+          background-color: oklch(from var(--base-color) l c h / 0.1);
+          border-radius: 0.5rem;
+
+          &.us {
+            &::before {
+              transform: translateY(2px);
+            }
+          }
+
+          &::before {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+
+        h3 {
+          font-weight: bold;
+          fill-size: 2rem;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          span {
+            &:nth-child(2) {
+              color: var(--base-color);
+              font-size: 1rem;
+              padding: 0.25rem 0.5rem;
+              font-weight: normal;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 0.25rem;
+              background-color: oklch(from var(--base-color) l c h / 0.1);
+              border: 1px solid var(--base-color);
+            }
+          }
+        }
+
+        p {
+          color: var(--u-text-subtitle-color);
+        }
+      }
+    }
+  }
+}

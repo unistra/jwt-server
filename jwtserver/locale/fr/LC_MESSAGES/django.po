@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-28 12:24+0100\n"
+"POT-Creation-Date: 2025-11-28 16:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr "Le service \"%(name)s\" existe déjà"
 
 #: jwtserver/apps/token_api/models.py:80
 msgid "LDAP account to generate a token for"
-msgstr "Compte LDAP à utiliser"
+msgstr "Compte LDAP à utiliser pour générer un jeton"
 
 #: jwtserver/templates/404.html:6
 msgid "Page not found"
@@ -40,24 +40,147 @@ msgstr "Page non trouvée"
 msgid "Error"
 msgstr "Erreur"
 
-#: jwtserver/templates/base.html:63
-msgid "home"
+#: jwtserver/templates/base.html:66
+msgid "Home"
 msgstr "Accueil"
 
-#: jwtserver/templates/base.html:69
-msgid "token_for_service"
+#: jwtserver/templates/base.html:72
+msgid "Token for service"
 msgstr "Token pour un service"
 
-#: jwtserver/templates/base.html:75
-msgid "admin"
+#: jwtserver/templates/base.html:78
+msgid "Admin"
 msgstr "Administration"
 
-#: jwtserver/templates/pages/home.html:4
+#: jwtserver/templates/base.html:83
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: jwtserver/templates/base.html:89
+msgid "Login"
+msgstr "Connexion"
+
+#: jwtserver/templates/pages/home.html:13
 msgid "JWT Server"
 msgstr "JWT Serveur"
 
-#: jwtserver/templates/pages/home.html:5
+#: jwtserver/templates/pages/home.html:14
+msgid "Central platform for issuing JWT tokens for the Unistra ecosystem."
+msgstr ""
+"Plateforme centrale pour l'émission de jetons JWT pour l'écosystème Unistra."
+
+#: jwtserver/templates/pages/home.html:15
+msgid "Connect your applications to CAS in just a few lines of code."
+msgstr "Connectez vos applications à CAS en quelques lignes de code."
+
+#: jwtserver/templates/pages/home.html:21
+msgid "Discover our services"
+msgstr "Découvrez les services"
+
+#: jwtserver/templates/pages/home.html:28
+msgid "View JWKS"
+msgstr "Voir JWKS"
+
+#: jwtserver/templates/pages/home.html:39
+msgid "API Services Catalogue"
+msgstr "Catalogue des services API"
+
+#: jwtserver/templates/pages/home.html:42
 msgid ""
-"Central platform for issuing JWT tokens for the Unistra ecosystem. Connect "
-"your VueJS applications to LDAP and CAS in just a few lines of code."
-msgstr "Plateforme centrale de délivrance de jetons JWT pour l'écosystème Unistra. Connectez vos applications VueJS au LDAP et au CAS en quelques lignes de code."
+"This application exposes several REST endpoints to manage the complete "
+"lifecycle of your users' and services' authentication."
+msgstr ""
+"Cette application expose plusieurs points de terminaison REST pour gérer le "
+"cycle de vie complet de l'authentification de vos utilisateurs et services."
+
+#: jwtserver/templates/pages/home.html:53
+msgid "Debug Mode"
+msgstr "Mode Débogage"
+
+#: jwtserver/templates/pages/home.html:66
+msgid "VueJS Native Integration"
+msgstr "Intégration native VueJS"
+
+#: jwtserver/templates/pages/home.html:70
+msgid ""
+"Don't waste time reinventing token management. We provide an official "
+"package maintained by the Unistra community."
+msgstr ""
+"Ne perdez pas de temps à réinventer la gestion des jetons. Nous fournissons "
+"un package officiel maintenu par la communauté Unistra."
+
+#: jwtserver/templates/pages/home.html:76
+msgid "Axios interceptors preconfigured"
+msgstr "Intercepteurs Axios préconfigurés"
+
+#: jwtserver/templates/pages/home.html:79
+msgid "Automatic token refresh management"
+msgstr "Gestion automatique du rafraîchissement des jetons"
+
+#: jwtserver/templates/pages/home.html:82
+msgid "Compatible with Vue 2 & Vue 3 (Composition API)"
+msgstr "Compatible avec Vue 2 & Vue 3 (API composition)"
+
+#: jwtserver/templates/pages/home.html:87
+msgid "Discover the package"
+msgstr "Découvrez le package"
+
+#: jwtserver/views.py:12
+msgid "Standard Authentication"
+msgstr "Authentification Standard"
+
+#: jwtserver/views.py:14
+msgid ""
+"Exchanges a standard CAS ticket for a pair of tokens (Access + Refresh). "
+"Automatically retrieves the user's LDAP attributes."
+msgstr ""
+"Échange un ticket CAS standard contre une paire de jetons (Accès + "
+"Rafraîchissement). Récupère automatiquement les attributs LDAP de "
+"l'utilisateur."
+
+#: jwtserver/views.py:21
+msgid "Session Renewal"
+msgstr "Renouvellement de Session"
+
+#: jwtserver/views.py:23
+msgid ""
+"Allows maintaining the user session active without CAS re-authentication by "
+"exchanging a valid Refresh Token for a new Access Token."
+msgstr ""
+"Permet de maintenir la session utilisateur active sans ré-authentification "
+"CAS en échangeant un jeton de rafraîchissement valide contre un nouveau "
+"jeton d'accès."
+
+#: jwtserver/views.py:30
+msgid "Token-o-Matic"
+msgstr "Token-o-Matic"
+
+#: jwtserver/views.py:32
+msgid ""
+"Machine-to-Machine authentication system. Allows a backend service to obtain "
+"an access token for another service via an ApplicationToken."
+msgstr ""
+"Système d'authentification Machine-to-Machine. Permet à un service backend "
+"d'obtenir un jeton d'accès pour un autre service via un ApplicationToken."
+
+#: jwtserver/views.py:39
+msgid "Service Verification"
+msgstr "Vérification de Service"
+
+#: jwtserver/views.py:41
+msgid ""
+"Utility endpoint to verify the validity of a CAS ticket or the accessibility "
+"of a registered remote service."
+msgstr ""
+"Point de terminaison utilitaire pour vérifier la validité d'un ticket CAS ou "
+"l'accessibilité d'un service distant enregistré."
+
+#: jwtserver/views.py:48
+msgid "Dummy Mode"
+msgstr "Mode Simulé"
+
+#: jwtserver/views.py:50
+msgid ""
+"Authentication simulator for development environments. Only works with "
+"DEBUG=True."
+msgstr "Simulateur d'authentification pour les environnements de développement. Ne fonctionne qu'avec DEBUG=True."

@@ -1,7 +1,13 @@
 :root {
   --u-action-color: oklch(0.35 0.14 252.19);
+  --u-action-hover-color: oklch(from var(--u-action-color) 0.45 0.20 h);
+  --u-action-light-color: oklch(from var(--u-action-color) 0.85 0.33 h);
+  --u-action-dark-color: oklch(from var(--u-action-color) 0.30 0.18 h);
 
   --u-decoration-color: oklch(from var(--u-action-color) calc(l + 0.01) calc(c + 0.03) calc(h + 60));
+  --u-decoration-hover-color: oklch(from var(--u-decoration-color) 0.50 c h);
+  --u-decoration-light-color: oklch(from var(--u-decoration-color) 0.85 0.36 h);
+  --u-decoration-dark-color: oklch(from var(--u-decoration-color) 0.30 0.20 h);
 
   --u-error-color: oklch(0.72 0.21 25.33);
 
@@ -21,14 +27,32 @@
   --u-action-bg-7: oklch(from var(--u-action-color) 0.58 0.11 h);
   --u-action-bg-8: oklch(from var(--u-action-color) 0.54 0.12 h);
 
-  --u-body-bg-color: oklch(from var(--u-action-color) 0.99 0.01 h);
+  --u-decoration-bg-0: oklch(from var(--u-decoration-color) 0.87 0.04 h);
+  --u-decoration-bg-1: oklch(from var(--u-decoration-color) 0.82 0.05 h);
+  --u-decoration-bg-2: oklch(from var(--u-decoration-color) 0.78 0.06 h);
+  --u-decoration-bg-3: oklch(from var(--u-decoration-color) 0.74 0.07 h);
+  --u-decoration-bg-4: oklch(from var(--u-decoration-color) 0.70 0.08 h);
+  --u-decoration-bg-5: oklch(from var(--u-decoration-color) 0.66 0.09 h);
+  --u-decoration-bg-6: oklch(from var(--u-decoration-color) 0.62 0.10 h);
+  --u-decoration-bg-7: oklch(from var(--u-decoration-color) 0.58 0.11 h);
+  --u-decoration-bg-8: oklch(from var(--u-decoration-color) 0.54 0.12 h);
 
-  --u-border-color: oklch(from var(--u-action-color) 0.82 0.04 h);
+  --u-body-bg-color: oklch(from var(--u-decoration-bg-0) 0.99 0.01 h);
 
-  --u-text-color: oklch(from var(--u-action-color) 0.01 0.05 h / 0.87);
+  --u-template-bg-color: oklch(from var(--u-decoration-bg-0) calc(l + 0.1) calc(c - 0.01) h);
+
+  --u-template-border-color: oklch(from var(--u-decoration-bg-0) 0.82 0.04 h / 0.5);
+
+  --u-text-color: oklch(from var(--u-decoration-color) 0.01 0.05 h / 0.87);
   --u-text-on-action-color: oklch(from var(--u-action-color) 0.98 0.02 h / 1);
+  --u-text-subtitle-color: oklch(from var(--u-decoration-color) 0.2 0.03 h / 0.75);
 
   --u-navbar-height: 5rem;
+}
+
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -38,9 +62,18 @@ body {
 
   background-color: var(--u-body-bg-color);
 
-  font: 1.25rem / 1.2 "Unistra A", Roboto, sans-serif;
+  font: 1.25rem / 1.2 "Unistra A", sans-serif;
 
   color: var(--u-text-color);
+
+  a {
+    color: var(--u-action-color);
+    text-decoration: underline;
+  }
+
+  [id] {
+    scroll-margin-top: calc(var(--u-navbar-height) + 1rem);
+  }
 }
 
 .container {
@@ -60,5 +93,35 @@ body {
 
   @media (width > 1280px) {
     max-width: 1280px;
+  }
+}
+
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--u-action-dark-color);
+  border-radius: 0.25rem;
+  background-color: var(--u-action-dark-color);
+  color: var(--u-text-on-action-color);
+  text-decoration: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+
+  &:hover, &:focus {
+    background-color: var(--u-action-hover-color);
+  }
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--u-action-color);
+  color: var(--u-action-color);
+
+  &:hover, &:focus {
+    background-color: var(--u-action-bg-0);
   }
 }

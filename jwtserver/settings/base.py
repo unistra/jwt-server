@@ -390,6 +390,6 @@ DJANGO_VITE = {
     "default": {
         "dev_mode": False,
         "static_url_prefix": "dist/",
-        "manifest_path": DJANGO_ROOT / "jwtserver" / "static" / "dist" / "manifest.json",
+        "manifest_path": DJANGO_ROOT / "static" / "dist" / "manifest.json",
     },
 }

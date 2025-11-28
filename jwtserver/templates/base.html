@@ -27,6 +27,9 @@
   <link
       href="https://s3.unistra.fr/master/common/assets/fonts/unistra-font/1.0.0/css/unistra-font.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&amp;Signature=Ros22u4Tp0Dy106qr0rRkGBPoJM%3D&amp;Expires=1870971370"
       rel="stylesheet">
+  <link
+      href="https://s3.unistra.fr/master/common/assets/fonts/nova-icons/1.0.2/css/nova-icons.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&Signature=hFFKhRhE9%2B1xVyIi%2F%2BQPD%2BftVbk%3D&Expires=1887617035"
+      rel="stylesheet">
 
   {% vite_hmr_client %}
   {% vite_asset 'jwtserver/static/js/jwtserver.js' %}
@@ -56,34 +59,43 @@
       </span>
     </div>
 
-    {% if request.user.is_superuser %}
-      <menu class="nav navbar-nav">
+    <menu class="nav navbar-nav">
+      {% if request.user.is_superuser %}
         <li>
           <a href="{{ url }}">
-            {% trans 'home' %}
+            {% trans 'Home' %}
           </a>
         </li>
         {% url 'token_for_service' as url %}
         <li>
           <a href="{{ url }}">
-            {% trans 'token_for_service' %}
+            {% trans 'Token for service' %}
           </a>
         </li>
         {% url 'admin:index' as url %}
         <li>
           <a href="{{ url }}">
-            {% trans 'admin' %}
+            {% trans 'Admin' %}
           </a>
         </li>
-      </menu>
-    {% endif %}
+        <li>
+          <a class="btn" href="{% url 'logout' %}">
+            {% trans 'Logout' %}
+          </a>
+        </li>
+      {% else %}
+        <li>
+          <a class="btn" href="{% url 'login' %}?next={{ request.path }}">
+            {% trans 'Login' %}
+          </a>
+        </li>
+      {% endif %}
+    </menu>
   </div>
 </nav>
-<div class="container">
-  {% block content %}
-    Contenu de jwtserver
-  {% endblock %}
-</div>
+{% block content %}
+  Contenu de jwtserver
+{% endblock %}
 <div class="navbar navbar-default navbar-fixed-bottom">
   <footer>
     <div class="container">

@@ -7,7 +7,7 @@ body {
     height: var(--u-navbar-height);
     backdrop-filter: blur(4px);
     background-color: oklch(from var(--u-body-bg-color) l c h / 0.60);
-    border-block-end: 1px solid var(--u-border-color);
+    border-block-end: 1px solid var(--u-template-border-color);
     z-index: 1000;
 
     .container {
@@ -81,10 +81,19 @@ body {
 
       menu {
         display: flex;
+        align-items: center;
         gap: 1rem;
 
         li {
           list-style: none;
+
+          a {
+            text-decoration: none;
+
+            &:hover:not(.btn) {
+              text-decoration: underline;
+            }
+          }
         }
       }
     }

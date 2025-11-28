@@ -1,0 +1,17 @@
+section.container {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @media (width > 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  > div {
+    &:first-of-type {
+      > p {
+        color: var(--u-text-subtitle-color);
+      }
+    }
+  }
+}
