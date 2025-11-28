@@ -1,6 +1,18 @@
 header.container {
   padding: 5rem 1rem;
 
+  &.sm {
+    padding: 1rem 1rem;
+
+    hgroup {
+      margin-block-end: 1rem;
+
+      h1 {
+        font-size: 3rem;
+      }
+    }
+  }
+
   hgroup {
     margin-block-end: 3rem;
 

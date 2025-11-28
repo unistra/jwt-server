@@ -31,9 +31,8 @@ main {
         padding: 2rem;
         border: 1px solid var(--u-template-border-color);
         border-radius: 0.5rem;
-        --tw-shadow-colored: 0 2px 5px 0 oklch(from var(--u-decoration-color) l c h / 0.1);
-        --tw-shadow: 0 5px 3px 0 rgb(0 0 0 / 0.05);
-        box-shadow: var(--tw-shadow-colored), var(--tw-shadow);
+        box-shadow: 0 2px 5px 0 oklch(from var(--u-decoration-color) l c h / 0.1),
+        0 5px 3px 0 rgb(0 0 0 / 0.05);
 
         > i {
           color: var(--base-color);

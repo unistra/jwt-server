@@ -1,5 +1,6 @@
 import '../css/jwtserver.css'
 import '../css/navbar.css'
+import '../css/core_header.css'
 import '../css/footer.css'
 
 const sign = document.querySelector('[role="img"]')

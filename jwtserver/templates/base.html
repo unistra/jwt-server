@@ -65,13 +65,13 @@
 
     <menu class="nav navbar-nav">
       {% if request.user.is_superuser %}
-        <li>
+        <li {% if request.resolver_match.url_name == 'home' %}class="active-link"{% endif %}>
           <a href="{{ url }}">
             {% trans 'Home' %}
           </a>
         </li>
         {% url 'token_for_service' as url %}
-        <li>
+        <li {% if request.resolver_match.url_name == 'token_for_service' %}class="active-link"{% endif %}>
           <a href="{{ url }}">
             {% trans 'Token for service' %}
           </a>

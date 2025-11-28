@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-28 22:28+0100\n"
+"POT-Creation-Date: 2025-11-29 00:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,6 +22,21 @@ msgstr ""
 #, python-format
 msgid "User %(account)s does not exist"
 msgstr "L'utilisateur %(account)s n'existe pas"
+
+#: jwtserver/apps/token_api/forms.py:10
+msgid "Select the target service"
+msgstr "Sélectionnez le service cible"
+
+#: jwtserver/apps/token_api/forms.py:11
+msgid "-- Select a service --"
+msgstr "-- Sélectionnez un service --"
+
+#: jwtserver/apps/token_api/forms.py:12
+msgid ""
+"The token will be generated with your current rights for this specific "
+"service."
+msgstr ""
+"Le jeton sera généré avec vos droits actuels pour ce service spécifique."
 
 #: jwtserver/apps/token_api/models.py:38
 #, python-format
@@ -128,6 +143,47 @@ msgstr "Compatible avec Vue 2 & Vue 3 (API composition)"
 #: jwtserver/templates/pages/home.html:141
 msgid "Discover the package"
 msgstr "Découvrez le package"
+
+#: jwtserver/templates/pages/token_for_service.html:7
+msgid "Generate Token for Service | JWT Server - Université de Strasbourg"
+msgstr ""
+"Générer un Token pour un service | JWT Serveur - Université de Strasbourg"
+
+#: jwtserver/templates/pages/token_for_service.html:19
+msgid "Generate Token for Service"
+msgstr "Token pour un service"
+
+#: jwtserver/templates/pages/token_for_service.html:22
+msgid ""
+"Create a temporary Access Token to test your API calls or debug an "
+"integration."
+msgstr ""
+"Créez un Access Token temporaire pour tester vos appels API ou déboguer une "
+"intégration."
+
+#: jwtserver/templates/pages/token_for_service.html:39
+msgid "Generate Token"
+msgstr "Générer le Token"
+
+#: jwtserver/templates/pages/token_for_service.html:46
+msgid "Generated token"
+msgstr "Token généré"
+
+#: jwtserver/templates/pages/token_for_service.html:51
+msgid "Encoded token (JWT)"
+msgstr "Token encodé (JWT)"
+
+#: jwtserver/templates/pages/token_for_service.html:59
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#: jwtserver/templates/pages/token_for_service.html:68
+msgid "Header"
+msgstr "En-tête"
+
+#: jwtserver/templates/pages/token_for_service.html:76
+msgid "Body"
+msgstr "Corps"
 
 #: jwtserver/views.py:12
 msgid "Standard Authentication"

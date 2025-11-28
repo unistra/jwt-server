@@ -14,6 +14,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'jwtserver/static/js/jwtserver.js'),
         home: resolve(__dirname, 'jwtserver/static/js/home.js'),
+        token: resolve(__dirname, 'jwtserver/static/js/token.js'),
       },
     },
   },

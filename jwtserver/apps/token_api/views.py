@@ -20,6 +20,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from sentry_sdk import add_breadcrumb, capture_message
 
+from ...libs.api.client import LDAPUserNotFoundError
 from .forms import TokenForServiceForm
 from .models import ApplicationToken, AuthorizedService
 from .serializers import (
@@ -30,7 +31,6 @@ from .serializers import (
     UserSerializer,
 )
 from .utils import force_https, generate_jwks
-from ...libs.api.client import LDAPUserNotFoundError
 
 
 def get_tokens_for_user(user):
@@ -66,9 +66,9 @@ def service(request, **kwargs):
         )
     )
     cas_url = (
-        settings.CAS_SERVER_URL
-        + "login?"
-        + urlencode({"service": force_https(service_url)})
+            settings.CAS_SERVER_URL
+            + "login?"
+            + urlencode({"service": force_https(service_url)})
     )
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response["Location"] = cas_url
@@ -77,7 +77,7 @@ def service(request, **kwargs):
 
 def service_verify(request, **kwargs):
     """
-    Verification method. Uses ticket to obtain JWS
+    Verification method. Uses ticket to get JWS
     :param request:
     :param kwargs:
     :return:
@@ -307,10 +307,29 @@ class TokenForServiceView(UserPassesTestMixin, View):
             form = self.form_class(
                 initial={
                     "service": authorized_service,
-                    "token": data["access"],
                 }
             )
-            return render(request, self.template_name, {"form": form})
+
+            token = data["access"]
+            segments = token.split('.')
+            header_b64, payload_b64, _sign_b64 = segments
+            header_dict = json.loads(
+                base64.urlsafe_b64decode(header_b64 + '==').decode('utf-8')
+            )
+            payload_dict = json.loads(
+                base64.urlsafe_b64decode(payload_b64 + '==').decode('utf-8')
+            )
+
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": form,
+                    "token": data["access"],
+                    "header": json.dumps(header_dict, indent=4),
+                    "payload": json.dumps(payload_dict, indent=4),
+                },
+            )
 
         return HttpResponseRedirect(reverse("token_for_service"))
 

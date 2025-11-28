@@ -1,9 +1,86 @@
 {% extends "base.html" %}
 
+{% load django_vite %}
+{% load i18n %}
+
+{% block title %}
+  {% trans 'Generate Token for Service | JWT Server - Université de Strasbourg' %}
+{% endblock %}
+
+{% block head-javascript %}
+  {% vite_asset 'jwtserver/static/js/token.js' %}
+{% endblock %}
+
 {% block content %}
-  <form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit"/>
-  </form>
+  <div class="main-container">
+    <header class="container sm">
+      <hgroup>
+        <h1>
+          {% trans 'Generate Token for Service' %}
+        </h1>
+        <p>
+          {% trans 'Create a temporary Access Token to test your API calls or debug an integration.' %}
+        </p>
+      </hgroup>
+    </header>
+
+    <main class="container">
+      <form action="" method="post">
+        {% csrf_token %}
+        <div>
+          {{ form.service.label_tag }}
+          {{ form.service }}
+          {{ form.service.errors }}
+          <p id="id_service_hint">
+            {{ form.service.help_text }}
+          </p>
+        </div>
+        <button type="submit" class="btn">
+          {% trans 'Generate Token' %}
+        </button>
+      </form>
+
+      {% if token %}
+        <section>
+          <h2>
+            {% trans 'Generated token' %}
+          </h2>
+
+          <section>
+            <h3>
+              {% trans 'Encoded token (JWT)' %}
+            </h3>
+
+            <p>
+              <span>
+                {{ token }}
+              </span>
+
+              <button title="{% trans 'Copy to clipboard' %}">
+                <i class="us us-square-double"></i>
+              </button>
+            </p>
+          </section>
+
+          <div>
+            <section>
+              <h3>
+                {% trans 'Header' %}
+              </h3>
+
+              <pre>{{ header }}</pre>
+            </section>
+
+            <section>
+              <h3>
+                {% trans 'Body' %}
+              </h3>
+
+              <pre>{{ payload }}</pre>
+            </section>
+          </div>
+        </section>
+      {% endif %}
+    </main>
+  </div>
 {% endblock %}
