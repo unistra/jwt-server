@@ -51,4 +51,3 @@ coverage.xml
 
 # Vite
 node_modules
-jwtserver/static/dist/

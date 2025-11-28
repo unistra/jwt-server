@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-28 11:38+0100\n"
+"POT-Creation-Date: 2025-11-28 12:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,3 +51,13 @@ msgstr "Token pour un service"
 #: jwtserver/templates/base.html:75
 msgid "admin"
 msgstr "Administration"
+
+#: jwtserver/templates/pages/home.html:4
+msgid "JWT Server"
+msgstr "JWT Serveur"
+
+#: jwtserver/templates/pages/home.html:5
+msgid ""
+"Central platform for issuing JWT tokens for the Unistra ecosystem. Connect "
+"your VueJS applications to LDAP and CAS in just a few lines of code."
+msgstr "Plateforme centrale de délivrance de jetons JWT pour l'écosystème Unistra. Connectez vos applications VueJS au LDAP et au CAS en quelques lignes de code."
