@@ -81,10 +81,14 @@ main {
         font-size: 1.25rem;
       }
 
-      p,
-      pre {
-        position: relative;
+      p {
         margin: 0;
+      }
+
+      > p,
+      > div,
+      > dl {
+        position: relative;
         background-color: var(--u-code-bg-dark-color);
         padding: 1rem;
         border-radius: 0.25rem;
@@ -118,8 +122,45 @@ main {
         }
       }
 
-      pre {
-        font-family: "Unistra A", sans-serif;
+      > div {
+        p {
+          margin: 0;
+        }
+
+        dl {
+          margin: 0;
+          padding: 0;
+
+          div {
+            display: flex;
+            gap: 0.5rem;
+
+            dt,
+            dd {
+              white-space: nowrap;
+              line-height: 1.5;
+
+              &[title] {
+                > span {
+                  &:first-of-type {
+                    text-decoration: underline;
+                    text-decoration-style: dotted;
+                    text-underline-offset: 0.5rem;
+                    cursor: help;
+                  }
+                }
+              }
+            }
+
+            dt {
+              margin-inline-start: 2rem;
+            }
+
+            dd {
+              margin: 0;
+            }
+          }
+        }
       }
     }
   }

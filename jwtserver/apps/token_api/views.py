@@ -66,9 +66,9 @@ def service(request, **kwargs):
         )
     )
     cas_url = (
-            settings.CAS_SERVER_URL
-            + "login?"
-            + urlencode({"service": force_https(service_url)})
+        settings.CAS_SERVER_URL
+        + "login?"
+        + urlencode({"service": force_https(service_url)})
     )
     response = HttpResponse(None, status=status.HTTP_302_FOUND)
     response["Location"] = cas_url
@@ -313,12 +313,6 @@ class TokenForServiceView(UserPassesTestMixin, View):
             token = data["access"]
             segments = token.split('.')
             header_b64, payload_b64, _sign_b64 = segments
-            header_dict = json.loads(
-                base64.urlsafe_b64decode(header_b64 + '==').decode('utf-8')
-            )
-            payload_dict = json.loads(
-                base64.urlsafe_b64decode(payload_b64 + '==').decode('utf-8')
-            )
 
             return render(
                 request,
@@ -326,8 +320,12 @@ class TokenForServiceView(UserPassesTestMixin, View):
                 {
                     "form": form,
                     "token": data["access"],
-                    "header": json.dumps(header_dict, indent=4),
-                    "payload": json.dumps(payload_dict, indent=4),
+                    "header": json.loads(
+                        base64.urlsafe_b64decode(header_b64 + '==').decode('utf-8')
+                    ),
+                    "payload": json.loads(
+                        base64.urlsafe_b64decode(payload_b64 + '==').decode('utf-8')
+                    ),
                 },
             )
 

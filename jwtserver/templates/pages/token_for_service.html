@@ -68,7 +68,18 @@
                 {% trans 'Header' %}
               </h3>
 
-              <pre>{{ header }}</pre>
+              <div>
+                <p aria-hidden="true">{</p>
+                <dl>
+                  {% for key, value in header.items %}
+                    <div>
+                      <dt data-key="{{ key }}">"<span>{{ key }}</span>"<span aria-hidden="true"> :</span></dt>
+                      <dd>"<span>{{ value }}</span>"{% if not forloop.last %},{% endif %}</dd>
+                    </div>
+                  {% endfor %}
+                </dl>
+                <p aria-hidden="true">}</p>
+              </div>
             </section>
 
             <section>
@@ -76,7 +87,18 @@
                 {% trans 'Body' %}
               </h3>
 
-              <pre>{{ payload }}</pre>
+              <div>
+                <p aria-hidden="true">{</p>
+                <dl>
+                  {% for key, value in payload.items %}
+                    <div>
+                      <dt data-key="{{ key }}">"<span>{{ key }}</span>"<span aria-hidden="true"> :</span></dt>
+                      <dd>"<span>{{ value }}</span>"{% if not forloop.last %},{% endif %}</dd>
+                    </div>
+                  {% endfor %}
+                </dl>
+                <p aria-hidden="true">}</p>
+              </div>
             </section>
           </div>
         </section>
