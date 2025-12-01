@@ -1,4 +1,4 @@
-import datetime
+from datetime import timedelta, datetime
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -7,9 +7,9 @@ from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.settings import api_settings
 
-from ...libs.api.client import get_user
 from .models import AuthorizedService
 from .utils import ExtendedRefreshToken, decode_service
+from ...libs.api.client import get_user
 
 ADDITIONAL_DATA = 'claims'
 
@@ -32,9 +32,19 @@ class UserTokenSerializer(serializers.Serializer):
         token: ExtendedRefreshToken = ExtendedRefreshToken.for_user(user)
         authorized_service = self.get_service()
 
+        options = authorized_service.data.get("options", {})
+
+        if "refresh_token_lifetime" in options:
+            try:
+                duration = int(options["refresh_token_lifetime"]["duration"])
+                unit = options["refresh_token_lifetime"]["unit"]
+                token.set_exp(lifetime=timedelta(**{unit: duration}))
+            except (ValueError, TypeError) as e:
+                print(f"Erreur config JWT Refresh: {e}")
+
         token["iss"] = self.get_issuer(authorized_service)
         token["sub"] = user.username
-        token["nbf"] = datetime.datetime.now().timestamp()
+        token["nbf"] = datetime.now().timestamp()
         additionaluserinfo = self.get_user_info(
             user.username,
             authorized_service.data["fields"],

@@ -2,7 +2,28 @@
   "$schema": "http://json-schema.org/draft/2020-12/schema",
   "id": "https://jwtserver.unistra.fr/schema/authorized_service.schema.json",
   "title": "JSON configuration for a service",
+  "$defs": {
+    "token_lifetime": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "duration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unit": {
+          "enum": [
+            "seconds",
+            "minutes",
+            "hours",
+            "days"
+          ]
+        }
+      }
+    }
+  },
   "type": "object",
+  "additionalProperties": false,
   "properties": {
     "service": {
       "type": "string"
@@ -13,11 +34,24 @@
     "fields": {
       "type": "object"
     },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "access_token_lifetime": {
+          "$ref": "#/$defs/token_lifetime"
+        },
+        "refresh_token_lifetime": {
+          "$ref": "#/$defs/token_lifetime"
+        }
+      }
+    },
     "claims": {
       "type": "object"
     },
     "conditions": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "ldap_filters": {
           "type": "array",
@@ -28,12 +62,10 @@
         "ldap_must_exist": {
           "type": "boolean"
         }
-      },
-      "additionalProperties": false
+      }
     }
   },
   "required": [
     "service"
-  ],
-  "additionalProperties": false
+  ]
 }
