@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% load django_vite %}
+{% load i18n %}
+
+{% block title %}
+  {% trans 'Generate Token for Service | JWT Server - Université de Strasbourg' %}
+{% endblock %}
+
+{% block head-javascript %}
+  {% vite_asset 'jwtserver/static/js/token.js' %}
+{% endblock %}
+
+{% block content %}
+  <div class="main-container">
+    <header class="container sm">
+      <hgroup>
+        <h1>
+          {% trans 'Generate Token for Service' %}
+        </h1>
+        <p>
+          {% trans 'Create a temporary Access Token to test your API calls or debug an integration.' %}
+        </p>
+      </hgroup>
+    </header>
+
+    <main class="container">
+      <form action="" method="post">
+        {% csrf_token %}
+        <div>
+          {{ form.service.label_tag }}
+          {{ form.service }}
+          {{ form.service.errors }}
+          <p id="id_service_hint">
+            {{ form.service.help_text }}
+          </p>
+        </div>
+        <button type="submit" class="btn">
+          {% trans 'Generate Token' %}
+        </button>
+      </form>
+
+      {% if token %}
+        <section>
+          <h2>
+            {% trans 'Generated token' %}
+          </h2>
+
+          <section>
+            <h3>
+              {% trans 'Encoded token (JWT)' %}
+            </h3>
+
+            <p>
+              <span>
+                {{ token }}
+              </span>
+
+              <button title="{% trans 'Copy to clipboard' %}">
+                <i class="us us-square-double"></i>
+              </button>
+            </p>
+          </section>
+
+          <div>
+            <section>
+              <h3>
+                {% trans 'Header' %}
+              </h3>
+
+              <div>
+                <p aria-hidden="true">{</p>
+                <dl>
+                  {% for key, value in header.items %}
+                    <div>
+                      <dt data-key="{{ key }}">"<span>{{ key }}</span>"<span aria-hidden="true"> :</span></dt>
+                      <dd>"<span>{{ value }}</span>"{% if not forloop.last %},{% endif %}</dd>
+                    </div>
+                  {% endfor %}
+                </dl>
+                <p aria-hidden="true">}</p>
+              </div>
+            </section>
+
+            <section>
+              <h3>
+                {% trans 'Body' %}
+              </h3>
+
+              <div>
+                <p aria-hidden="true">{</p>
+                <dl>
+                  {% for key, value in payload.items %}
+                    <div>
+                      <dt data-key="{{ key }}">"<span>{{ key }}</span>"<span aria-hidden="true"> :</span></dt>
+                      <dd>"<span>{{ value }}</span>"{% if not forloop.last %},{% endif %}</dd>
+                    </div>
+                  {% endfor %}
+                </dl>
+                <p aria-hidden="true">}</p>
+              </div>
+            </section>
+          </div>
+        </section>
+      {% endif %}
+    </main>
+  </div>
+{% endblock %}

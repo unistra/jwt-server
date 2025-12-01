@@ -1,60 +1,112 @@
+{% load django_vite %}
+
 <!DOCTYPE html>
+{% load i18n %}
 {% load static %}
 {% load dipstrapfiles %}
+
 <html lang="fr">
 <head>
-    <title>{% block title %}jwtserver{% endblock %}</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="author" content= 'Direction du Numérique - Université de Strasbourg' />
-    <link rel="stylesheet" href="{% dipstrap 'css/bootstrap-unistra.min.css' %}">
-    <link rel="stylesheet" href="{% dipstrap 'css/bootstrap-theme-unistra.min.css' %}">
-    <link rel="stylesheet" href="{% dipstrap 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jwtserver.css' %}" type="text/css" title="no title"/>
+  <title>{% block title %}jwtserver{% endblock %}</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="author" content="Direction du Numérique - Université de Strasbourg"/>
 
-    <script src="{% dipstrap 'js/vendor/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
-    {% block head-javascript %}{% endblock %}
+  {% block meta %}{% endblock %}
+
+  <link href="https://s3.unistra.fr" rel="preconnect">
+
+  <link as="style"
+        href="https://s3.unistra.fr/master/common/assets/fonts/unistra-symbol/2.1.0/css/unistra-symbol.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&amp;Signature=y3beHcTY%2FL4Smrkl1lDpiUc2ifw%3D&amp;Expires=2074601638"
+        rel="preload">
+  <link as="style"
+        href="https://s3.unistra.fr/master/common/assets/fonts/unistra-font/1.0.0/css/unistra-font.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&amp;Signature=Ros22u4Tp0Dy106qr0rRkGBPoJM%3D&amp;Expires=1870971370"
+        rel="preload">
+  <link
+      href="https://s3.unistra.fr/master/common/assets/fonts/unistra-symbol/2.1.0/css/unistra-symbol.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&amp;Signature=y3beHcTY%2FL4Smrkl1lDpiUc2ifw%3D&amp;Expires=2074601638"
+      rel="stylesheet">
+  <link
+      href="https://s3.unistra.fr/master/common/assets/fonts/unistra-font/1.0.0/css/unistra-font.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&amp;Signature=Ros22u4Tp0Dy106qr0rRkGBPoJM%3D&amp;Expires=1870971370"
+      rel="stylesheet">
+  <link
+      href="https://s3.unistra.fr/master/common/assets/fonts/nova-icons/1.0.2/css/nova-icons.css?AWSAccessKeyId=M2M78RKXPAP75Y692QZX&Signature=hFFKhRhE9%2B1xVyIi%2F%2BQPD%2BftVbk%3D&Expires=1887617035"
+      rel="stylesheet">
+
+  {% block output_css %}{% endblock %}
+
+  {% vite_hmr_client %}
+  {% vite_asset 'jwtserver/static/js/jwtserver.js' %}
+
+  {% block head-javascript %}{% endblock %}
 </head>
 
 <body>
-    <div class="navbar navbar-default navbar-fixed-top">
-        <img class="pull-left" src="{% dipstrap 'img/unistra-white.png' %}" alt="unistra" />
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">jwtserver</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    {% url 'home' as url %}
-                    <li {% if request.path ==  url %}class="active"{% endif %}><a href="{{ url }}">Home</a></li>
-                    {% if request.user.is_superuser %}
-                      {% url 'token_for_service' as url %}
-                      <li {% if request.path == url %}class="active"{% endif %}><a href="{{ url }}">Token for service</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
+<nav>
+  <div class="container">
+    {% url 'home' as url %}
+    <div role="img" aria-label="Retour à l'accueil">
+      <a href="{{ url }}" class="icons">
+        <i class="us us-wifi"></i>
+        <i class="us us-meeting"></i>
+        <i class="us us-windows"></i>
+      </a>
+      <span class="text">
+        <a href="{{ home }}" class="jwt">
+          JWT Serveur
+        </a>
+        <span class="university">
+          <a href="https://www.unistra.fr">Université de Strasbourg</a>
+          <span></span>
+          <span></span>
+        </span>
+      </span>
     </div>
-    <div class="container">
-    {% block content %}
-    Contenu de jwtserver
-    {% endblock %}
-    </div>
-    <div class="navbar navbar-default navbar-fixed-bottom">
-        <footer>
-            <div class="container">
-                <p class="credit">&copy; Direction du Num&eacute;rique - Universit&eacute; de Strasbourg - {% now "Y" %}</p>
-            </div>
-        </footer>
-    </div>
-    <script src="{% dipstrap 'js/vendor/jquery-1.11.0.min.js' %}"></script>
-    <script src="{% dipstrap 'js/vendor/bootstrap.min.js' %}"></script>
-    {% block foot-javascript %}{% endblock %}
+
+    <menu class="nav navbar-nav">
+      {% if request.user.is_superuser %}
+        <li {% if request.resolver_match.url_name == 'home' %}class="active-link"{% endif %}>
+          <a href="{{ url }}">
+            {% trans 'Home' %}
+          </a>
+        </li>
+        {% url 'token_for_service' as url %}
+        <li {% if request.resolver_match.url_name == 'token_for_service' %}class="active-link"{% endif %}>
+          <a href="{{ url }}">
+            {% trans 'Token for service' %}
+          </a>
+        </li>
+        {% url 'admin:index' as url %}
+        <li>
+          <a href="{{ url }}">
+            {% trans 'Admin' %}
+          </a>
+        </li>
+        <li>
+          <a class="btn" href="{% url 'logout' %}">
+            {% trans 'Logout' %}
+          </a>
+        </li>
+      {% else %}
+        <li>
+          <a class="btn" href="{% url 'login' %}?next={{ request.path }}">
+            {% trans 'Login' %}
+          </a>
+        </li>
+      {% endif %}
+    </menu>
+  </div>
+</nav>
+{% block content %}
+  Contenu de jwtserver
+{% endblock %}
+
+<footer>
+  <div class="container">
+    <p>&copy; Direction du Numérique - DIP - Université de Strasbourg - {% now "Y" %}</p>
+  </div>
+</footer>
+
+{% block foot-javascript %}{% endblock %}
 </body>
 </html>

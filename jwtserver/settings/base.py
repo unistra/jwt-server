@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 
@@ -222,6 +223,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'django_cas',
+    'django_vite',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -343,6 +345,7 @@ SIMPLE_JWT = {
     'ALGORITHM': 'RS256',
 }
 
+
 ##############
 # Encryption #
 ##############
@@ -372,7 +375,6 @@ def check_key(filename, key_type, **kwargs):
 
 check_key('myPublic.pem', 'VERIFYING_KEY')
 
-
 #####################
 #       CORS        #
 #####################
@@ -380,3 +382,14 @@ check_key('myPublic.pem', 'VERIFYING_KEY')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ('http://localhost:8080',)
 CORS_ALLOW_CREDENTIALS = True
+
+####################
+#      VITE        #
+####################
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": False,
+        "static_url_prefix": "dist/",
+        "manifest_path": DJANGO_ROOT / "static" / "dist" / "manifest.json",
+    },
+}

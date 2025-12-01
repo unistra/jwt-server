@@ -77,7 +77,7 @@ def service(request, **kwargs):
 
 def service_verify(request, **kwargs):
     """
-    Verification method. Uses ticket to obtain JWS
+    Verification method. Uses ticket to get JWS
     :param request:
     :param kwargs:
     :return:
@@ -279,7 +279,7 @@ class TokenForServiceView(UserPassesTestMixin, View):
 
     form_class = TokenForServiceForm
     initial = {"service": None}
-    template_name = "token_for_service.html"
+    template_name = "pages/token_for_service.html"
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -307,10 +307,27 @@ class TokenForServiceView(UserPassesTestMixin, View):
             form = self.form_class(
                 initial={
                     "service": authorized_service,
-                    "token": data["access"],
                 }
             )
-            return render(request, self.template_name, {"form": form})
+
+            token = data["access"]
+            segments = token.split('.')
+            header_b64, payload_b64, _sign_b64 = segments
+
+            return render(
+                request,
+                self.template_name,
+                {
+                    "form": form,
+                    "token": data["access"],
+                    "header": json.loads(
+                        base64.urlsafe_b64decode(header_b64 + '==').decode('utf-8')
+                    ),
+                    "payload": json.loads(
+                        base64.urlsafe_b64decode(payload_b64 + '==').decode('utf-8')
+                    ),
+                },
+            )
 
         return HttpResponseRedirect(reverse("token_for_service"))
 
