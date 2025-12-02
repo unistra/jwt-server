@@ -1,4 +1,5 @@
-from datetime import timedelta, datetime
+import logging
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -6,12 +7,16 @@ from django_cas.backends import CASBackend
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.settings import api_settings
+from sentry_sdk import set_tag, set_tags
 
-from .models import AuthorizedService
-from .utils import ExtendedRefreshToken, decode_service
-from ...libs.api.client import get_user
+from jwtserver.apps.token_api.models import AuthorizedService
+from jwtserver.apps.token_api.utils import ExtendedRefreshToken, decode_service
+from jwtserver.libs.api.client import get_user
 
-ADDITIONAL_DATA = 'claims'
+ADDITIONAL_DATA = "claims"
+
+
+logger = logging.getLogger(__name__)
 
 
 class UserTokenSerializer(serializers.Serializer):
@@ -39,8 +44,9 @@ class UserTokenSerializer(serializers.Serializer):
                 duration = int(options["refresh_token_lifetime"]["duration"])
                 unit = options["refresh_token_lifetime"]["unit"]
                 token.set_exp(lifetime=timedelta(**{unit: duration}))
-            except (ValueError, TypeError) as e:
-                print(f"Erreur config JWT Refresh: {e}")
+            except (ValueError, TypeError) as err:
+                logger.exception("JWT refresh_token configuration error")
+                raise err
 
         token["iss"] = self.get_issuer(authorized_service)
         token["sub"] = user.username
@@ -84,6 +90,13 @@ class UserTokenSerializer(serializers.Serializer):
 
         service = decode_service(base)
         authorized_service = AuthorizedService.objects.get(data__service=service)
+
+        set_tags(
+            {
+                "service": service,
+                "authorized_service_id": str(authorized_service),
+            }
+        )
 
         return authorized_service
 
@@ -144,10 +157,14 @@ class ApplicationTokenSerializer(UserTokenSerializer):
 
     def get_service(self):
         authorized_service = self.context.get("service", None)
+        set_tag("authorized_service", str(authorized_service))
+
         if authorized_service is not None and isinstance(
             authorized_service, AuthorizedService
         ):
             return authorized_service
+        else:
+            return ""
 
     def get_user_info(self, username, fields, conditions=None):
         # We want to raise an exception if user is not found in LDAP
