@@ -43,13 +43,14 @@ translateTimestamp('nbf')
 
 const definitions = {
   alg: 'Algorithme utilisé pour signer le jeton.',
-  exp: "Date d'expiration du jeton.",
-  iat: 'Date de création du jeton.',
-  iss: "Identifiant de l'émetteur du jeton.",
-  jti: 'Identifiant unique du jeton.',
+  aud: '"Audience" - Identifiant du ou des destinataires du jeton.',
+  exp: "\"Expiration time\" - Date d'expiration du jeton.",
+  iat: '"Issued at" - Date de création du jeton.',
+  iss: "\"Issuer\" - Identifiant de l'émetteur du jeton.",
+  jti: '"JWT ID" - Identifiant unique du jeton.',
   kid: 'Identifiant de la clé utilisée pour signer le jeton.',
-  nbf: 'Date avant laquelle le jeton n’est pas valide.',
-  sub: "Identifiant unique de l'utilisateur.",
+  nbf: '"Not before" - Date avant laquelle le jeton n’est pas valide.',
+  sub: "\"Subject\" - Identifiant unique de l'utilisateur.",
   typ: 'Type de jeton.',
 }
 for (const definition in definitions) {
