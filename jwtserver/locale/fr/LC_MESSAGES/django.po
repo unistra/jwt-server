@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-21 08:53+0200\n"
+"POT-Creation-Date: 2025-11-29 00:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: jwtserver/apps/token_api/admin.py:57
+#: jwtserver/apps/token_api/admin.py:56
 #, python-format
 msgid "User %(account)s does not exist"
 msgstr "L'utilisateur %(account)s n'existe pas"
 
-#: jwtserver/apps/token_api/models.py:26
+#: jwtserver/apps/token_api/forms.py:10
+msgid "Select the target service"
+msgstr "Sélectionnez le service cible"
+
+#: jwtserver/apps/token_api/forms.py:11
+msgid "-- Select a service --"
+msgstr "-- Sélectionnez un service --"
+
+#: jwtserver/apps/token_api/forms.py:12
+msgid ""
+"The token will be generated with your current rights for this specific "
+"service."
+msgstr ""
+"Le jeton sera généré avec vos droits actuels pour ce service spécifique."
+
+#: jwtserver/apps/token_api/models.py:38
 #, python-format
 msgid "Service \"%(name)s\" already exists"
 msgstr "Le service \"%(name)s\" existe déjà"
 
-#: jwtserver/apps/token_api/models.py:51
+#: jwtserver/apps/token_api/models.py:80
 msgid "LDAP account to generate a token for"
-msgstr "Compte LDAP à utiliser"
+msgstr "Compte LDAP à utiliser pour générer un jeton"
 
 #: jwtserver/templates/404.html:6
 msgid "Page not found"
@@ -39,3 +54,195 @@ msgstr "Page non trouvée"
 #: jwtserver/templates/500.html:6
 msgid "Error"
 msgstr "Erreur"
+
+#: jwtserver/templates/base.html:70
+msgid "Home"
+msgstr "Accueil"
+
+#: jwtserver/templates/base.html:76
+msgid "Token for service"
+msgstr "Token pour un service"
+
+#: jwtserver/templates/base.html:82
+msgid "Admin"
+msgstr "Administration"
+
+#: jwtserver/templates/base.html:87
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: jwtserver/templates/base.html:93
+msgid "Login"
+msgstr "Connexion"
+
+#: jwtserver/templates/pages/home.html:7
+msgid "Home | JWT Server - Université de Strasbourg"
+msgstr "Accueil | JWT Serveur - Université de Strasbourg"
+
+#: jwtserver/templates/pages/home.html:44
+msgid "JWT Server"
+msgstr "JWT Serveur"
+
+#: jwtserver/templates/pages/home.html:45
+msgid "Central platform for issuing JWT tokens for the Unistra ecosystem."
+msgstr ""
+"Plateforme centrale pour l'émission de jetons JWT pour l'écosystème Unistra."
+
+#: jwtserver/templates/pages/home.html:46
+msgid "Connect your applications to CAS in just a few lines of code."
+msgstr "Connectez vos applications à CAS en quelques lignes de code."
+
+#: jwtserver/templates/pages/home.html:52
+msgid "Discover our services"
+msgstr "Découvrez les services"
+
+#: jwtserver/templates/pages/home.html:59
+msgid "View JWKS"
+msgstr "Voir JWKS"
+
+#: jwtserver/templates/pages/home.html:70
+msgid "API Services Catalogue"
+msgstr "Catalogue des services API"
+
+#: jwtserver/templates/pages/home.html:73
+msgid ""
+"This application exposes several REST endpoints to manage the complete "
+"lifecycle of your users' and services' authentication."
+msgstr ""
+"Cette application expose plusieurs points de terminaison REST pour gérer le "
+"cycle de vie complet de l'authentification de vos utilisateurs et services."
+
+#: jwtserver/templates/pages/home.html:84
+msgid "Debug Mode"
+msgstr "Mode Débogage"
+
+#: jwtserver/templates/pages/home.html:112
+msgid "VueJS Native Integration"
+msgstr "Intégration native VueJS"
+
+#: jwtserver/templates/pages/home.html:116
+msgid ""
+"Don't waste time reinventing token management. We provide an official "
+"package maintained by the Unistra community."
+msgstr ""
+"Ne perdez pas de temps à réinventer la gestion des jetons. Nous fournissons "
+"un package officiel maintenu par la communauté Unistra."
+
+#: jwtserver/templates/pages/home.html:124
+msgid "Axios interceptors preconfigured"
+msgstr "Intercepteurs Axios préconfigurés"
+
+#: jwtserver/templates/pages/home.html:130
+msgid "Automatic token refresh management"
+msgstr "Gestion automatique du rafraîchissement des jetons"
+
+#: jwtserver/templates/pages/home.html:136
+msgid "Compatible with Vue 2 & Vue 3 (Composition API)"
+msgstr "Compatible avec Vue 2 & Vue 3 (API composition)"
+
+#: jwtserver/templates/pages/home.html:141
+msgid "Discover the package"
+msgstr "Découvrez le package"
+
+#: jwtserver/templates/pages/token_for_service.html:7
+msgid "Generate Token for Service | JWT Server - Université de Strasbourg"
+msgstr ""
+"Générer un Token pour un service | JWT Serveur - Université de Strasbourg"
+
+#: jwtserver/templates/pages/token_for_service.html:19
+msgid "Generate Token for Service"
+msgstr "Token pour un service"
+
+#: jwtserver/templates/pages/token_for_service.html:22
+msgid ""
+"Create a temporary Access Token to test your API calls or debug an "
+"integration."
+msgstr ""
+"Créez un Access Token temporaire pour tester vos appels API ou déboguer une "
+"intégration."
+
+#: jwtserver/templates/pages/token_for_service.html:39
+msgid "Generate Token"
+msgstr "Générer le Token"
+
+#: jwtserver/templates/pages/token_for_service.html:46
+msgid "Generated token"
+msgstr "Token généré"
+
+#: jwtserver/templates/pages/token_for_service.html:51
+msgid "Encoded token (JWT)"
+msgstr "Token encodé (JWT)"
+
+#: jwtserver/templates/pages/token_for_service.html:59
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#: jwtserver/templates/pages/token_for_service.html:68
+msgid "Header"
+msgstr "En-tête"
+
+#: jwtserver/templates/pages/token_for_service.html:76
+msgid "Body"
+msgstr "Corps"
+
+#: jwtserver/views.py:12
+msgid "Standard Authentication"
+msgstr "Authentification Standard"
+
+#: jwtserver/views.py:14
+msgid ""
+"Exchanges a standard CAS ticket for a pair of tokens (Access + Refresh). "
+"Automatically retrieves the user's LDAP attributes."
+msgstr ""
+"Échange un ticket CAS standard contre une paire de jetons (Accès + "
+"Rafraîchissement). Récupère automatiquement les attributs LDAP de "
+"l'utilisateur."
+
+#: jwtserver/views.py:25
+msgid "Session Renewal"
+msgstr "Renouvellement de Session"
+
+#: jwtserver/views.py:27
+msgid ""
+"Allows maintaining the user session active without CAS re-authentication by "
+"exchanging a valid Refresh Token for a new Access Token."
+msgstr ""
+"Permet de maintenir la session utilisateur active sans ré-authentification "
+"CAS en échangeant un jeton de rafraîchissement valide contre un nouveau "
+"jeton d'accès."
+
+#: jwtserver/views.py:38
+msgid "Token-o-Matic"
+msgstr "Token-o-Matic"
+
+#: jwtserver/views.py:40
+msgid ""
+"Machine-to-Machine authentication system. Allows a backend service to obtain "
+"an access token for another service via an ApplicationToken."
+msgstr ""
+"Système d'authentification Machine-to-Machine. Permet à un service backend "
+"d'obtenir un jeton d'accès pour un autre service via un ApplicationToken."
+
+#: jwtserver/views.py:51
+msgid "Service Verification"
+msgstr "Vérification de Service"
+
+#: jwtserver/views.py:53
+msgid ""
+"Utility endpoint to verify the validity of a CAS ticket or the accessibility "
+"of a registered remote service."
+msgstr ""
+"Point de terminaison utilitaire pour vérifier la validité d'un ticket CAS ou "
+"l'accessibilité d'un service distant enregistré."
+
+#: jwtserver/views.py:64
+msgid "Dummy Mode"
+msgstr "Mode Simulé"
+
+#: jwtserver/views.py:66
+msgid ""
+"Authentication simulator for development environments. Only works with "
+"DEBUG=True."
+msgstr ""
+"Simulateur d'authentification pour les environnements de développement. Ne "
+"fonctionne qu'avec DEBUG=True."

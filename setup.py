@@ -2,7 +2,7 @@ import os
 
 from setuptools import find_packages, setup
 
-VERSION = "1.7.9"
+VERSION = "1.8.0"
 
 
 with open('README.md') as readme:

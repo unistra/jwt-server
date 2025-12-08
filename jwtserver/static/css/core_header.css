@@ -1,0 +1,47 @@
+header.container {
+  padding: 5rem 1rem;
+
+  &.sm {
+    padding: 1rem 1rem;
+
+    hgroup {
+      margin-block-end: 1rem;
+
+      h1 {
+        font-size: 3rem;
+      }
+    }
+  }
+
+  hgroup {
+    margin-block-end: 3rem;
+
+    h1,
+    p {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 4.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--u-decoration-color);
+    }
+
+    p {
+      font-size: 1.5rem;
+    }
+  }
+
+  menu {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+
+    li {
+      list-style: none;
+    }
+  }
+}

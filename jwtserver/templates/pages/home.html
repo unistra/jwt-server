@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% load django_vite %}
+{% load i18n %}
+
+{% block title %}
+  {% trans 'Home | JWT Server - Université de Strasbourg' %}
+{% endblock %}
+
+{% block meta %}
+  <meta name="description"
+        content="Plateforme AuthProvider pour l'Université de Strasbourg : Authentification unifiée et sécurisée (JWT, CAS, LDAP). Intégrez facilement vos applications VueJS et services internes.">
+  <meta name="keywords"
+        content="authentification unistra, unistra auth, jwt unistra, cas jwt, ldap, vuejs authentication, token-o-matic, renouvellement session, université strasbourg">
+
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://jwtserver.app.unistra.fr/">
+
+  <meta property="og:title" content="AuthProvider Unistra - Authentification Unifiée & Sécurisée (JWT/CAS)">
+  <meta property="og:description"
+        content="Plateforme centrale de délivrance de jetons JWT et d'intégration sécurisée pour les applications VueJS et services de l'Université de Strasbourg.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jwtserver.app.unistra.fr/">
+  <meta property="og:site_name" content="AuthProvider Unistra">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AuthProvider Unistra : Authentification JWT/CAS pour VueJS">
+  <meta name="twitter:description"
+        content="Sécurité et intégration rapide pour l'écosystème Unistra. Gérez les jetons JWT, le renouvellement de session et les services M2M.">
+{% endblock %}
+
+{% block output_css %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block head-javascript %}
+  {% vite_asset 'jwtserver/static/js/home.js' %}
+{% endblock %}
+
+{% block content %}
+  <header class="container">
+    <hgroup>
+      <h1>{% trans 'JWT Server' %}</h1>
+      <p>{% trans 'Central platform for issuing JWT tokens for the Unistra ecosystem.' %}</p>
+      <p>{% trans 'Connect your applications to CAS in just a few lines of code.' %}</p>
+    </hgroup>
+
+    <menu>
+      <li>
+        <a class="btn" href="#services">
+          {% trans 'Discover our services' %}
+          <span aria-hidden="true">👇</span>
+        </a>
+      </li>
+      <li>
+        {% url 'jwks' as jwks %}
+        <a class="btn btn-outline" href="{{ jwks }}">
+          {% trans 'View JWKS' %}
+          <span aria-hidden="true">🗝️</span>
+        </a>
+      </li>
+    </menu>
+  </header>
+
+  <main>
+    <div class="container">
+      <hgroup>
+        <h2 id="services">
+          {% trans 'API Services Catalogue' %}
+        </h2>
+        <p>
+          {% trans "This application exposes several REST endpoints to manage the complete lifecycle of your users' and services' authentication." %}
+        </p>
+      </hgroup>
+
+      <section>
+        {% for service in services %}
+          <article style="--base-color: {{ service.color }}">
+            <i class="{{ service.icon }}"></i>
+            <h3>
+              {{ service.title }}
+              {% if service.is_debug %}
+                <span>{% trans 'Debug Mode' %}</span>
+              {% endif %}
+            </h3>
+            <p>{{ service.description }}</p>
+
+            {% if request.user.is_superuser %}
+              <button
+                  aria-label="Copier l'endpoint {{ service.api.method }} /{{ service.api.path }}"
+                  data-endpoint="{{ request.build_absolute_uri }}{{ service.api.path }}"
+                  data-method="{{ service.api.method }}"
+              >
+                <span>
+                  <span>{{ service.api.method }}</span>
+                  <span>/{{ service.api.path }}</span>
+                </span>
+
+                <i class="us us-square-double" aria-hidden="true"></i>
+              </button>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </section>
+    </div>
+  </main>
+
+  <section class="container">
+    <div>
+      <h2>
+        {% trans 'VueJS Native Integration' %}
+      </h2>
+
+      <p>
+        {% trans "Don't waste time reinventing token management. We provide an official package maintained by the Unistra community." %}
+      </p>
+
+      <ul>
+        <li>
+          <span>
+            <i class="us us-check-alt"></i>
+          </span>
+          {% trans "Axios interceptors preconfigured" %}
+        </li>
+        <li>
+          <span>
+            <i class="us us-check-alt"></i>
+          </span>
+          {% trans "Automatic token refresh management" %}
+        </li>
+        <li>
+          <span>
+            <i class="us us-check-alt"></i>
+          </span>
+          {% trans "Compatible with Vue 2 & Vue 3 (Composition API)" %}
+        </li>
+      </ul>
+
+      <a class="btn" href="https://git.unistra.fr/vue-unistra/cas-authentication" target="_blank" rel="noopener">
+        {% trans 'Discover the package' %}
+        <span aria-hidden="true">🚀</span>
+      </a>
+    </div>
+    <div>
+      <div class="code">
+        <header aria-hidden="true">
+          <div>
+            <ul>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ul>
+
+            <p>maint.ts</p>
+          </div>
+        </header>
+
+        <section>
+
+        </section>
+      </div>
+    </div>
+  </section>
+{% endblock %}

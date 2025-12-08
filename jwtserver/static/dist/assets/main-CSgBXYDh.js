@@ -1,0 +1,1 @@
+var e=document.querySelector(`[role="img"]`),t=e.querySelector(`.icons`),n=e.querySelector(`.jwt`),r=()=>{t.classList.add(`hover`),n.classList.add(`hover`)},i=()=>{t.classList.remove(`hover`),n.classList.remove(`hover`)};t.addEventListener(`mouseover`,r),t.addEventListener(`mouseout`,i),n.addEventListener(`mouseover`,r),n.addEventListener(`mouseout`,i);

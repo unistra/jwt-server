@@ -95,8 +95,8 @@ def dev():
 def test():
     """Define test stage"""
     env.roledefs = {
-        'web': ['jwtserver-test.u-strasbg.fr'],
-        'lb': ['jwtserver-test.u-strasbg.fr'],
+        'web': ['django-test2.di.unistra.fr'],
+        'lb': ['django-test2.di.unistra.fr'],
     }
     env.user = 'root'  # user for ssh
     env.backends = ['127.0.0.1']
