@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 
 import ldap
 from django.conf import settings
@@ -37,6 +38,36 @@ def get_ldap_filter(uid, conditions=None) -> str:
     logger.debug(f"LDAP filter {_filter}")
 
     return _filter
+
+
+def is_account_locked(username: str) -> bool:
+    results = get_client().search_s(
+        settings.LDAP_BRANCH,
+        ldap.SCOPE_SUBTREE,
+        get_ldap_filter(username),
+        ['pwdAccountLockedTime'],
+    )
+
+    if len(results) == 0:
+        return False
+
+    people = results[0]
+    pwd_account_locked_time = people[1].get('pwdAccountLockedTime', None)
+
+    if pwd_account_locked_time:
+        pwd_account_locked_time = pwd_account_locked_time[0].decode("utf-8")
+
+        if "." in pwd_account_locked_time:
+            locked_at = datetime.strptime(pwd_account_locked_time, "%Y%m%d%H%M%SZ.%fZ")
+        else:
+            locked_at = datetime.strptime(pwd_account_locked_time, "%Y%m%d%H%M%SZ")
+
+        locked_at = locked_at.replace(tzinfo=timezone.utc)
+
+        if locked_at < datetime.now(timezone.utc):
+            logger.info(f"Account {username} is locked since {locked_at.isoformat()}")
+            return True
+    return False
 
 
 @MemoizeWithTimeout(timeout=86400)

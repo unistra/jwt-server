@@ -11,7 +11,7 @@ from sentry_sdk import set_tag, set_tags
 
 from jwtserver.apps.token_api.models import AuthorizedService
 from jwtserver.apps.token_api.utils import ExtendedRefreshToken, decode_service
-from jwtserver.libs.api.client import get_user
+from jwtserver.libs.api.client import get_user, is_account_locked
 
 ADDITIONAL_DATA = "claims"
 
@@ -107,6 +107,10 @@ class TokenRefreshSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         refresh = ExtendedRefreshToken(attrs["refresh"])
+        username = refresh.get(api_settings.USER_ID_FIELD)
+
+        if is_account_locked(username):
+            raise AuthenticationFailed("User account is locked")
 
         data = {'access': str(refresh.access_token)}
 
