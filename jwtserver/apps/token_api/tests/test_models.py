@@ -42,11 +42,11 @@ class AuthorizedServiceTest(TestCase):
             AuthorizedService.objects.create(data=data)
         self.assertIn(
             "JSON Schema validation error",
-            ctx.exception.message_dict["data"][0],
+            ctx.exception.message_dict["__all__"][0],
         )
         self.assertIn(
             "Additional properties are not allowed",
-            ctx.exception.message_dict["data"][0],
+            ctx.exception.message_dict["__all__"][0],
         )
 
     def test_valid_url(self):
