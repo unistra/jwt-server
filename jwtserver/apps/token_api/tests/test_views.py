@@ -40,9 +40,13 @@ class RefreshTokenViewTest(APITestCase):
         jwt_config["VERIFYING_KEY"] = self.public_key
         with override_settings(SIMPLE_JWT=jwt_config):
             refresh_token = ExtendedRefreshToken.for_user(self.user)
-        response = self.client.post(
-            reverse("token_refresh"), data={"refresh": str(refresh_token)}
-        )
+            with patch(
+                "jwtserver.apps.token_api.serializers.is_account_locked",
+                return_value=False,
+            ):
+                response = self.client.post(
+                    reverse("token_refresh"), data={"refresh": str(refresh_token)}
+                )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         access_token = response.data["access"]
         headers = jwt.get_unverified_header(access_token)
