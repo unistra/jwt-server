@@ -1,5 +1,9 @@
 # Changelog
 
+## Next release
+
+- 🚸 Sort services in alphabetic order
+
 ## 1.8.1 - 09-01-2025
 
 - 🔒️Don't refresh token if account is locked

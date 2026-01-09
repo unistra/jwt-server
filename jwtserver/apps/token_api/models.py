@@ -14,11 +14,13 @@ class AuthorizedService(models.Model):
     data = JSONField(
         blank=True,
         default=dict,
-        validators=[
-            JSONSchemaValidator("authorized_service.schema.json"),
-        ],
     )
     creation_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["data__service"]
+        verbose_name = _("Authorized Service")
+        verbose_name_plural = _("Authorized Services")
 
     def __str__(self):
         if "service" in self.data:
@@ -26,6 +28,10 @@ class AuthorizedService(models.Model):
         return super().__str__()
 
     def clean(self):
+        # Validate JSON schema
+        JSONSchemaValidator("authorized_service.schema.json")(self.data)
+
+        # Ensure service uniqueness
         if (
             self.pk is None
             and AuthorizedService.objects.filter(
