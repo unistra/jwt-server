@@ -34,6 +34,7 @@ class AuthorizedServiceForm(forms.ModelForm):
 class AuthorizedServiceAdmin(admin.ModelAdmin):
     form = AuthorizedServiceForm
     list_display = ("__str__", "keys")
+    ordering = ("data__service",)
 
     def keys(self, obj):
         if "fields" in obj.data:

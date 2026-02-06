@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-29 00:05+0100\n"
+"POT-Creation-Date: 2026-01-09 14:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: jwtserver/apps/token_api/admin.py:56
+#: jwtserver/apps/token_api/admin.py:57
 #, python-format
 msgid "User %(account)s does not exist"
 msgstr "L'utilisateur %(account)s n'existe pas"
@@ -31,19 +30,27 @@ msgstr "Sélectionnez le service cible"
 msgid "-- Select a service --"
 msgstr "-- Sélectionnez un service --"
 
-#: jwtserver/apps/token_api/forms.py:12
+#: jwtserver/apps/token_api/forms.py:13
 msgid ""
 "The token will be generated with your current rights for this specific "
 "service."
 msgstr ""
 "Le jeton sera généré avec vos droits actuels pour ce service spécifique."
 
-#: jwtserver/apps/token_api/models.py:38
+#: jwtserver/apps/token_api/models.py:22
+msgid "Authorized Service"
+msgstr "Service autorisé"
+
+#: jwtserver/apps/token_api/models.py:23
+msgid "Authorized Services"
+msgstr "Services autorisés"
+
+#: jwtserver/apps/token_api/models.py:44
 #, python-format
 msgid "Service \"%(name)s\" already exists"
 msgstr "Le service \"%(name)s\" existe déjà"
 
-#: jwtserver/apps/token_api/models.py:80
+#: jwtserver/apps/token_api/models.py:86
 msgid "LDAP account to generate a token for"
 msgstr "Compte LDAP à utiliser pour générer un jeton"
 
@@ -181,7 +188,7 @@ msgstr "Copier dans le presse-papiers"
 msgid "Header"
 msgstr "En-tête"
 
-#: jwtserver/templates/pages/token_for_service.html:76
+#: jwtserver/templates/pages/token_for_service.html:87
 msgid "Body"
 msgstr "Corps"
 
